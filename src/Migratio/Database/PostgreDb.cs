@@ -7,22 +7,22 @@ namespace Migratio.Database
 {
     public class PostgreDb : IDatabaseProvider
     {
-        private readonly DbConnectionInfo _connectionInfo;
-
-        public PostgreDb(DbConnectionInfo connectionInfo)
+        private DbConnectionInfo ConnectionInfo { get; set; }
+        
+        public void SetConnectionInfo(DbConnectionInfo info)
         {
-            _connectionInfo = connectionInfo;
+            ConnectionInfo = info;
         }
 
         private NpgsqlConnection GetConnection()
         {
             var builder = new NpgsqlConnectionStringBuilder
             {
-                Database = _connectionInfo.Database,
-                Username = _connectionInfo.Username,
-                Host = _connectionInfo.Host,
-                Port = _connectionInfo.Port,
-                Password = _connectionInfo.Password,
+                Database = ConnectionInfo.Database,
+                Username = ConnectionInfo.Username,
+                Host = ConnectionInfo.Host,
+                Port = ConnectionInfo.Port,
+                Password = ConnectionInfo.Password,
             };
 
             return new NpgsqlConnection(builder.ToString());
@@ -40,7 +40,7 @@ namespace Migratio.Database
                 conn.Open();
                 using (var cmd = new NpgsqlCommand(Queries.CheckIfMigrationTableExistsQuery, conn))
                 {
-                    cmd.Parameters.AddWithValue("tableSchema", _connectionInfo.Schema);
+                    cmd.Parameters.AddWithValue("tableSchema", ConnectionInfo.Schema);
                     cmd.Parameters.AddWithValue("tableName", "MIGRATIONS");
                     using (var reader = cmd.ExecuteReader())
                     {
@@ -90,7 +90,7 @@ namespace Migratio.Database
             using (var conn = GetConnection())
             {
                 conn.Open();
-                var query = Queries.GetAppliedMigrationsQuery.Replace("@tableSchema", _connectionInfo.Schema);
+                var query = Queries.GetAppliedMigrationsQuery.Replace("@tableSchema", ConnectionInfo.Schema);
                 using (var cmd = new NpgsqlCommand(query, conn))
                 {
                     using (var reader = cmd.ExecuteReader())
@@ -121,7 +121,7 @@ namespace Migratio.Database
             using (var conn = GetConnection())
             {
                 conn.Open();
-                var query = Queries.GetScriptsForLatestIterationQuery.Replace("@tableSchema", _connectionInfo.Schema);
+                var query = Queries.GetScriptsForLatestIterationQuery.Replace("@tableSchema", ConnectionInfo.Schema);
                 using (var cmd = new NpgsqlCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("currentIteration", latestIteration);
@@ -148,7 +148,7 @@ namespace Migratio.Database
             using (var conn = GetConnection())
             {
                 conn.Open();
-                var query = Queries.CreateMigrationsTableQuery.Replace("@tableSchema", _connectionInfo.Schema);
+                var query = Queries.CreateMigrationsTableQuery.Replace("@tableSchema", ConnectionInfo.Schema);
                 using (var cmd = new NpgsqlCommand(query, conn))
                 {
                     result = cmd.ExecuteNonQuery();

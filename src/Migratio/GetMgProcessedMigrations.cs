@@ -14,7 +14,7 @@ namespace Migratio
 
         public GetMgProcessedMigrations()
         {
-            _db = new PostgreDb(GetConnectionInfo());
+            _db = new PostgreDb();
         }
 
         public GetMgProcessedMigrations(IDatabaseProvider db)
@@ -24,6 +24,7 @@ namespace Migratio
 
         protected override void ProcessRecord()
         {
+            _db.SetConnectionInfo(GetConnectionInfo());
             if (!_db.MigrationTableExists())
             {
                 throw new Exception("Migration table does not exist");

@@ -1,3 +1,4 @@
+using System;
 using System.Management.Automation;
 using Migratio.Contracts;
 using Migratio.Database;
@@ -12,16 +13,19 @@ namespace Migratio
 
         public NewMgMigrationTable()
         {
-            _db = new PostgreDb(GetConnectionInfo());
+            _db = new PostgreDb();
         }
 
         public NewMgMigrationTable(IDatabaseProvider databaseProvider)
         {
+            Console.WriteLine("2");
             _db = databaseProvider;
         }
 
         protected override void ProcessRecord()
         {
+            _db.SetConnectionInfo(GetConnectionInfo());
+
             if (_db.MigrationTableExists())
             {
                 WriteWarning("Migration table already exists");

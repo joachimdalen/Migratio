@@ -1,4 +1,5 @@
 using Migratio.Contracts;
+using Migratio.Database;
 using Migratio.Models;
 using Moq;
 
@@ -12,12 +13,17 @@ namespace Migratio.UnitTests.Mocks
         public DatabaseProviderMock(MockBehavior behavior = MockBehavior.Strict)
         {
             MockInstance = new Mock<IDatabaseProvider>(behavior);
+
+            MockInstance.Setup(x => x.SetConnectionInfo(It.IsAny<DbConnectionInfo>()));
         }
 
         #region Setups
 
         public void MigrationTableExists(bool returns)
             => MockInstance.Setup(x => x.MigrationTableExists()).Returns(returns);
+
+        public void CreateMigrationTable(int returns)
+            => MockInstance.Setup(x => x.CreateMigrationTable()).Returns(returns);
 
         public void GetLatestIteration(int returns)
             => MockInstance.Setup(x => x.GetLatestIteration()).Returns(returns);
@@ -40,6 +46,12 @@ namespace Migratio.UnitTests.Mocks
 
         public void VerifyRunTransaction(string query)
             => MockInstance.Verify(x => x.RunTransaction(query));
+
+        public void VerifyMigrationTableExists(Times times)
+            => MockInstance.Verify(x => x.MigrationTableExists(), times);
+
+        public void VerifyCreateMigrationTable(Times times)
+            => MockInstance.Verify(x => x.CreateMigrationTable(), times);
 
         #endregion
     }

@@ -27,7 +27,7 @@ namespace Migratio
 
         public InvokeMgRollout()
         {
-            _db = new PostgreDb(GetConnectionInfo());
+            _db = new PostgreDb();
             _fileManager = new FileManager();
             _migrationHelper = new MigrationHelper(_fileManager, new EnvironmentManager());
         }
@@ -42,6 +42,7 @@ namespace Migratio
 
         protected override void ProcessRecord()
         {
+            _db.SetConnectionInfo(GetConnectionInfo());
             if (!_db.MigrationTableExists())
             {
                 throw new Exception("Migration table does not exist");

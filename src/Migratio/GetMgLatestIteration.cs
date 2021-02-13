@@ -13,7 +13,7 @@ namespace Migratio
 
         public GetMgLatestIteration()
         {
-            _db = new PostgreDb(GetConnectionInfo());
+            _db = new PostgreDb();
         }
 
         public GetMgLatestIteration(IDatabaseProvider db)
@@ -23,6 +23,7 @@ namespace Migratio
 
         protected override void ProcessRecord()
         {
+            _db.SetConnectionInfo(GetConnectionInfo());
             if (_db.MigrationTableExists())
             {
                 var result = _db.GetLatestIteration();

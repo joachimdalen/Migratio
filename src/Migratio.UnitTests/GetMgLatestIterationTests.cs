@@ -1,19 +1,24 @@
 using System.Linq;
-using Migratio.Contracts;
 using Migratio.Models;
-using Moq;
+using Migratio.UnitTests.Mocks;
 using Xunit;
 
 namespace Migratio.UnitTests
 {
     public class GetMgLatestIterationTests
     {
+        private readonly DatabaseProviderMock _dbMock;
+
+        public GetMgLatestIterationTests()
+        {
+            _dbMock = new DatabaseProviderMock();
+        }
+
         [Fact(DisplayName = "Get-MgLatestIteration returns null if migration table does not exist")]
         public void GetMgLatestIteration_Returns_Null_If_Migration_Table_Does_Not_Exist()
         {
-            var dbMock = new Mock<IDatabaseProvider>(MockBehavior.Strict);
-            dbMock.Setup(x => x.MigrationTableExists()).Returns(false);
-            var command = new GetMgLatestIteration(dbMock.Object)
+            _dbMock.MigrationTableExists(false);
+            var command = new GetMgLatestIteration(_dbMock.Object)
             {
                 Database = "database",
                 Password = "password",
@@ -30,10 +35,9 @@ namespace Migratio.UnitTests
         [Fact(DisplayName = "Get-MgLatestIteration returns records")]
         public void GetMgLatestIteration_Returns_Records()
         {
-            var dbMock = new Mock<IDatabaseProvider>(MockBehavior.Strict);
-            dbMock.Setup(x => x.MigrationTableExists()).Returns(true);
-            dbMock.Setup(x => x.GetLatestIteration()).Returns(1);
-            var command = new GetMgLatestIteration(dbMock.Object)
+            _dbMock.MigrationTableExists(true);
+            _dbMock.GetLatestIteration(1);
+            var command = new GetMgLatestIteration(_dbMock.Object)
             {
                 Database = "database",
                 Password = "password",

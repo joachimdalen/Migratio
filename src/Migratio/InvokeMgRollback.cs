@@ -23,7 +23,7 @@ namespace Migratio
 
         public InvokeMgRollback()
         {
-            _db = new PostgreDb(GetConnectionInfo());
+            _db = new PostgreDb();
             _fileManager = new FileManager();
             _migrationHelper = new MigrationHelper(_fileManager, new EnvironmentManager());
         }
@@ -34,9 +34,10 @@ namespace Migratio
             _fileManager = fileManager;
             _migrationHelper = new MigrationHelper(_fileManager, environmentManager);
         }
-
+        
         protected override void ProcessRecord()
         {
+            _db.SetConnectionInfo(GetConnectionInfo());
             if (!_db.MigrationTableExists())
             {
                 throw new Exception("Migration table does not exist");
