@@ -1,8 +1,8 @@
 ![header-image](./images/header.png)
 
-| Migratio is a Powershell module to handle database migrations and seeder. It supports rollout, rollback and seeding data. |
-| :-----------------------------------------------------------------------------------------------------------------------: |
-|               Have the need to use variables or secrets in your script? **Migratio** supports that as well.               |
+| Migratio is a PowerShell module to handle database migrations and seeding. It supports rollout, rollback and seeding data. |
+| :------------------------------------------------------------------------------------------------------------------------: |
+|               Have the need to use variables or secrets in your script? **Migratio** supports that as well.                |
 
 | ⚠️ Migratio is far from complete and tested, so some things might not work as expected. Please take care if you decide to use this before a release. |
 | :--------------------------------------------------------------------------------------------------------------------------------------------------: |
@@ -13,19 +13,19 @@ So far Migratio only supports PostgreSQL, but MSSQL is alo planned. Submit a fea
 
 ## Cmdlets
 
-| Name                            | Description                                                                                     |
-| ------------------------------- | ----------------------------------------------------------------------------------------------- |
-| New-MgMigration                 | Create a new rollout and rollback migration                                                     |
-| New-MgMigrationTable            | Create a new migration table in the database                                                    |
-| New-MgSeeder                    | Create a new seeder migration                                                                   |
-|                                 |                                                                                                 |
-| Get-MgUsedVariables             | Get a list over used variables for a migration file. See [Variables](##Variables) for more info |
-| Get-MgLatestIteration           | Get the latest iteration of migrations applied                                                  |
-| Get-MgProcessedMigrations       | Get all the applied migrations                                                                  |
-| Get-MgScriptsForLatestIteration | Get all the applied migrations for the latest iteration                                         |
-|                                 |                                                                                                 |
-| Invoke-MgRollout                | Run a rollout of migrations that is not applied yet                                             |
-| Invoke-MgRollback               | Run a rollback of the latest iteration of migrations                                            |
+| Name                            | Description                                                                                    |
+| ------------------------------- | ---------------------------------------------------------------------------------------------- |
+| New-MgMigration                 | Create a new rollout and rollback migration                                                    |
+| New-MgMigrationTable            | Create a new migration table in the database                                                   |
+| New-MgSeeder                    | Create a new seeder migration                                                                  |
+|                                 |                                                                                                |
+| Get-MgUsedVariables             | Get a list over used variables for a migration file. See [Variables](#Variables) for more info |
+| Get-MgLatestIteration           | Get the latest iteration of migrations applied                                                 |
+| Get-MgProcessedMigrations       | Get all the applied migrations                                                                 |
+| Get-MgScriptsForLatestIteration | Get all the applied migrations for the latest iteration                                        |
+|                                 |                                                                                                |
+| Invoke-MgRollout                | Run a rollout of migrations that is not applied yet                                            |
+| Invoke-MgRollback               | Run a rollback of the latest iteration of migrations                                           |
 
 ## Options
 
