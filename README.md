@@ -1,4 +1,4 @@
-# Migratio
+![header-image](./images/header.png)
 
 | Migratio is a Powershell module to handle database migrations and seeder. It supports rollout, rollback and seeding data. |
 | :-----------------------------------------------------------------------------------------------------------------------: |
@@ -64,7 +64,7 @@ The following options are shared between the following cmdlets
 
 ## Variables
 
-Want to use environment variables in your migration scripts? Well, Migratio supports that. Simply insert `${{YOUR_VARIABLE}}` and Migratio will replace the value during migration, seeding or rollback when the `TransformVariables` option is set.
+Want to use environment variables in your migration scripts? Well, Migratio supports that. Simply insert `${{YOUR_VARIABLE}}` and Migratio will replace the value during migration, seeding or rollback when the `ReplaceVariables` option is set.
 
 ```sql
 CREATE USER applicationUser WITH ENCRYPTED PASSWORD '${{APP_USER_PASSWORD}}';
