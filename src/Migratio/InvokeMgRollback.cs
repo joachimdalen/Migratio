@@ -8,9 +8,9 @@ using Migratio.Database;
 
 namespace Migratio
 {
-    [Cmdlet(VerbsLifecycle.Invoke, "MigratioRollback")]
+    [Cmdlet(VerbsLifecycle.Invoke, "MgRollback")]
     [OutputType(typeof(void))]
-    public class InvokeMigratioRollback : BaseCmdlet
+    public class InvokeMgRollback : BaseCmdlet
     {
         private readonly IDatabaseProvider _db;
         private readonly IFileManager _fileManager;
@@ -19,13 +19,13 @@ namespace Migratio
         [ValidateNotNullOrEmpty]
         public string MigrationRootDir { get; set; } = "migrations";
 
-        public InvokeMigratioRollback()
+        public InvokeMgRollback()
         {
             _db = new PostgreDb(GetConnectionInfo());
             _fileManager = new FileManager();
         }
 
-        public InvokeMigratioRollback(IDatabaseProvider db, IFileManager fileManager)
+        public InvokeMgRollback(IDatabaseProvider db, IFileManager fileManager)
         {
             _db = db;
             _fileManager = fileManager;

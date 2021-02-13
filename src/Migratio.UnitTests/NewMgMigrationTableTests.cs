@@ -1,22 +1,19 @@
 ﻿using System.Linq;
-using System.Management.Automation;
-using System.Management.Automation.Runspaces;
 using Migratio.Contracts;
-using Migratio.Database;
 using Moq;
 using Xunit;
 
 namespace Migratio.UnitTests
 {
-    public class NewMigratioMigrationTableTests
+    public class NewMgMigrationTableTests
     {
-        [Fact(DisplayName = "New-MigratioMigrationTable returns false if table exists")]
-        public void NewMigratioMigrationTable_Returns_False_If_Table_Exists()
+        [Fact(DisplayName = "New-MgMigrationTable returns false if table exists")]
+        public void NewMgMigrationTable_Returns_False_If_Table_Exists()
         {
             var dbMock = new Mock<IDatabaseProvider>(MockBehavior.Strict);
             dbMock.Setup(x => x.MigrationTableExists()).Returns(true);
 
-            var command = new NewMigratioMigrationTable(dbMock.Object)
+            var command = new NewMgMigrationTable(dbMock.Object)
             {
                 Database = "database",
                 Password = "password",
@@ -32,14 +29,14 @@ namespace Migratio.UnitTests
             dbMock.Verify(x => x.CreateMigrationTable(), Times.Never);
         }
 
-        [Fact(DisplayName = "New-MigratioMigrationTable returns true if table was created")]
-        public void NewMigratioMigrationTable_Returns_True_If_Table_Was_Created()
+        [Fact(DisplayName = "New-MgMigrationTable returns true if table was created")]
+        public void NewMgMigrationTable_Returns_True_If_Table_Was_Created()
         {
             var dbMock = new Mock<IDatabaseProvider>(MockBehavior.Strict);
             dbMock.Setup(x => x.MigrationTableExists()).Returns(false);
             dbMock.Setup(x => x.CreateMigrationTable()).Returns(1);
 
-            var command = new NewMigratioMigrationTable(dbMock.Object)
+            var command = new NewMgMigrationTable(dbMock.Object)
             {
                 Database = "database",
                 Password = "password",
@@ -55,10 +52,10 @@ namespace Migratio.UnitTests
             dbMock.Verify(x => x.CreateMigrationTable(), Times.Once);
         }
 
-        [Fact(DisplayName = "New-MigratioMigrationTable default constructor constructs")]
-        public void NewMigratioMigrationTable_Default_Constructor_Constructs()
+        [Fact(DisplayName = "New-MgMigrationTable default constructor constructs")]
+        public void NewMgMigrationTable_Default_Constructor_Constructs()
         {
-            var result = new NewMigratioMigrationTable
+            var result = new NewMgMigrationTable
             {
                 Database = "database",
                 Password = "password",
@@ -75,7 +72,7 @@ namespace Migratio.UnitTests
 
 // var iss = InitialSessionState.CreateDefault2();
 // iss.Commands.Add(new SessionStateCmdletEntry("New-MigrationMigrationTable",
-//     typeof(NewMigratioMigrationTable), null));
+//     typeof(NewMgMigrationTable), null));
 // using (var ps = PowerShell.Create(iss))
 // {
 //     ps.AddCommand("New-MigrationMigrationTable").AddParameter("ClassName", "Win32_BIOS");

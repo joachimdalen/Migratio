@@ -5,18 +5,18 @@ using Migratio.Models;
 
 namespace Migratio
 {
-    [Cmdlet(VerbsCommon.Get, "MigratioLatestIteration")]
+    [Cmdlet(VerbsCommon.Get, "MgLatestIteration")]
     [OutputType(typeof(IterationResult))]
-    public class GetMigratioLatestIterationCommand : BaseCmdlet
+    public class GetMgLatestIteration : BaseCmdlet
     {
         private readonly IDatabaseProvider _db;
 
-        public GetMigratioLatestIterationCommand()
+        public GetMgLatestIteration()
         {
             _db = new PostgreDb(GetConnectionInfo());
         }
 
-        public GetMigratioLatestIterationCommand(IDatabaseProvider db)
+        public GetMgLatestIteration(IDatabaseProvider db)
         {
             _db = db;
         }

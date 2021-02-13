@@ -5,9 +5,9 @@ using Migratio.Secrets;
 
 namespace Migratio.Utils
 {
-    [Cmdlet(VerbsCommon.Get, "MigratioUsedVariables")]
+    [Cmdlet(VerbsCommon.Get, "MgUsedVariables")]
     [OutputType(typeof(string[]))]
-    public class GetMigratioUsedVariables : Cmdlet
+    public class GetMgUsedVariables : Cmdlet
     {
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = true)]
         [ValidateNotNullOrEmpty]

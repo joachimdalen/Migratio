@@ -6,18 +6,18 @@ using Migratio.Models;
 
 namespace Migratio
 {
-    [Cmdlet(VerbsCommon.Get, "MigratioProcessedMigrations")]
+    [Cmdlet(VerbsCommon.Get, "MgProcessedMigrations")]
     [OutputType(typeof(Migration[]))]
-    public class GetMigratioProcessedMigrations : BaseCmdlet
+    public class GetMgProcessedMigrations : BaseCmdlet
     {
         private readonly IDatabaseProvider _db;
 
-        public GetMigratioProcessedMigrations()
+        public GetMgProcessedMigrations()
         {
             _db = new PostgreDb(GetConnectionInfo());
         }
 
-        public GetMigratioProcessedMigrations(IDatabaseProvider db)
+        public GetMgProcessedMigrations(IDatabaseProvider db)
         {
             _db = db;
         }

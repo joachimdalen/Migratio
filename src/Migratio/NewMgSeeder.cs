@@ -4,9 +4,9 @@ using Migratio.Contracts;
 
 namespace Migratio
 {
-    [Cmdlet(VerbsCommon.New, "MigratioSeeder")]
+    [Cmdlet(VerbsCommon.New, "MgSeeder")]
     [OutputType(typeof(string))]
-    public class NewMigratioSeeder : Cmdlet
+    public class NewMgSeeder : Cmdlet
     {
         private readonly IFileManager _fileManager;
 
@@ -18,12 +18,12 @@ namespace Migratio
         [ValidateNotNullOrEmpty]
         public string Name { get; set; }
 
-        public NewMigratioSeeder()
+        public NewMgSeeder()
         {
             _fileManager = new FileManager();
         }
 
-        public NewMigratioSeeder(IFileManager fileManager)
+        public NewMgSeeder(IFileManager fileManager)
         {
             _fileManager = fileManager;
         }

@@ -1,16 +1,15 @@
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography.Xml;
 using Migratio.Contracts;
 using Moq;
 using Xunit;
 
 namespace Migratio.UnitTests
 {
-    public class NewMigratioSeederTests
+    public class NewMgSeederTests
     {
-        [Fact(DisplayName = "New-MigratioSeeder creates seeds directory if not exists")]
-        public void NewMigratioSeeder_Creates_Seeds_Directory_If_Not_Exists()
+        [Fact(DisplayName = "New-MgSeeder creates seeds directory if not exists")]
+        public void NewMgSeeder_Creates_Seeds_Directory_If_Not_Exists()
         {
             var seedPath = Path.Join("migrations", "seeders");
             var fileManagerMock = new Mock<IFileManager>();
@@ -18,7 +17,7 @@ namespace Migratio.UnitTests
             fileManagerMock.Setup(x => x.DirectoryExists(seedPath)).Returns(false);
             fileManagerMock.Setup(x => x.CreateDirectory(seedPath)).Returns(new DirectoryInfo(seedPath));
 
-            var command = new NewMigratioSeeder(fileManagerMock.Object)
+            var command = new NewMgSeeder(fileManagerMock.Object)
             {
                 Name = "This is my migration"
             };
@@ -29,10 +28,10 @@ namespace Migratio.UnitTests
             fileManagerMock.Verify(x => x.CreateDirectory(seedPath), Times.Once);
         }
 
-        [Fact(DisplayName = "New-MigratioSeeder default constructor constructs")]
-        public void NewMigratioSeeder_Default_Constructor_Constructs()
+        [Fact(DisplayName = "New-MgSeeder default constructor constructs")]
+        public void NewMgSeeder_Default_Constructor_Constructs()
         {
-            var result = new NewMigratioSeeder
+            var result = new NewMgSeeder
             {
                 Name = "This is my name",
                 MigrationRootDir = "migrations"

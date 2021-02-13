@@ -10,9 +10,9 @@ using Migratio.Utils;
 
 namespace Migratio
 {
-    [Cmdlet(VerbsLifecycle.Invoke, "MigratioRollout")]
+    [Cmdlet(VerbsLifecycle.Invoke, "MgRollout")]
     [OutputType(typeof(bool))]
-    public class InvokeMigratioRollout : BaseCmdlet
+    public class InvokeMgRollout : BaseCmdlet
     {
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = true)]
         [ValidateNotNullOrEmpty]
@@ -28,14 +28,14 @@ namespace Migratio
         private readonly IFileManager _fileManager;
         private readonly SecretManager _secretManager;
 
-        public InvokeMigratioRollout()
+        public InvokeMgRollout()
         {
             _db = new PostgreDb(GetConnectionInfo());
             _fileManager = new FileManager();
             _secretManager = new SecretManager(new EnvironmentManager());
         }
 
-        public InvokeMigratioRollout(IDatabaseProvider db, IFileManager fileManager,
+        public InvokeMgRollout(IDatabaseProvider db, IFileManager fileManager,
             IEnvironmentManager environmentManager)
         {
             _db = db;

@@ -8,25 +8,25 @@ using Xunit;
 
 namespace Migratio.UnitTests
 {
-    public class InvokeMigratioRolloutTests
+    public class InvokeMgRolloutTests
     {
         private readonly DatabaseProviderMock _dbMock;
         private readonly FileManagerMock _fileManagerMock;
         private readonly EnvironmentManagerMock _envMock;
 
-        public InvokeMigratioRolloutTests()
+        public InvokeMgRolloutTests()
         {
             _dbMock = new DatabaseProviderMock();
             _fileManagerMock = new FileManagerMock();
             _envMock = new EnvironmentManagerMock();
         }
 
-        [Fact(DisplayName = "Invoke-MigratioRollout throws if migration table does not exist")]
-        public void InvokeMigratioRollout_Throws_If_Migration_Table_Does_Not_Exist()
+        [Fact(DisplayName = "Invoke-MgRollout throws if migration table does not exist")]
+        public void InvokeMgRollout_Throws_If_Migration_Table_Does_Not_Exist()
         {
             _dbMock.MigrationTableExists(false);
 
-            var command = new InvokeMigratioRollout(_dbMock.Object, _fileManagerMock.Object, _envMock.Object)
+            var command = new InvokeMgRollout(_dbMock.Object, _fileManagerMock.Object, _envMock.Object)
             {
                 Database = "database",
                 Password = "password",
@@ -39,14 +39,14 @@ namespace Migratio.UnitTests
             Assert.Throws<Exception>(() => command.Invoke()?.OfType<bool>()?.First());
         }
 
-        [Fact(DisplayName = "Invoke-MigratioRollout returns if no scripts found")]
-        public void InvokeMigratioRollout_Returns_If_No_Scripts_Found()
+        [Fact(DisplayName = "Invoke-MgRollout returns if no scripts found")]
+        public void InvokeMgRollout_Returns_If_No_Scripts_Found()
         {
             _dbMock.MigrationTableExists(true);
             _fileManagerMock.GetAllFilesInFolder(Array.Empty<string>());
             _fileManagerMock.RolloutDirectory("mig/rol");
 
-            var command = new InvokeMigratioRollout(_dbMock.Object, _fileManagerMock.Object, _envMock.Object)
+            var command = new InvokeMgRollout(_dbMock.Object, _fileManagerMock.Object, _envMock.Object)
             {
                 Database = "database",
                 Password = "password",
@@ -60,8 +60,8 @@ namespace Migratio.UnitTests
             Assert.False(result);
         }
 
-        [Fact(DisplayName = "Invoke-MigratioRollout returns if all scripts are applied")]
-        public void InvokeMigratioRollout_Returns_If_All_Scripts_Are_Applied()
+        [Fact(DisplayName = "Invoke-MgRollout returns if all scripts are applied")]
+        public void InvokeMgRollout_Returns_If_All_Scripts_Are_Applied()
         {
             _dbMock.MigrationTableExists(true);
             _fileManagerMock.RolloutDirectory("mig/rol");
@@ -73,7 +73,7 @@ namespace Migratio.UnitTests
             });
 
 
-            var command = new InvokeMigratioRollout(_dbMock.Object, _fileManagerMock.Object, _envMock.Object)
+            var command = new InvokeMgRollout(_dbMock.Object, _fileManagerMock.Object, _envMock.Object)
             {
                 Database = "database",
                 Password = "password",
@@ -87,8 +87,8 @@ namespace Migratio.UnitTests
             Assert.Equal("Number of applied migrations are the same as the total, skipping", result[2]);
         }
 
-        [Fact(DisplayName = "Invoke-MigratioRollout skips migration if applied")]
-        public void InvokeMigratioRollout_Skips_Migration_If_Applied()
+        [Fact(DisplayName = "Invoke-MgRollout skips migration if applied")]
+        public void InvokeMgRollout_Skips_Migration_If_Applied()
         {
             _dbMock.MigrationTableExists(true);
             _dbMock.GetLatestIteration(1);
@@ -104,7 +104,7 @@ namespace Migratio.UnitTests
             });
 
 
-            var command = new InvokeMigratioRollout(_dbMock.Object, _fileManagerMock.MockInstance.Object, _envMock.Object)
+            var command = new InvokeMgRollout(_dbMock.Object, _fileManagerMock.MockInstance.Object, _envMock.Object)
             {
                 Database = "database",
                 Password = "password",
@@ -121,8 +121,8 @@ namespace Migratio.UnitTests
             _fileManagerMock.VerifyReadAllText("migrations/rollout/one.sql", Times.Never());
         }
 
-        [Fact(DisplayName = "Invoke-MigratioRollout runs as single transactions if true")]
-        public void InvokeMigratioRollout_Runs_As_Single_Transactions_If_True()
+        [Fact(DisplayName = "Invoke-MgRollout runs as single transactions if true")]
+        public void InvokeMgRollout_Runs_As_Single_Transactions_If_True()
         {
             _dbMock.MigrationTableExists(true);
             _dbMock.GetLatestIteration(1);
@@ -144,7 +144,7 @@ namespace Migratio.UnitTests
             });
 
 
-            var command = new InvokeMigratioRollout(_dbMock.Object, _fileManagerMock.MockInstance.Object, _envMock.Object)
+            var command = new InvokeMgRollout(_dbMock.Object, _fileManagerMock.MockInstance.Object, _envMock.Object)
             {
                 Database = "database",
                 Password = "password",
@@ -166,8 +166,8 @@ namespace Migratio.UnitTests
                 "SELECT 1 from 2;INSERT INTO \"public\".\"MIGRATIONS\" (\"MIGRATION_ID\", \"ITERATION\") VALUES ('two', 3);");
         }
 
-        [Fact(DisplayName = "Invoke-MigratioRollout should replace variables")]
-        public void InvokeMigratioRollout_Should_Replace_Variables()
+        [Fact(DisplayName = "Invoke-MgRollout should replace variables")]
+        public void InvokeMgRollout_Should_Replace_Variables()
         {
             _dbMock.MigrationTableExists(true);
             _dbMock.GetLatestIteration(1);
@@ -184,7 +184,7 @@ namespace Migratio.UnitTests
             _dbMock.GetAppliedMigrations(Array.Empty<Migration>());
 
 
-            var command = new InvokeMigratioRollout(_dbMock.Object, _fileManagerMock.MockInstance.Object, _envMock.Object)
+            var command = new InvokeMgRollout(_dbMock.Object, _fileManagerMock.MockInstance.Object, _envMock.Object)
             {
                 Database = "database",
                 Password = "password",
@@ -203,8 +203,8 @@ namespace Migratio.UnitTests
                 "SELECT 1 from 'ReplacedValue';INSERT INTO \"public\".\"MIGRATIONS\" (\"MIGRATION_ID\", \"ITERATION\") VALUES ('one', 2);");
         }
 
-        [Fact(DisplayName = "Invoke-MigratioRollout runs as one transaction if false")]
-        public void InvokeMigratioRollout_Runs_As_One_Transaction_If_False()
+        [Fact(DisplayName = "Invoke-MgRollout runs as one transaction if false")]
+        public void InvokeMgRollout_Runs_As_One_Transaction_If_False()
         {
             _dbMock.MigrationTableExists(true);
             _dbMock.GetLatestIteration(1);
@@ -226,7 +226,7 @@ namespace Migratio.UnitTests
             });
 
 
-            var command = new InvokeMigratioRollout(_dbMock.Object, _fileManagerMock.MockInstance.Object, _envMock.Object)
+            var command = new InvokeMgRollout(_dbMock.Object, _fileManagerMock.MockInstance.Object, _envMock.Object)
             {
                 Database = "database",
                 Password = "password",
@@ -246,10 +246,10 @@ namespace Migratio.UnitTests
                 "SELECT 3 from 4;INSERT INTO \"public\".\"MIGRATIONS\" (\"MIGRATION_ID\", \"ITERATION\") VALUES ('three', 2);SELECT 1 from 2;INSERT INTO \"public\".\"MIGRATIONS\" (\"MIGRATION_ID\", \"ITERATION\") VALUES ('two', 2);");
         }
 
-        [Fact(DisplayName = "Invoke-MigratioRollout default constructor constructs")]
-        public void InvokeMigratioRollout_Default_Constructor_Constructs()
+        [Fact(DisplayName = "Invoke-MgRollout default constructor constructs")]
+        public void InvokeMgRollout_Default_Constructor_Constructs()
         {
-            var result = new InvokeMigratioRollout
+            var result = new InvokeMgRollout
             {
                 Database = "database",
                 Password = "password",

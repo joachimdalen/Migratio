@@ -4,18 +4,18 @@ using Migratio.Database;
 
 namespace Migratio
 {
-    [Cmdlet(VerbsCommon.New, "MigratioMigrationTable")]
+    [Cmdlet(VerbsCommon.New, "MgMigrationTable")]
     [OutputType(typeof(bool))]
-    public class NewMigratioMigrationTable : BaseCmdlet
+    public class NewMgMigrationTable : BaseCmdlet
     {
         private readonly IDatabaseProvider _db;
 
-        public NewMigratioMigrationTable()
+        public NewMgMigrationTable()
         {
             _db = new PostgreDb(GetConnectionInfo());
         }
 
-        public NewMigratioMigrationTable(IDatabaseProvider databaseProvider)
+        public NewMgMigrationTable(IDatabaseProvider databaseProvider)
         {
             _db = databaseProvider;
         }
