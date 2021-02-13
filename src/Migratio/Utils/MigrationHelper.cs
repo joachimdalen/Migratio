@@ -1,5 +1,4 @@
 using System;
-using System.Text;
 using Migratio.Contracts;
 using Migratio.Secrets;
 
@@ -10,10 +9,10 @@ namespace Migratio.Utils
         private readonly IFileManager _fileManager;
         private readonly SecretManager _secretManager;
 
-        public MigrationHelper(IFileManager fileManager, IEnvironmentManager _environmentManager)
+        public MigrationHelper(IFileManager fileManager, IEnvironmentManager environmentManager)
         {
             _fileManager = fileManager;
-            _secretManager = new SecretManager(_environmentManager);
+            _secretManager = new SecretManager(environmentManager);
         }
 
         public string GetScriptContent(string scriptPath, bool replace)
