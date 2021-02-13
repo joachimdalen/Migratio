@@ -34,7 +34,7 @@ namespace Migratio
             _fileManager = fileManager;
             _migrationHelper = new MigrationHelper(_fileManager, environmentManager);
         }
-        
+
         protected override void ProcessRecord()
         {
             _db.SetConnectionInfo(GetConnectionInfo());
@@ -72,7 +72,7 @@ namespace Migratio
                     WriteObject($"Migration {fileNameWithoutExtension} was not applied in latest iteration, skipping");
                     continue;
                 }
-                
+
                 var scriptContent = _migrationHelper.GetScriptContent(script, false);
 
                 stringBuilder.Append(scriptContent);
@@ -88,6 +88,6 @@ namespace Migratio
         private string GetMigrationQuery(string migrationScriptName, int iteration) => Queries.DeleteMigrationQuery
             .Replace("@tableSchema", Schema)
             .Replace("@migrationName", migrationScriptName)
-            .Replace("@currentIteration", iteration.ToString());
+            .Replace("@currentIteration", iteration.ToString()) + Environment.NewLine;
     }
 }

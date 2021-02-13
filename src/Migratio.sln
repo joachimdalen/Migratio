@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migratio", "Migratio\Migrat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migratio.UnitTests", "Migratio.UnitTests\Migratio.UnitTests.csproj", "{7847F8F5-1E80-4B24-AEA1-B926FB7C669B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{2504517D-D9C2-47AA-A559-CD220893317E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,8 @@ Global
 		{7847F8F5-1E80-4B24-AEA1-B926FB7C669B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7847F8F5-1E80-4B24-AEA1-B926FB7C669B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7847F8F5-1E80-4B24-AEA1-B926FB7C669B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7847F8F5-1E80-4B24-AEA1-B926FB7C669B} = {2504517D-D9C2-47AA-A559-CD220893317E}
 	EndGlobalSection
 EndGlobal

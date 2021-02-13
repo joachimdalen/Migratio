@@ -143,9 +143,16 @@ namespace Migratio.UnitTests
             Assert.Contains("Migration one was not applied in latest iteration, skipping", result);
             Assert.Contains("Adding rollback of migration: two to transaction", result);
             _fileManagerMock.VerifyReadAllText("migrations/rollback/one.sql", Times.Never());
-            _dbMock.VerifyRunTransaction(
-                "rollback 2;DELETE FROM \"public\".\"MIGRATIONS\" WHERE \"MIGRATION_ID\" = 'two' AND \"ITERATION\" = '1';rollback 3;DELETE FROM \"public\".\"MIGRATIONS\" WHERE \"MIGRATION_ID\" = 'three' AND \"ITERATION\" = '1';"
-            );
+
+            var transactions =
+                "rollback 2;" + Environment.NewLine +
+                "DELETE FROM \"public\".\"MIGRATIONS\" WHERE \"MIGRATION_ID\" = 'two' AND \"ITERATION\" = '1';" +
+                Environment.NewLine + "rollback 3;" + Environment.NewLine +
+                "DELETE FROM \"public\".\"MIGRATIONS\" WHERE \"MIGRATION_ID\" = 'three' AND \"ITERATION\" = '1';" +
+                Environment.NewLine;
+
+
+            _dbMock.VerifyRunTransaction(transactions);
         }
 
         [Fact(DisplayName = "Invoke-MgRollback default constructor constructs")]

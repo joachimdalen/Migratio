@@ -153,7 +153,9 @@ namespace Migratio.UnitTests
 
             Assert.Contains("Migration one is not applied adding to transaction", result);
             _dbMock.VerifyRunTransaction(
-                "SELECT 1 from 'ReplacedValue';INSERT INTO \"public\".\"MIGRATIONS\" (\"MIGRATION_ID\", \"ITERATION\") VALUES ('one', 2);");
+                "SELECT 1 from 'ReplacedValue';" + Environment.NewLine +
+                "INSERT INTO \"public\".\"MIGRATIONS\" (\"MIGRATION_ID\", \"ITERATION\") VALUES ('one', 2);" +
+                Environment.NewLine);
         }
 
         [Fact(DisplayName = "Invoke-MgRollout runs as one transaction if false")]
@@ -194,8 +196,14 @@ namespace Migratio.UnitTests
             Assert.Contains("Migration two is not applied adding to transaction", result);
             Assert.Contains("Migration three is not applied adding to transaction", result);
             _fileManagerMock.VerifyReadAllText("migrations/rollout/one.sql", Times.Never());
-            _dbMock.VerifyRunTransaction(
-                "SELECT 3 from 4;INSERT INTO \"public\".\"MIGRATIONS\" (\"MIGRATION_ID\", \"ITERATION\") VALUES ('three', 2);SELECT 1 from 2;INSERT INTO \"public\".\"MIGRATIONS\" (\"MIGRATION_ID\", \"ITERATION\") VALUES ('two', 2);");
+            var transaction =
+                "SELECT 3 from 4;" + Environment.NewLine +
+                "INSERT INTO \"public\".\"MIGRATIONS\" (\"MIGRATION_ID\", \"ITERATION\") VALUES ('three', 2);" +
+                Environment.NewLine +
+                "SELECT 1 from 2;" + Environment.NewLine +
+                "INSERT INTO \"public\".\"MIGRATIONS\" (\"MIGRATION_ID\", \"ITERATION\") VALUES ('two', 2);" +
+                Environment.NewLine;
+            _dbMock.VerifyRunTransaction(transaction);
         }
 
         [Fact(DisplayName = "Invoke-MgRollout default constructor constructs")]

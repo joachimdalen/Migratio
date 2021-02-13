@@ -97,6 +97,6 @@ namespace Migratio
         private string GetMigrationQuery(string migrationScriptName, int iteration) => Queries.NewMigrationQuery
             .Replace("@tableSchema", Schema)
             .Replace("@migrationName", migrationScriptName)
-            .Replace("@currentIteration", iteration.ToString());
+            .Replace("@currentIteration", iteration.ToString()) + Environment.NewLine;
     }
 }
