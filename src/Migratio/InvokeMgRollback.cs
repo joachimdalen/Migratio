@@ -71,8 +71,7 @@ namespace Migratio
                     WriteObject($"Migration {fileNameWithoutExtension} was not applied in latest iteration, skipping");
                     continue;
                 }
-
-
+                
                 var scriptContent = _migrationHelper.GetScriptContent(script, false);
 
                 stringBuilder.Append(scriptContent);
