@@ -45,6 +45,7 @@ stages:
               command: 'build'
               projects: '$(Build.SourcesDirectory)/src/Migratio/Migratio.csproj'
               arguments: '--configuration $(BUILD_CONFIGURATION) --output $(PROJECT_OUT_PATH)'
+          - script: 'ls $(PROJECT_OUT_PATH)'
           - task: PublishPipelineArtifact@1
             displayName: 'Publish artifact'
             inputs:
