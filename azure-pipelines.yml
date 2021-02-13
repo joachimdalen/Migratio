@@ -4,7 +4,8 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  buildConfiguration: 'Release'
+  BUILD_CONFIGURATION: 'Release'
+  PROJECT_OUT_PATH: '$(Build.ArtifactStagingDirectory)'
 
 stages:
   - stage: buildAndUnitTest
@@ -21,14 +22,31 @@ stages:
               command: 'restore'
               projects: '**/*.csproj'
           - task: DotNetCoreCLI@2
-            displayName: 'Build the project - $(buildConfiguration)'
+            displayName: 'Build the project - $(BUILD_CONFIGURATION)'
             inputs:
               command: 'build'
-              arguments: '--no-restore --configuration $(buildConfiguration)'
+              arguments: '--no-restore --configuration $(BUILD_CONFIGURATION)'
               projects: '**/*.csproj'
           - task: DotNetCoreCLI@2
             displayName: 'Run Tests'
             inputs:
               command: 'test'
               projects: '**/*Tests/*UnitTests.csproj'
-              arguments: '--configuration $(buildConfiguration)  --collect "Code coverage"'
+              arguments: '--configuration $(BUILD_CONFIGURATION)  --collect "Code coverage"'
+  - stage: publishArtifact
+    displayName: 'Publish Artifact'
+    dependsOn: buildAndUnitTest
+    jobs:
+      - job: 
+        steps:
+          - task: DotNetCoreCLI@2
+            displayName: 'Publish Code - $(BUILD_CONFIGURATION)'
+            inputs:
+              command: 'build'
+              arguments: '--configuration $(BUILD_CONFIGURATION) --out $(PROJECT_OUT_PATH)'
+              projects: '$(Build.SourcesDirectory)/src/Migratio/Migratio.csproj'
+          - task: PublishPipelineArtifact@1
+            displayName: 'Publish artifact'
+            inputs:
+              artifact: 'Migratio'
+              targetPath: $(PROJECT_OUT_PATH)
