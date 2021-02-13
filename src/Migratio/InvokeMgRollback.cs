@@ -62,27 +62,28 @@ namespace Migratio
             }
 
             WriteObject($"Found {scriptsForLatestIteration.Length} migrations applied in iteration {iteration}");
+            var stringBuilder = new StringBuilder();
             foreach (var script in scripts)
             {
                 var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(script);
-                if (scriptsForLatestIteration.Any(x => x.MigrationId.Contains(fileNameWithoutExtension)))
-                {
-                    var stringBuilder = new StringBuilder();
-                    var scriptContent = _migrationHelper.GetScriptContent(script, false);
-
-                    stringBuilder.Append(scriptContent);
-                    stringBuilder.Append(GetMigrationQuery(fileNameWithoutExtension, iteration));
-
-                    WriteObject($"Running rollback of migration: {fileNameWithoutExtension}");
-
-                    _db.RunTransaction(stringBuilder.ToString());
-                }
-                else
+                if (!scriptsForLatestIteration.Any(x => x.MigrationId.Contains(fileNameWithoutExtension)))
                 {
                     WriteObject($"Migration {fileNameWithoutExtension} was not applied in latest iteration, skipping");
+                    continue;
                 }
+
+
+                var scriptContent = _migrationHelper.GetScriptContent(script, false);
+
+                stringBuilder.Append(scriptContent);
+                stringBuilder.Append(GetMigrationQuery(fileNameWithoutExtension, iteration));
+
+                WriteObject($"Adding rollback of migration: {fileNameWithoutExtension} to transaction");
             }
+
+            _db.RunTransaction(stringBuilder.ToString());
         }
+
 
         private string GetMigrationQuery(string migrationScriptName, int iteration) => Queries.DeleteMigrationQuery
             .Replace("@tableSchema", Schema)
