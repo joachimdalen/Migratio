@@ -13,19 +13,19 @@ So far Migratio only supports PostgreSQL, but MSSQL is alo planned. Submit a fea
 
 ## Cmdlets
 
-| Name                                  | Description                                                                                     |
-| ------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| New-MigratioMigration                 | Create a new rollout and rollback migration                                                     |
-| New-MigratioMigrationTable            | Create a new migration table in the database                                                    |
-| New-MigratioSeeder                    | Create a new seeder migration                                                                   |
-|                                       |                                                                                                 |
-| Get-UsedMigratioVariables             | Get a list over used variables for a migration file. See [Variables](##Variables) for more info |
-| Get-MigratioLatestIteration           | Get the latest iteration of migrations applied                                                  |
-| Get-MigratioProcessedMigrations       | Get all the applied migrations                                                                  |
-| Get-MigratioScriptsForLatestIteration | Get all the applied migrations for the latest iteration                                         |
-|                                       |                                                                                                 |
-| Invoke-MigratioRollout                | Run a rollout of migrations that is not applied yet                                             |
-| Invoke-MigratioRollback               | Run a rollback of the latest iteration of migrations                                            |
+| Name                            | Description                                                                                     |
+| ------------------------------- | ----------------------------------------------------------------------------------------------- |
+| New-MgMigration                 | Create a new rollout and rollback migration                                                     |
+| New-MgMigrationTable            | Create a new migration table in the database                                                    |
+| New-MgSeeder                    | Create a new seeder migration                                                                   |
+|                                 |                                                                                                 |
+| Get-MgUsedVariables             | Get a list over used variables for a migration file. See [Variables](##Variables) for more info |
+| Get-MgLatestIteration           | Get the latest iteration of migrations applied                                                  |
+| Get-MgProcessedMigrations       | Get all the applied migrations                                                                  |
+| Get-MgScriptsForLatestIteration | Get all the applied migrations for the latest iteration                                         |
+|                                 |                                                                                                 |
+| Invoke-MgRollout                | Run a rollout of migrations that is not applied yet                                             |
+| Invoke-MgRollback               | Run a rollback of the latest iteration of migrations                                            |
 
 ## Options
 
@@ -33,12 +33,12 @@ So far Migratio only supports PostgreSQL, but MSSQL is alo planned. Submit a fea
 
 The following options are shared between the following cmdlets
 
-- `New-MigratioMigrationTable`
-- `Invoke-MigratioRollout`
-- `Invoke-MigratioRollback`
-- `Get-MigratioLatestIteration`
-- `Get-MigratioProcessedMigrations`
-- `Get-MigratioScriptsForLatestIteration`
+- `New-MgMigrationTable`
+- `Invoke-MgRollout`
+- `Invoke-MgRollback`
+- `Get-MgLatestIteration`
+- `Get-MgProcessedMigrations`
+- `Get-MgScriptsForLatestIteration`
 
 | Option   | Type   | Mandatory | Default     |
 | -------- | ------ | --------- | ----------- |
@@ -53,10 +53,10 @@ The following options are shared between the following cmdlets
 
 The following options are shared between the following cmdlets
 
-- `Invoke-MigratioRollout`
-- `Invoke-MigratioRollback`
-- `New-MigratioMigration`
-- `New-MigratioSeeder`
+- `Invoke-MgRollout`
+- `Invoke-MgRollback`
+- `New-MgMigration`
+- `New-MgSeeder`
 
 | Option           | Type   | Mandatory | Default      |
 | ---------------- | ------ | --------- | ------------ |
