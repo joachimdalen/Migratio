@@ -112,58 +112,12 @@ namespace Migratio.UnitTests
                 Port = 1111,
                 Schema = "public",
                 Username = "username",
-                AsSingleMigrations = true,
             };
 
             var result = command.Invoke()?.OfType<string>()?.ToArray();
             Assert.Equal("Migration one is applied, skipping", result[2]);
 
             _fileManagerMock.VerifyReadAllText("migrations/rollout/one.sql", Times.Never());
-        }
-
-        [Fact(DisplayName = "Invoke-MgRollout runs as single transactions if true")]
-        public void InvokeMgRollout_Runs_As_Single_Transactions_If_True()
-        {
-            _dbMock.MigrationTableExists(true);
-            _dbMock.GetLatestIteration(1);
-
-            _fileManagerMock.RolloutDirectory("migrations/rollout");
-            _fileManagerMock.GetAllFilesInFolder(new[]
-            {
-                "migrations/rollout/one.sql",
-                "migrations/rollout/two.sql",
-                "migrations/rollout/three.sql"
-            });
-            _fileManagerMock.ReadAllText("migrations/rollout/two.sql", "SELECT 1 from 2");
-            _fileManagerMock.ReadAllText("migrations/rollout/three.sql", "SELECT 3 from 4");
-
-            _dbMock.RunTransactionAny(1);
-            _dbMock.GetAppliedMigrations(new Migration[]
-            {
-                new() {Iteration = 1, MigrationId = "one"}
-            });
-
-
-            var command = new InvokeMgRollout(_dbMock.Object, _fileManagerMock.MockInstance.Object, _envMock.Object)
-            {
-                Database = "database",
-                Password = "password",
-                Host = "host",
-                Port = 1111,
-                Schema = "public",
-                Username = "username",
-                AsSingleMigrations = true,
-            };
-
-            var result = command.Invoke()?.OfType<string>()?.ToArray();
-
-            Assert.Contains("Running migration two", result);
-            Assert.Contains("Running migration three", result);
-            _fileManagerMock.VerifyReadAllText("migrations/rollout/one.sql", Times.Never());
-            _dbMock.VerifyRunTransaction(
-                "SELECT 3 from 4;INSERT INTO \"public\".\"MIGRATIONS\" (\"MIGRATION_ID\", \"ITERATION\") VALUES ('three', 2);");
-            _dbMock.VerifyRunTransaction(
-                "SELECT 1 from 2;INSERT INTO \"public\".\"MIGRATIONS\" (\"MIGRATION_ID\", \"ITERATION\") VALUES ('two', 3);");
         }
 
         [Fact(DisplayName = "Invoke-MgRollout should replace variables")]
@@ -192,13 +146,12 @@ namespace Migratio.UnitTests
                 Port = 1111,
                 Schema = "public",
                 Username = "username",
-                AsSingleMigrations = true,
                 ReplaceVariables = true
             };
 
             var result = command.Invoke()?.OfType<string>()?.ToArray();
 
-            Assert.Contains("Running migration one", result);
+            Assert.Contains("Migration one is not applied adding to transaction", result);
             _dbMock.VerifyRunTransaction(
                 "SELECT 1 from 'ReplacedValue';INSERT INTO \"public\".\"MIGRATIONS\" (\"MIGRATION_ID\", \"ITERATION\") VALUES ('one', 2);");
         }
@@ -233,8 +186,7 @@ namespace Migratio.UnitTests
                 Host = "host",
                 Port = 1111,
                 Schema = "public",
-                Username = "username",
-                AsSingleMigrations = false
+                Username = "username"
             };
 
             var result = command.Invoke()?.OfType<string>()?.ToArray();

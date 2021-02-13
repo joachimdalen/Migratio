@@ -5,6 +5,7 @@ using System.Management.Automation;
 using System.Text;
 using Migratio.Contracts;
 using Migratio.Database;
+using Migratio.Utils;
 
 namespace Migratio
 {
@@ -14,6 +15,7 @@ namespace Migratio
     {
         private readonly IDatabaseProvider _db;
         private readonly IFileManager _fileManager;
+        private readonly MigrationHelper _migrationHelper;
 
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = true)]
         [ValidateNotNullOrEmpty]
@@ -23,12 +25,14 @@ namespace Migratio
         {
             _db = new PostgreDb(GetConnectionInfo());
             _fileManager = new FileManager();
+            _migrationHelper = new MigrationHelper(_fileManager, new EnvironmentManager());
         }
 
-        public InvokeMgRollback(IDatabaseProvider db, IFileManager fileManager)
+        public InvokeMgRollback(IDatabaseProvider db, IFileManager fileManager, IEnvironmentManager environmentManager)
         {
             _db = db;
             _fileManager = fileManager;
+            _migrationHelper = new MigrationHelper(_fileManager, environmentManager);
         }
 
         protected override void ProcessRecord()
@@ -64,9 +68,7 @@ namespace Migratio
                 if (scriptsForLatestIteration.Any(x => x.MigrationId.Contains(fileNameWithoutExtension)))
                 {
                     var stringBuilder = new StringBuilder();
-                    var scriptContent = _fileManager.ReadAllText(script);
-                    if (!scriptContent.EndsWith(";"))
-                        scriptContent += ";";
+                    var scriptContent = _migrationHelper.GetScriptContent(script, false);
 
                     stringBuilder.Append(scriptContent);
                     stringBuilder.Append(GetMigrationQuery(fileNameWithoutExtension, iteration));

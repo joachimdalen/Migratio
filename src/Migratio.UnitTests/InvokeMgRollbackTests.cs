@@ -10,11 +10,13 @@ namespace Migratio.UnitTests
     {
         private readonly DatabaseProviderMock _dbMock;
         private readonly FileManagerMock _fileManagerMock;
+        private readonly EnvironmentManagerMock _envMock;
 
         public InvokeMgRollbackTests()
         {
             _dbMock = new DatabaseProviderMock();
             _fileManagerMock = new FileManagerMock();
+            _envMock = new EnvironmentManagerMock();
         }
 
         [Fact(DisplayName = "Invoke-MgRollback throws if migration table does not exist")]
@@ -22,7 +24,7 @@ namespace Migratio.UnitTests
         {
             _dbMock.MigrationTableExists(false);
 
-            var command = new InvokeMgRollback(_dbMock.Object, _fileManagerMock.Object)
+            var command = new InvokeMgRollback(_dbMock.Object, _fileManagerMock.Object, _envMock.Object)
             {
                 Database = "database",
                 Password = "password",
@@ -42,7 +44,7 @@ namespace Migratio.UnitTests
             _fileManagerMock.GetAllFilesInFolder(Array.Empty<string>());
             _fileManagerMock.RollbackDirectory("migration/rollback");
 
-            var command = new InvokeMgRollback(_dbMock.Object, _fileManagerMock.Object)
+            var command = new InvokeMgRollback(_dbMock.Object, _fileManagerMock.Object, _envMock.Object)
             {
                 Database = "database",
                 Password = "password",
@@ -66,7 +68,7 @@ namespace Migratio.UnitTests
             _fileManagerMock.RollbackDirectory("migration/rollback");
 
 
-            var command = new InvokeMgRollback(_dbMock.Object, _fileManagerMock.Object)
+            var command = new InvokeMgRollback(_dbMock.Object, _fileManagerMock.Object, _envMock.Object)
             {
                 Database = "database",
                 Password = "password",
@@ -90,7 +92,7 @@ namespace Migratio.UnitTests
             _fileManagerMock.RollbackDirectory("migration/rollback");
 
 
-            var command = new InvokeMgRollback(_dbMock.Object, _fileManagerMock.Object)
+            var command = new InvokeMgRollback(_dbMock.Object, _fileManagerMock.Object, _envMock.Object)
             {
                 Database = "database",
                 Password = "password",

@@ -19,20 +19,17 @@ namespace Migratio
         public string MigrationRootDir { get; set; } = "migrations";
 
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = true)]
-        public SwitchParameter AsSingleMigrations { get; set; }
-
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = true)]
         public SwitchParameter ReplaceVariables { get; set; }
 
         private readonly IDatabaseProvider _db;
         private readonly IFileManager _fileManager;
-        private readonly SecretManager _secretManager;
+        private MigrationHelper _migrationHelper;
 
         public InvokeMgRollout()
         {
             _db = new PostgreDb(GetConnectionInfo());
             _fileManager = new FileManager();
-            _secretManager = new SecretManager(new EnvironmentManager());
+            _migrationHelper = new MigrationHelper(_fileManager, new EnvironmentManager());
         }
 
         public InvokeMgRollout(IDatabaseProvider db, IFileManager fileManager,
@@ -40,7 +37,7 @@ namespace Migratio
         {
             _db = db;
             _fileManager = fileManager;
-            _secretManager = new SecretManager(environmentManager);
+            _migrationHelper = new MigrationHelper(_fileManager, environmentManager);
         }
 
         protected override void ProcessRecord()
@@ -75,76 +72,25 @@ namespace Migratio
             }
 
             var iteration = _db.GetLatestIteration();
-            if (AsSingleMigrations.ToBool())
+            var stringBuilder = new StringBuilder();
+            var currentIteration = iteration + 1;
+
+            foreach (var script in scripts)
             {
-                var currentIteration = iteration + 1;
-                foreach (var script in scripts)
+                var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(script);
+                if (applied.Any(x => x.MigrationId.Contains(fileNameWithoutExtension)))
                 {
-                    var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(script);
-                    if (applied.Any(x => x.MigrationId.Contains(fileNameWithoutExtension)))
-                    {
-                        WriteObject($"Migration {fileNameWithoutExtension} is applied, skipping");
-                        continue;
-                    }
-
-                    var stringBuilder = new StringBuilder();
-                    var scriptContent = _fileManager.ReadAllText(script);
-                    if (!scriptContent.EndsWith(";"))
-                        scriptContent += ";";
-
-                    if (ReplaceVariables.ToBool())
-                    {
-                        var replacedContent = _secretManager.ReplaceSecretsInContent(scriptContent);
-                        stringBuilder.Append(replacedContent);
-                    }
-                    else
-                    {
-                        stringBuilder.Append(scriptContent);
-                    }
-
-                    stringBuilder.Append(GetMigrationQuery(fileNameWithoutExtension, currentIteration));
-
-                    WriteObject($"Running migration {fileNameWithoutExtension}");
-
-                    _db.RunTransaction(stringBuilder.ToString());
-                    currentIteration++;
-                }
-            }
-            else
-            {
-                var stringBuilder = new StringBuilder();
-                var currentIteration = iteration + 1;
-
-                foreach (var script in scripts)
-                {
-                    var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(script);
-                    if (applied.Any(x => x.MigrationId.Contains(fileNameWithoutExtension)))
-                    {
-                        WriteObject($"Migration {Path.GetFileNameWithoutExtension(script)} is applied, skipping");
-                        continue;
-                    }
-
-                    WriteObject(
-                        $"Migration {Path.GetFileNameWithoutExtension(script)} is not applied adding to transaction");
-                    var scriptContent = _fileManager.ReadAllText(script);
-                    if (!scriptContent.EndsWith(";"))
-                        scriptContent += ";";
-
-                    if (ReplaceVariables.ToBool())
-                    {
-                        var replacedContent = _secretManager.ReplaceSecretsInContent(scriptContent);
-                        stringBuilder.Append(replacedContent);
-                    }
-                    else
-                    {
-                        stringBuilder.Append(scriptContent);
-                    }
-
-                    stringBuilder.Append(GetMigrationQuery(fileNameWithoutExtension, currentIteration));
+                    WriteObject($"Migration {Path.GetFileNameWithoutExtension(script)} is applied, skipping");
+                    continue;
                 }
 
-                _db.RunTransaction(stringBuilder.ToString());
+                WriteObject($"Migration {fileNameWithoutExtension} is not applied adding to transaction");
+                var scriptContent = _migrationHelper.GetScriptContent(script, ReplaceVariables.ToBool());
+                stringBuilder.Append(scriptContent);
+                stringBuilder.Append(GetMigrationQuery(fileNameWithoutExtension, currentIteration));
             }
+
+            _db.RunTransaction(stringBuilder.ToString());
         }
 
         private string GetMigrationQuery(string migrationScriptName, int iteration) => Queries.NewMigrationQuery
