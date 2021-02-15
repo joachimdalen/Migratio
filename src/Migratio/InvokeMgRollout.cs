@@ -51,6 +51,7 @@ namespace Migratio
                 if (CreateTableIfNotExist.ToBool())
                 {
                     _db.CreateMigrationTable();
+                    WriteVerbose("Created migration table");
                 }
                 else
                 {
