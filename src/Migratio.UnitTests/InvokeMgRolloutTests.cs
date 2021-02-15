@@ -21,8 +21,9 @@ namespace Migratio.UnitTests
             _envMock = new EnvironmentManagerMock();
         }
 
-        [Fact(DisplayName = "Invoke-MgRollout throws if migration table does not exist")]
-        public void InvokeMgRollout_Throws_If_Migration_Table_Does_Not_Exist()
+        [Fact(DisplayName =
+            "Invoke-MgRollout throws if migration table does not exist and CreateTableIfNotExist is false")]
+        public void InvokeMgRollout_Throws_If_Migration_Table_Does_Not_Exist_And_CreateTableIfNotExist_Is_False()
         {
             _dbMock.MigrationTableExists(false);
 
@@ -37,6 +38,28 @@ namespace Migratio.UnitTests
             };
 
             Assert.Throws<Exception>(() => command.Invoke()?.OfType<bool>()?.First());
+        }
+
+        [Fact(DisplayName = "Invoke-MgRollout creates migration table if CreateTableIfNotExist is true")]
+        public void InvokeMgRollout_Creates_Migration_Table_If_CreateTableIfNotExist_Is_True()
+        {
+            _dbMock.MigrationTableExists(false);
+            _dbMock.CreateMigrationTable(1);
+            _fileManagerMock.GetAllFilesInFolder(Array.Empty<string>());
+            _fileManagerMock.RolloutDirectory("mig/rol");
+
+            var command = new InvokeMgRollout(_dbMock.Object, _fileManagerMock.Object, _envMock.Object)
+            {
+                Database = "database",
+                Password = "password",
+                Host = "host",
+                Port = 1111,
+                Schema = "public",
+                Username = "username",
+                CreateTableIfNotExist = true
+            };
+            command.Invoke()?.OfType<string>()?.ToArray();
+            _dbMock.VerifyCreateMigrationTable(Times.Once());
         }
 
         [Fact(DisplayName = "Invoke-MgRollout returns if no scripts found")]
