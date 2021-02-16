@@ -21,9 +21,12 @@ namespace Migratio
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = true)]
         public SwitchParameter ReplaceVariables { get; set; }
 
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = true)]
+        public SwitchParameter CreateTableIfNotExist { get; set; }
+
         private readonly IDatabaseProvider _db;
         private readonly IFileManager _fileManager;
-        private MigrationHelper _migrationHelper;
+        private readonly MigrationHelper _migrationHelper;
 
         public InvokeMgRollout()
         {
@@ -45,7 +48,15 @@ namespace Migratio
             _db.SetConnectionInfo(GetConnectionInfo());
             if (!_db.MigrationTableExists())
             {
-                throw new Exception("Migration table does not exist");
+                if (CreateTableIfNotExist.ToBool())
+                {
+                    _db.CreateMigrationTable();
+                    WriteVerbose("Created migration table");
+                }
+                else
+                {
+                    throw new Exception("Migration table does not exist");
+                }
             }
 
             var scripts = _fileManager.GetAllFilesInFolder(_fileManager.RolloutDirectory(MigrationRootDir))
