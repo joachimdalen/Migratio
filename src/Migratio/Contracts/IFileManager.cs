@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 
 namespace Migratio.Contracts
@@ -15,5 +16,6 @@ namespace Migratio.Contracts
         bool FileExists(string path);
         FileStream CreateFile(string path);
         string ReadAllText(string path);
+        IEnumerable<string> ReadLines(string path);
     }
 }

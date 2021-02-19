@@ -1,43 +1,31 @@
 using System;
-using System.IO;
 using System.Management.Automation;
-using Migratio.Contracts;
-using Migratio.Secrets;
+using Migratio.Core;
 
 namespace Migratio.Utils
 {
     [Cmdlet(VerbsCommon.Get, "MgUsedVariables")]
     [OutputType(typeof(string[]))]
-    public class GetMgUsedVariables : Cmdlet
+    public class GetMgUsedVariables : BaseCmdlet
     {
-        private readonly IFileManager _fileManager;
-        private readonly SecretManager _secretManager;
+        public GetMgUsedVariables()
+        {
+        }
+
+        public GetMgUsedVariables(CmdletDependencies dependencies) : base(dependencies)
+        {
+        }
 
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = true)]
         [ValidateNotNullOrEmpty]
         public string MigrationFile { get; set; }
 
-        public GetMgUsedVariables()
-        {
-            _fileManager = new FileManager();
-            _secretManager = new SecretManager(new EnvironmentManager());
-        }
-
-        public GetMgUsedVariables(IFileManager fileManager, IEnvironmentManager environmentManager)
-        {
-            _fileManager = fileManager;
-            _secretManager = new SecretManager(environmentManager);
-        }
-
         protected override void ProcessRecord()
         {
-            if (!_fileManager.FileExists(MigrationFile))
-            {
-                throw new Exception($"No such file at: {MigrationFile}");
-            }
+            if (!FileManager.FileExists(MigrationFile)) throw new Exception($"No such file at: {MigrationFile}");
 
-            var content = _fileManager.ReadAllText(MigrationFile);
-            var usedKeys = _secretManager.GetSecretsInContent(content);
+            var content = FileManager.ReadAllText(MigrationFile);
+            var usedKeys = SecretManager.GetSecretsInContent(content);
 
             WriteObject(usedKeys);
         }

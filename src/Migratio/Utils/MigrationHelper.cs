@@ -12,10 +12,10 @@ namespace Migratio.Utils
         public MigrationHelper(IFileManager fileManager, IEnvironmentManager environmentManager)
         {
             _fileManager = fileManager;
-            _secretManager = new SecretManager(environmentManager);
+            _secretManager = new SecretManager(environmentManager, fileManager);
         }
 
-        public string GetScriptContent(string scriptPath, bool replace)
+        public string GetScriptContent(string scriptPath, bool replace, string envFilePath)
         {
             var scriptContent = _fileManager.ReadAllText(scriptPath);
             if (!scriptContent.EndsWith(";"))
@@ -23,7 +23,7 @@ namespace Migratio.Utils
 
             if (!replace) return scriptContent + Environment.NewLine;
 
-            var replacedContent = _secretManager.ReplaceSecretsInContent(scriptContent);
+            var replacedContent = _secretManager.ReplaceSecretsInContent(scriptContent, envFilePath);
             return replacedContent + Environment.NewLine;
         }
     }

@@ -11,6 +11,7 @@ namespace Migratio.UnitTests.Mocks
         public EnvironmentManagerMock(MockBehavior behavior = MockBehavior.Strict)
         {
             MockInstance = new Mock<IEnvironmentManager>(behavior);
+            MockInstance.Setup(x => x.GetEnvironmentVariable("MG_DB_PASSWORD")).Returns("password");
         }
 
         #region Setups

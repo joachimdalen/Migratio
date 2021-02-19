@@ -6,23 +6,14 @@ using Xunit;
 
 namespace Migratio.UnitTests
 {
-    public class GetMgUsedVariablesTests
+    public class GetMgUsedVariablesTests : BaseCmdletTest
     {
-        private readonly FileManagerMock _fileManagerMock;
-        private readonly EnvironmentManagerMock _envMock;
-
-        public GetMgUsedVariablesTests()
-        {
-            _fileManagerMock = new FileManagerMock();
-            _envMock = new EnvironmentManagerMock();
-        }
-
         [Fact(DisplayName = "Get-MgUsedVariables throws if file does not exist")]
         public void GetMgUsedVariables_Throws_If_File_Does_Not_Exist()
         {
-            _fileManagerMock.FileExists("migrations/rollout/one.sql", false);
+            FileManagerMock.FileExists("migrations/rollout/one.sql", false);
 
-            var command = new GetMgUsedVariables(_fileManagerMock.Object, _envMock.Object)
+            var command = new GetMgUsedVariables(GetMockedDependencies())
             {
                 MigrationFile = "migrations/rollout/one.sql"
             };
@@ -33,10 +24,10 @@ namespace Migratio.UnitTests
         [Fact(DisplayName = "Get-MgUsedVariables returns empty when no variables is used")]
         public void GetMgUsedVariables_Returns_Empty_When_No_Variables_Is_Used()
         {
-            _fileManagerMock.FileExists("migrations/rollout/one.sql", true);
-            _fileManagerMock.ReadAllText("migrations/rollout/one.sql", "SELECT ME FROM YOU");
+            FileManagerMock.FileExists("migrations/rollout/one.sql", true);
+            FileManagerMock.ReadAllText("migrations/rollout/one.sql", "SELECT ME FROM YOU");
 
-            var command = new GetMgUsedVariables(_fileManagerMock.Object, _envMock.Object)
+            var command = new GetMgUsedVariables(GetMockedDependencies())
             {
                 MigrationFile = "migrations/rollout/one.sql"
             };
@@ -48,10 +39,10 @@ namespace Migratio.UnitTests
         [Fact(DisplayName = "Get-MgUsedVariables returns correct variables")]
         public void GetMgUsedVariables_Returns_Correct_Variables()
         {
-            _fileManagerMock.FileExists("migrations/rollout/one.sql", true);
-            _fileManagerMock.ReadAllText("migrations/rollout/one.sql", "SELECT ${{VAR_ME}} FROM ${{VAR_YOU}}");
+            FileManagerMock.FileExists("migrations/rollout/one.sql", true);
+            FileManagerMock.ReadAllText("migrations/rollout/one.sql", "SELECT ${{VAR_ME}} FROM ${{VAR_YOU}}");
 
-            var command = new GetMgUsedVariables(_fileManagerMock.Object, _envMock.Object)
+            var command = new GetMgUsedVariables(GetMockedDependencies())
             {
                 MigrationFile = "migrations/rollout/one.sql"
             };

@@ -1,0 +1,34 @@
+using Migratio.Contracts;
+using Migratio.Secrets;
+using Migratio.UnitTests.Mocks;
+using Moq;
+
+namespace Migratio.UnitTests
+{
+    public abstract class BaseCmdletTest
+    {
+        protected DatabaseProviderMock DbMock { get; set; }
+        protected FileManagerMock FileManagerMock { get; set; }
+        protected EnvironmentManagerMock EnvironmentManagerMock { get; set; }
+        protected ISecretManager SecretManagerMock { get; set; }
+
+        protected BaseCmdletTest(MockBehavior behavior = MockBehavior.Strict)
+        {
+            DbMock = new DatabaseProviderMock(behavior);
+            FileManagerMock = new FileManagerMock(behavior);
+            EnvironmentManagerMock = new EnvironmentManagerMock(behavior);
+            SecretManagerMock = new SecretManager(EnvironmentManagerMock.Object, FileManagerMock.Object);
+        }
+
+        internal CmdletDependencies GetMockedDependencies()
+        {
+            return new CmdletDependencies
+            {
+                FileManager = FileManagerMock.Object,
+                DatabaseProvider = DbMock.Object,
+                EnvironmentManager = EnvironmentManagerMock.Object,
+                SecretManager = SecretManagerMock
+            };
+        }
+    }
+}

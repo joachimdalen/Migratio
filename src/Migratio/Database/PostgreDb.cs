@@ -8,28 +8,14 @@ namespace Migratio.Database
     public class PostgreDb : IDatabaseProvider
     {
         private DbConnectionInfo ConnectionInfo { get; set; }
-        
+
         public void SetConnectionInfo(DbConnectionInfo info)
         {
             ConnectionInfo = info;
         }
 
-        private NpgsqlConnection GetConnection()
-        {
-            var builder = new NpgsqlConnectionStringBuilder
-            {
-                Database = ConnectionInfo.Database,
-                Username = ConnectionInfo.Username,
-                Host = ConnectionInfo.Host,
-                Port = ConnectionInfo.Port,
-                Password = ConnectionInfo.Password,
-            };
-
-            return new NpgsqlConnection(builder.ToString());
-        }
-
         /// <summary>
-        /// Check if migration table exists for given database and schema
+        ///     Check if migration table exists for given database and schema
         /// </summary>
         /// <returns></returns>
         public bool MigrationTableExists()
@@ -44,10 +30,7 @@ namespace Migratio.Database
                     cmd.Parameters.AddWithValue("tableName", "MIGRATIONS");
                     using (var reader = cmd.ExecuteReader())
                     {
-                        while (reader.Read())
-                        {
-                            result = reader.GetBoolean(0);
-                        }
+                        while (reader.Read()) result = reader.GetBoolean(0);
                     }
                 }
             }
@@ -56,7 +39,7 @@ namespace Migratio.Database
         }
 
         /// <summary>
-        /// Get latest migration iteration
+        ///     Get latest migration iteration
         /// </summary>
         /// <returns></returns>
         public int GetLatestIteration()
@@ -69,10 +52,7 @@ namespace Migratio.Database
                 {
                     using (var reader = cmd.ExecuteReader())
                     {
-                        while (reader.Read())
-                        {
-                            result = reader.GetInt32(0);
-                        }
+                        while (reader.Read()) result = reader.GetInt32(0);
                     }
                 }
             }
@@ -81,7 +61,7 @@ namespace Migratio.Database
         }
 
         /// <summary>
-        /// Get latest migration iteration
+        ///     Get latest migration iteration
         /// </summary>
         /// <returns></returns>
         public Migration[] GetAppliedMigrations()
@@ -96,13 +76,11 @@ namespace Migratio.Database
                     using (var reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
-                        {
                             list.Add(new Migration
                             {
                                 MigrationId = reader.GetString(0),
                                 Iteration = reader.GetInt32(1)
                             });
-                        }
                     }
                 }
             }
@@ -111,7 +89,7 @@ namespace Migratio.Database
         }
 
         /// <summary>
-        /// Get latest migration iteration
+        ///     Get latest migration iteration
         /// </summary>
         /// <returns></returns>
         public Migration[] GetAppliedScriptsForLatestIteration()
@@ -128,13 +106,11 @@ namespace Migratio.Database
                     using (var reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
-                        {
                             list.Add(new Migration
                             {
                                 MigrationId = reader.GetString(0),
                                 Iteration = reader.GetInt32(1)
                             });
-                        }
                     }
                 }
             }
@@ -176,6 +152,20 @@ namespace Migratio.Database
             }
 
             return result;
+        }
+
+        private NpgsqlConnection GetConnection()
+        {
+            var builder = new NpgsqlConnectionStringBuilder
+            {
+                Database = ConnectionInfo.Database,
+                Username = ConnectionInfo.Username,
+                Host = ConnectionInfo.Host,
+                Port = ConnectionInfo.Port,
+                Password = ConnectionInfo.Password
+            };
+
+            return new NpgsqlConnection(builder.ToString());
         }
     }
 }

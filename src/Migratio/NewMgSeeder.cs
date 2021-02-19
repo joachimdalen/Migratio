@@ -1,14 +1,20 @@
 using System.IO;
 using System.Management.Automation;
-using Migratio.Contracts;
+using Migratio.Core;
 
 namespace Migratio
 {
     [Cmdlet(VerbsCommon.New, "MgSeeder")]
     [OutputType(typeof(string))]
-    public class NewMgSeeder : Cmdlet
+    public class NewMgSeeder : BaseCmdlet
     {
-        private readonly IFileManager _fileManager;
+        public NewMgSeeder()
+        {
+        }
+
+        public NewMgSeeder(CmdletDependencies dependencies) : base(dependencies)
+        {
+        }
 
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = true)]
         [ValidateNotNullOrEmpty]
@@ -18,34 +24,24 @@ namespace Migratio
         [ValidateNotNullOrEmpty]
         public string Name { get; set; }
 
-        public NewMgSeeder()
-        {
-            _fileManager = new FileManager();
-        }
-
-        public NewMgSeeder(IFileManager fileManager)
-        {
-            _fileManager = fileManager;
-        }
-
         protected override void ProcessRecord()
         {
-            var seederDir = _fileManager.SeedersDirectory(MigrationRootDir);
-            if (!_fileManager.DirectoryExists(seederDir))
+            var seederDir = FileManager.SeedersDirectory(MigrationRootDir);
+            if (!FileManager.DirectoryExists(seederDir))
             {
-                _fileManager.CreateDirectory(seederDir);
+                FileManager.CreateDirectory(seederDir);
                 WriteObject($"Created directory {seederDir}");
             }
 
             var fileName = Path.Combine(seederDir,
-                $"{_fileManager.GetFilePrefix()}_{_fileManager.GetFormattedName(Name)}.sql");
-            if (_fileManager.FileExists(fileName))
+                $"{FileManager.GetFilePrefix()}_{FileManager.GetFormattedName(Name)}.sql");
+            if (FileManager.FileExists(fileName))
             {
                 WriteWarning($"File {fileName} already exists");
             }
             else
             {
-                _fileManager.CreateFile(fileName);
+                FileManager.CreateFile(fileName);
                 WriteObject($"Created file {fileName}");
             }
         }

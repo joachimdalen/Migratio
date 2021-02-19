@@ -1,14 +1,20 @@
 using System.IO;
 using System.Management.Automation;
-using Migratio.Contracts;
+using Migratio.Core;
 
 namespace Migratio
 {
     [Cmdlet(VerbsCommon.New, "MgMigration")]
     [OutputType(typeof(void))]
-    public class NewMgMigration : Cmdlet
+    public class NewMgMigration : BaseCmdlet
     {
-        private readonly IFileManager _fileManager;
+        public NewMgMigration()
+        {
+        }
+
+        public NewMgMigration(CmdletDependencies dependencies) : base(dependencies)
+        {
+        }
 
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = true)]
         [ValidateNotNullOrEmpty]
@@ -18,40 +24,30 @@ namespace Migratio
         [ValidateNotNullOrEmpty]
         public string Name { get; set; }
 
-        public NewMgMigration()
-        {
-            _fileManager = new FileManager();
-        }
-
-        public NewMgMigration(IFileManager fileManager)
-        {
-            _fileManager = fileManager;
-        }
-
         protected override void ProcessRecord()
         {
-            var rolloutDir = _fileManager.RolloutDirectory(MigrationRootDir);
-            var rollbackDir = _fileManager.RollbackDirectory(MigrationRootDir);
+            var rolloutDir = FileManager.RolloutDirectory(MigrationRootDir);
+            var rollbackDir = FileManager.RollbackDirectory(MigrationRootDir);
             var dirs = new[] {rolloutDir, rollbackDir};
 
             foreach (var dir in dirs)
             {
-                if (_fileManager.DirectoryExists(dir)) continue;
-                _fileManager.CreateDirectory(dir);
+                if (FileManager.DirectoryExists(dir)) continue;
+                FileManager.CreateDirectory(dir);
                 WriteObject($"Created directory {dir}");
             }
 
             foreach (var dir in dirs)
             {
                 var fileName = Path.Combine(dir,
-                    $"{_fileManager.GetFilePrefix()}_{_fileManager.GetFormattedName(Name)}.sql");
-                if (_fileManager.FileExists(fileName))
+                    $"{FileManager.GetFilePrefix()}_{FileManager.GetFormattedName(Name)}.sql");
+                if (FileManager.FileExists(fileName))
                 {
                     WriteWarning($"File {fileName} already exists");
                 }
                 else
                 {
-                    _fileManager.CreateFile(fileName);
+                    FileManager.CreateFile(fileName);
                     WriteObject($"Created file {fileName}");
                 }
             }

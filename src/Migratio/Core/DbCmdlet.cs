@@ -1,13 +1,17 @@
 using System.Management.Automation;
 using Migratio.Database;
 
-namespace Migratio
+namespace Migratio.Core
 {
-    public abstract class BaseCmdlet : Cmdlet
+    public class DbCmdlet : BaseCmdlet
     {
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = true)]
-        [ValidateNotNullOrEmpty]
-        public string Password { get; set; }
+        public DbCmdlet()
+        {
+        }
+
+        public DbCmdlet(CmdletDependencies dependencies) : base(dependencies)
+        {
+        }
 
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = true)]
         [ValidateNotNullOrEmpty]
@@ -29,14 +33,20 @@ namespace Migratio
         [ValidateNotNullOrEmpty]
         public string Schema { get; set; } = "public";
 
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = true)]
+        [ValidateNotNullOrEmpty]
+        public string EnvFile { get; set; }
+
         protected DbConnectionInfo GetConnectionInfo()
         {
+            var password = SecretManager.GetEnvironmentVariable("MG_DB_PASSWORD");
+
             return new DbConnectionInfo
             {
                 Database = Database,
                 Username = Username,
                 Host = Host,
-                Password = Password,
+                Password = password,
                 Port = Port,
                 Schema = Schema
             };
