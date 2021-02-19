@@ -7,7 +7,7 @@ namespace Migratio.Utils
     public class MigrationHelper
     {
         private readonly IFileManager _fileManager;
-        private readonly SecretManager _secretManager;
+        private readonly ISecretManager _secretManager;
 
         public MigrationHelper(IFileManager fileManager, IEnvironmentManager environmentManager)
         {

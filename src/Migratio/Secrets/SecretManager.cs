@@ -64,28 +64,32 @@ namespace Migratio.Secrets
             var envForPattern = _environmentManager.GetEnvironmentVariable(key);
             if (!string.IsNullOrWhiteSpace(envForPattern)) return envForPattern;
 
-            if (envFilePath == null) return "";
+            if (envFilePath == null) return string.Empty;
 
             var items = GetFromFile(envFilePath);
 
             var envVar = items.FirstOrDefault(x => x.Key.Equals(key));
 
-            if (envVar == null || string.IsNullOrEmpty(envVar?.Value)) return "";
+            if (envVar == null || string.IsNullOrEmpty(envVar?.Value)) return string.Empty;
 
             return envVar?.Value;
         }
 
         private IList<EnvEntry> GetFromFile(string path)
         {
+            const string pattern = @"^\s*(?<key>[\w.-]+)\s*=\s*(?<value>.*)?\s*$";
             var parsed = new List<EnvEntry>();
-            var content = _fileManager.ReadAllText(path);
+            var content = _fileManager.ReadLines(path);
 
             foreach (var envVar in content)
+            {
+                var m = Regex.Match(envVar, pattern);
                 parsed.Add(new EnvEntry
                 {
-                    Key = "D",
-                    Value = "d"
+                    Key = m.Groups["key"].Value,
+                    Value = m.Groups["value"].Value,
                 });
+            }
 
             return parsed;
         }

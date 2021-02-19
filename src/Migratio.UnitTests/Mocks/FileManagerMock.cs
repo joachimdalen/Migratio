@@ -30,6 +30,9 @@ namespace Migratio.UnitTests.Mocks
 
         public void ReadAllText(string path, string returns)
             => MockInstance.Setup(x => x.ReadAllText(path)).Returns(returns);
+        
+        public void ReadLines(string path, string[] returns)
+            => MockInstance.Setup(x => x.ReadLines(path)).Returns(returns);
 
         public void FileExists(string path, bool returns)
             => MockInstance.Setup(x => x.FileExists(path)).Returns(returns);

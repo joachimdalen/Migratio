@@ -3,7 +3,7 @@ using Migratio.Database;
 
 namespace Migratio.Core
 {
-    public class DbCmdlet : BaseCmdlet
+    public abstract class DbCmdlet : BaseCmdlet
     {
         public DbCmdlet()
         {
