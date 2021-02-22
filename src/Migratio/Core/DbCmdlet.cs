@@ -34,10 +34,6 @@ namespace Migratio.Core
         [ValidateNotNullOrEmpty]
         public string Schema { get; set; } = "public";
 
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = true)]
-        [ValidateNotNullOrEmpty]
-        public string EnvFile { get; set; }
-
         protected DbConnectionInfo GetConnectionInfo()
         {
             var dbInfo = Configuration?.Config?.Auth?.Postgres;

@@ -70,7 +70,7 @@ namespace Migratio
                     continue;
                 }
 
-                var scriptContent = _migrationHelper.GetScriptContent(script, false, EnvFile);
+                var scriptContent = _migrationHelper.GetScriptContent(script, false, Configuration?.Config?.EnvFile);
 
                 stringBuilder.Append(scriptContent);
                 stringBuilder.Append(GetMigrationQuery(fileNameWithoutExtension, iteration));

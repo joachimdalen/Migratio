@@ -42,7 +42,6 @@ The following options are shared between the following cmdlets
 
 | Option   | Type   | Mandatory | Default     |
 | -------- | ------ | --------- | ----------- |
-| Password | string | Yes       | None        |
 | Username | string | Yes       | None        |
 | Database | string | Yes       | None        |
 | Port     | int    | No        | `5432`      |
@@ -68,4 +67,25 @@ Want to use environment variables in your migration scripts? Well, Migratio supp
 
 ```sql
 CREATE USER applicationUser WITH ENCRYPTED PASSWORD '${{APP_USER_PASSWORD}}';
+```
+
+## Configuration File
+```yaml
+directories:
+  base: /dev/migrations # Path to base directory containing subfolders
+  rollout: /dev/migrations/rollout # Path to rollout scripts
+  rollback: /dev/migrations/rollback # Path to rollback scripts
+  seeders: /dev/migrations/seeders # Path to seeder scripts
+envMapping: # Mapping/Translation of variables and env variables
+  MG_DB_PASSWORD: DB_USERNAME
+envFile: './backend.env' # Path to env file
+auth: # DB auth options
+  postgres:
+    host: 'localhost'
+    port: 1234
+    database: 'TestDB'
+    username: 'postgres'
+    password: '${{MG_DB_PASSWORD}}'
+replaceVariables: true # Replace variables in rollout scripts
+
 ```

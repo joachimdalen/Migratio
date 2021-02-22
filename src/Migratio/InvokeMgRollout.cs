@@ -101,7 +101,8 @@ namespace Migratio
                 }
 
                 WriteObject($"Migration {fileNameWithoutExtension} is not applied adding to transaction");
-                var scriptContent = _migrationHelper.GetScriptContent(script, replaceVariables ?? false, EnvFile);
+                var scriptContent = _migrationHelper.GetScriptContent(script, replaceVariables ?? false,
+                    Configuration?.Config?.EnvFile);
                 stringBuilder.Append(scriptContent);
                 stringBuilder.Append(GetMigrationQuery(fileNameWithoutExtension, currentIteration));
             }
