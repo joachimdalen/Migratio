@@ -10,7 +10,8 @@ namespace Migratio.Utils
         private readonly IConfiguration _configuration;
         private readonly ISecretManager _secretManager;
 
-        public MigrationHelper(IFileManager fileManager, IEnvironmentManager environmentManager, IConfiguration configuration)
+        public MigrationHelper(IFileManager fileManager, IEnvironmentManager environmentManager,
+            IConfiguration configuration)
         {
             _fileManager = fileManager;
             _configuration = configuration;

@@ -26,7 +26,7 @@ namespace Migratio
 
         protected override void ProcessRecord()
         {
-            var seederDir = FileManager.SeedersDirectory(MigrationRootDir);
+            var seederDir = Configuration.SeedersDirectory(MigrationRootDir, ConfigFile);
             if (!FileManager.DirectoryExists(seederDir))
             {
                 FileManager.CreateDirectory(seederDir);

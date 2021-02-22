@@ -13,21 +13,6 @@ namespace Migratio
             return Directory.GetFiles(baseDir, "*.sql", SearchOption.AllDirectories);
         }
 
-        public string RolloutDirectory(string baseDir)
-        {
-            return Path.Combine(baseDir, "rollout");
-        }
-
-        public string RollbackDirectory(string baseDir)
-        {
-            return Path.Combine(baseDir, "rollback");
-        }
-
-        public string SeedersDirectory(string baseDir)
-        {
-            return Path.Combine(baseDir, "seeders");
-        }
-
         public string GetFilePrefix()
         {
             return DateTime.UtcNow.ToString("yyyyMMdd_HHmmss");

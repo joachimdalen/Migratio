@@ -26,8 +26,8 @@ namespace Migratio
 
         protected override void ProcessRecord()
         {
-            var rolloutDir = FileManager.RolloutDirectory(MigrationRootDir);
-            var rollbackDir = FileManager.RollbackDirectory(MigrationRootDir);
+            var rolloutDir = Configuration.RolloutDirectory(MigrationRootDir, ConfigFile);
+            var rollbackDir = Configuration.RollbackDirectory(MigrationRootDir, ConfigFile);
             var dirs = new[] {rolloutDir, rollbackDir};
 
             foreach (var dir in dirs)

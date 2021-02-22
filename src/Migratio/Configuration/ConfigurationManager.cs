@@ -1,4 +1,6 @@
 using System;
+using System.IO;
+using System.Runtime.CompilerServices;
 using Migratio.Contracts;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
@@ -55,6 +57,75 @@ namespace Migratio.Configuration
             if (first != null) return first;
             if (second != null) return second;
             return defaultValue;
+        }
+
+        public string RolloutDirectory(string migrationBaseDir, string configPath)
+        {
+            var configBase = Path.GetDirectoryName(configPath);
+            var rollout = Config.Directories.Rollout;
+
+            if (migrationBaseDir != null)
+            {
+                return Path.Combine(migrationBaseDir, "rollout");
+            }
+
+            if (Path.IsPathRooted(rollout))
+            {
+                return rollout;
+            }
+
+            if (configBase == null)
+            {
+                throw new Exception("Unable to determine rollout directory");
+            }
+
+            return Path.Combine(configBase, rollout);
+        }
+
+        public string RollbackDirectory(string migrationBaseDir, string configPath)
+        {
+            var configBase = Path.GetDirectoryName(configPath);
+            var rollback = Config.Directories.Rollback;
+
+            if (migrationBaseDir != null)
+            {
+                return Path.Combine(migrationBaseDir, "rollback");
+            }
+
+            if (Path.IsPathRooted(rollback))
+            {
+                return rollback;
+            }
+
+            if (configBase == null)
+            {
+                throw new Exception("Unable to determine rollback directory");
+            }
+
+            return Path.Combine(configBase, rollback);
+        }
+
+        public string SeedersDirectory(string migrationBaseDir, string configPath)
+        {
+            var configBase = Path.GetDirectoryName(configPath);
+            var seeders = Config.Directories.Rollback;
+
+            if (migrationBaseDir != null)
+            {
+                return Path.Combine(migrationBaseDir, "seeders");
+            }
+
+            if (Path.IsPathRooted(seeders))
+            {
+                return seeders;
+            }
+
+            if (configBase == null)
+            {
+                throw new Exception("Unable to determine seeders directory");
+            }
+
+            return Path.Combine(configBase, seeders);
         }
     }
 }

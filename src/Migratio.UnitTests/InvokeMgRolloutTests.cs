@@ -21,7 +21,7 @@ namespace Migratio.UnitTests
             "Invoke-MgRollout throws if migration table does not exist and CreateTableIfNotExist is false")]
         public void InvokeMgRollout_Throws_If_Migration_Table_Does_Not_Exist_And_CreateTableIfNotExist_Is_False()
         {
-            FileManagerMock.RolloutDirectory("migrations");
+            ConfigManagerMock.RolloutDirectory("migrations");
             ConfigManagerMock.ConfigReturns(null);
             DbMock.MigrationTableExists(false);
 
@@ -41,11 +41,11 @@ namespace Migratio.UnitTests
         public void InvokeMgRollout_Creates_Migration_Table_If_CreateTableIfNotExist_Is_True()
         {
             ConfigManagerMock.ConfigReturns(null);
-            FileManagerMock.RollbackDirectory("migrations/rollback");
+            ConfigManagerMock.RollbackDirectory("migrations/rollback");
             DbMock.MigrationTableExists(false);
             DbMock.CreateMigrationTable(1);
             FileManagerMock.GetAllFilesInFolder(Array.Empty<string>());
-            FileManagerMock.RolloutDirectory("migrations/rollout");
+            ConfigManagerMock.RolloutDirectory("migrations/rollout");
 
             var command = new InvokeMgRollout(GetMockedDependencies())
             {
@@ -66,7 +66,7 @@ namespace Migratio.UnitTests
             ConfigManagerMock.ConfigReturns(null);
             DbMock.MigrationTableExists(true);
             FileManagerMock.GetAllFilesInFolder(Array.Empty<string>());
-            FileManagerMock.RolloutDirectory("migrations/rollout");
+            ConfigManagerMock.RolloutDirectory("migrations/rollout");
 
             var command = new InvokeMgRollout(GetMockedDependencies())
             {
@@ -86,7 +86,7 @@ namespace Migratio.UnitTests
         {
             ConfigManagerMock.ConfigReturns(null);
             DbMock.MigrationTableExists(true);
-            FileManagerMock.RolloutDirectory("migrations/rollout");
+            ConfigManagerMock.RolloutDirectory("migrations/rollout");
             FileManagerMock.GetAllFilesInFolder(new[] {"migrations/one.sql", "migrations/two.sql"});
             DbMock.GetAppliedMigrations(new Migration[]
             {
@@ -115,7 +115,7 @@ namespace Migratio.UnitTests
             DbMock.MigrationTableExists(true);
             DbMock.GetLatestIteration(1);
 
-            FileManagerMock.RolloutDirectory("migrations/rollout");
+            ConfigManagerMock.RolloutDirectory("migrations/rollout");
             FileManagerMock.GetAllFilesInFolder(new[] {"migrations/rollout/one.sql", "migrations/rollout/two.sql"});
             FileManagerMock.ReadAllText("migrations/rollout/two.sql", "SELECT 1 from 2");
 
@@ -149,7 +149,7 @@ namespace Migratio.UnitTests
             DbMock.MigrationTableExists(true);
             DbMock.GetLatestIteration(1);
 
-            FileManagerMock.RolloutDirectory("migrations/rollout");
+            ConfigManagerMock.RolloutDirectory("migrations/rollout");
             FileManagerMock.GetAllFilesInFolder(new[]
             {
                 "migrations/rollout/one.sql",
@@ -187,7 +187,7 @@ namespace Migratio.UnitTests
             DbMock.MigrationTableExists(true);
             DbMock.GetLatestIteration(1);
 
-            FileManagerMock.RolloutDirectory("migrations/rollout");
+            ConfigManagerMock.RolloutDirectory("migrations/rollout");
             FileManagerMock.GetAllFilesInFolder(new[]
             {
                 "migrations/rollout/one.sql",

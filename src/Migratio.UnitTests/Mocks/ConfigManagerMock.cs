@@ -30,5 +30,14 @@ namespace Migratio.UnitTests.Mocks
         {
             MockInstance.Setup(x => x.Resolve(first, second, defaultValue)).Returns(returns);
         }
+
+        public void RolloutDirectory(string returns)
+            => MockInstance.Setup(x => x.RolloutDirectory(It.IsAny<string>(), It.IsAny<string>())).Returns(returns);
+
+        public void RollbackDirectory(string returns)
+            => MockInstance.Setup(x => x.RollbackDirectory(It.IsAny<string>(), It.IsAny<string>())).Returns(returns);
+
+        public void SeedersDirectory(string returns)
+            => MockInstance.Setup(x => x.SeedersDirectory(It.IsAny<string>(), It.IsAny<string>())).Returns(returns);
     }
 }

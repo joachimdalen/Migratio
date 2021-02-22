@@ -18,7 +18,7 @@ namespace Migratio.UnitTests
         public void InvokeMgRollback_Throws_If_Migration_Table_Does_Not_Exist()
         {
             ConfigManagerMock.ConfigReturns(null);
-            FileManagerMock.RollbackDirectory("migrations/rollback");
+            ConfigManagerMock.RollbackDirectory("migrations/rollback");
             DbMock.MigrationTableExists(false);
 
             var command = new InvokeMgRollback(GetMockedDependencies())
@@ -40,7 +40,7 @@ namespace Migratio.UnitTests
 
             DbMock.MigrationTableExists(true);
             FileManagerMock.GetAllFilesInFolder(Array.Empty<string>());
-            FileManagerMock.RollbackDirectory("migrations/rollback");
+            ConfigManagerMock.RollbackDirectory("migrations/rollback");
 
             var command = new InvokeMgRollback(GetMockedDependencies())
             {
@@ -63,7 +63,7 @@ namespace Migratio.UnitTests
             DbMock.GetLatestIteration(0);
             DbMock.GetAppliedScriptsForLatestIteration(new[] {new Migration {Iteration = 1, MigrationId = "one.sql"}});
             FileManagerMock.GetAllFilesInFolder(new[] {"migrations/rollback/one.sql"});
-            FileManagerMock.RollbackDirectory("migrations/rollback");
+            ConfigManagerMock.RollbackDirectory("migrations/rollback");
 
 
             var command = new InvokeMgRollback(GetMockedDependencies())
@@ -87,7 +87,7 @@ namespace Migratio.UnitTests
             DbMock.GetLatestIteration(1);
             DbMock.GetAppliedScriptsForLatestIteration(Array.Empty<Migration>());
             FileManagerMock.GetAllFilesInFolder(new[] {"migrations/rollback/one.sql"});
-            FileManagerMock.RollbackDirectory("migrations/rollback");
+            ConfigManagerMock.RollbackDirectory("migrations/rollback");
 
 
             var command = new InvokeMgRollback(GetMockedDependencies())
@@ -120,7 +120,7 @@ namespace Migratio.UnitTests
                 "migrations/rollback/two.sql",
                 "migrations/rollback/three.sql",
             });
-            FileManagerMock.RollbackDirectory("migrations/rollback");
+            ConfigManagerMock.RollbackDirectory("migrations/rollback");
             FileManagerMock.ReadAllText("migrations/rollback/two.sql", "rollback 2");
             FileManagerMock.ReadAllText("migrations/rollback/three.sql", "rollback 3");
             DbMock.RunTransactionAny(1);

@@ -6,9 +6,6 @@ namespace Migratio.Contracts
     public interface IFileManager
     {
         string[] GetAllFilesInFolder(string baseDir);
-        string RolloutDirectory(string baseDir);
-        string RollbackDirectory(string baseDir);
-        string SeedersDirectory(string baseDir);
         string GetFilePrefix();
         string GetFormattedName(string baseName);
         bool DirectoryExists(string path);

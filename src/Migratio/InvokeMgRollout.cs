@@ -15,8 +15,9 @@ namespace Migratio
     {
         private readonly MigrationHelper _migrationHelper;
 
-        public InvokeMgRollout() : base()
+        public InvokeMgRollout()
         {
+            _migrationHelper = new MigrationHelper(FileManager, EnvironmentManager, Configuration);
         }
 
         public InvokeMgRollout(CmdletDependencies dependencies) : base(dependencies)
@@ -36,10 +37,7 @@ namespace Migratio
 
         protected override void ProcessRecord()
         {
-            var baseDir =
-                Configuration.Resolve(MigrationRootDir, Configuration?.Config?.Directories?.Base, "migrations");
-            var rolloutDir = Configuration.Resolve(Configuration?.Config?.Directories?.Rollout, null,
-                FileManager.RolloutDirectory(baseDir));
+            var rolloutDir = Configuration.RolloutDirectory(MigrationRootDir, ConfigFile);
             var replaceVariables = ReplaceVariables.IsPresent
                 ? ReplaceVariables.ToBool()
                 : Configuration.Resolve(Configuration?.Config?.ReplaceVariables, false, false);
@@ -101,6 +99,7 @@ namespace Migratio
                 }
 
                 WriteObject($"Migration {fileNameWithoutExtension} is not applied adding to transaction");
+
                 var scriptContent = _migrationHelper.GetScriptContent(script, replaceVariables ?? false,
                     Configuration?.Config?.EnvFile);
                 stringBuilder.Append(scriptContent);
@@ -113,7 +112,7 @@ namespace Migratio
         private string GetMigrationQuery(string migrationScriptName, int iteration)
         {
             return Queries.NewMigrationQuery
-                .Replace("@tableSchema", (Schema ?? Configuration?.Config?.Auth?.Postgres?.Schema) ?? "public")
+                .Replace("@tableSchema", Schema ?? Configuration?.Config?.Auth?.Postgres?.Schema ?? "public")
                 .Replace("@migrationName", migrationScriptName)
                 .Replace("@currentIteration", iteration.ToString()) + Environment.NewLine;
         }

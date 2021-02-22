@@ -32,7 +32,7 @@ namespace Migratio.Core
 
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = true)]
         [ValidateNotNullOrEmpty]
-        public string Schema { get; set; } = "public";
+        public string Schema { get; set; }
 
         protected DbConnectionInfo GetConnectionInfo()
         {

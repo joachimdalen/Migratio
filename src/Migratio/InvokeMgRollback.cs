@@ -17,6 +17,7 @@ namespace Migratio
 
         public InvokeMgRollback()
         {
+            _migrationHelper = new MigrationHelper(FileManager, EnvironmentManager, Configuration);
         }
 
         public InvokeMgRollback(CmdletDependencies dependencies) : base(dependencies)
@@ -31,11 +32,7 @@ namespace Migratio
 
         protected override void ProcessRecord()
         {
-            var baseDir =
-                Configuration.Resolve(MigrationRootDir, Configuration?.Config?.Directories?.Base, "migrations");
-            var rollbackDir = Configuration.Resolve(Configuration?.Config?.Directories?.Rollback, null,
-                FileManager.RollbackDirectory(baseDir));
-
+            var rollbackDir = Configuration.RollbackDirectory(MigrationRootDir, ConfigFile);
 
             DatabaseProvider.SetConnectionInfo(GetConnectionInfo());
             if (!DatabaseProvider.MigrationTableExists()) throw new Exception("Migration table does not exist");
@@ -85,7 +82,7 @@ namespace Migratio
         private string GetMigrationQuery(string migrationScriptName, int iteration)
         {
             return Queries.DeleteMigrationQuery
-                .Replace("@tableSchema", (Schema ?? Configuration?.Config?.Auth?.Postgres?.Schema) ?? "public")
+                .Replace("@tableSchema", Schema ?? Configuration?.Config?.Auth?.Postgres?.Schema ?? "public")
                 .Replace("@migrationName", migrationScriptName)
                 .Replace("@currentIteration", iteration.ToString()) + Environment.NewLine;
         }

@@ -16,15 +16,6 @@ namespace Migratio.UnitTests.Mocks
 
         #region Setups
 
-        public void RolloutDirectory(string returns)
-            => MockInstance.Setup(x => x.RolloutDirectory(It.IsAny<string>())).Returns(returns);
-
-        public void RollbackDirectory(string returns)
-            => MockInstance.Setup(x => x.RollbackDirectory(It.IsAny<string>())).Returns(returns);
-
-        public void SeedersDirectory(string returns)
-            => MockInstance.Setup(x => x.SeedersDirectory(It.IsAny<string>())).Returns(returns);
-
         public void GetAllFilesInFolder(string[] returns)
             => MockInstance.Setup(x => x.GetAllFilesInFolder(It.IsAny<string>())).Returns(returns);
 

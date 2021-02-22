@@ -13,7 +13,7 @@ namespace Migratio.UnitTests
         {
             var seedPath = Path.Join("migrations", "seeders");
 
-            FileManagerMock.SeedersDirectory(seedPath);
+            ConfigManagerMock.SeedersDirectory(seedPath);
             FileManagerMock.DirectoryExists(seedPath, false);
             FileManagerMock.CreateDirectory(seedPath);
             FileManagerMock.GetFilePrefix("test_prefix");
