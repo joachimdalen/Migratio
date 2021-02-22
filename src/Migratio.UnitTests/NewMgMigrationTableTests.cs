@@ -10,6 +10,7 @@ namespace Migratio.UnitTests
         [Fact(DisplayName = "New-MgMigrationTable returns false if table exists")]
         public void NewMgMigrationTable_Returns_False_If_Table_Exists()
         {
+            ConfigManagerMock.ConfigReturns(null);
             DbMock.MigrationTableExists(true);
 
             var command = new NewMgMigrationTable(GetMockedDependencies())
@@ -30,6 +31,7 @@ namespace Migratio.UnitTests
         [Fact(DisplayName = "New-MgMigrationTable returns true if table was created")]
         public void NewMgMigrationTable_Returns_True_If_Table_Was_Created()
         {
+            ConfigManagerMock.ConfigReturns(null);
             DbMock.MigrationTableExists(false);
             DbMock.CreateMigrationTable(1);
 

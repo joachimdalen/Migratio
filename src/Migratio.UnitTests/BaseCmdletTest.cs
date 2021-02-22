@@ -12,12 +12,16 @@ namespace Migratio.UnitTests
         protected EnvironmentManagerMock EnvironmentManagerMock { get; set; }
         protected ISecretManager SecretManagerMock { get; set; }
 
+        protected ConfigManagerMock ConfigManagerMock { get; set; }
+
         protected BaseCmdletTest(MockBehavior behavior = MockBehavior.Strict)
         {
             DbMock = new DatabaseProviderMock(behavior);
             FileManagerMock = new FileManagerMock(behavior);
             EnvironmentManagerMock = new EnvironmentManagerMock(behavior);
-            SecretManagerMock = new SecretManager(EnvironmentManagerMock.Object, FileManagerMock.Object);
+            ConfigManagerMock = new ConfigManagerMock(behavior);
+            SecretManagerMock = new SecretManager(EnvironmentManagerMock.Object, FileManagerMock.Object,
+                ConfigManagerMock.Object);
         }
 
         internal CmdletDependencies GetMockedDependencies()
@@ -27,7 +31,8 @@ namespace Migratio.UnitTests
                 FileManager = FileManagerMock.Object,
                 DatabaseProvider = DbMock.Object,
                 EnvironmentManager = EnvironmentManagerMock.Object,
-                SecretManager = SecretManagerMock
+                SecretManager = SecretManagerMock,
+                Configuration = ConfigManagerMock.Object
             };
         }
     }

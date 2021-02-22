@@ -14,6 +14,7 @@ namespace Migratio.UnitTests
         [Fact(DisplayName = "Get-MgProcessedMigrations returns records")]
         public void GetMgProcessedMigrations_Returns_Records()
         {
+            ConfigManagerMock.ConfigReturns(null);
             DbMock.MigrationTableExists(true);
             DbMock.GetAppliedMigrations(
                 new List<Migration>
@@ -40,7 +41,8 @@ namespace Migratio.UnitTests
         public void GetMgProcessedMigrations_Throws_If_Migration_Table_Does_Not_Exist()
         {
             DbMock.MigrationTableExists(false);
-
+            ConfigManagerMock.ConfigReturns(null);
+            
             var command = new GetMgProcessedMigrations(GetMockedDependencies())
             {
                 Database = "database",

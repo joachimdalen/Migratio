@@ -1,4 +1,5 @@
 using System.Management.Automation;
+using Migratio.Configuration;
 using Migratio.Contracts;
 using Migratio.Database;
 using Migratio.Secrets;
@@ -12,15 +13,14 @@ namespace Migratio.Core
         private IEnvironmentManager _environmentManager;
         private IFileManager _fileManager;
         private ISecretManager _secretManager;
+        private IConfiguration _configuration;
 
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = true)]
+        [ValidateNotNullOrEmpty]
+        public string ConfigFile { get; set; }
 
-        protected BaseCmdlet()
+        protected BaseCmdlet() : this(new CmdletDependencies())
         {
-            var dependencies = new CmdletDependencies();
-            SecretManager = dependencies.SecretManager;
-            DatabaseProvider = dependencies.DatabaseProvider;
-            EnvironmentManager = dependencies.EnvironmentManager;
-            FileManager = dependencies.FileManager;
         }
 
         public BaseCmdlet(CmdletDependencies dependencies)
@@ -29,14 +29,26 @@ namespace Migratio.Core
             DatabaseProvider = dependencies.DatabaseProvider;
             EnvironmentManager = dependencies.EnvironmentManager;
             FileManager = dependencies.FileManager;
-        } 
-        
+            Configuration = dependencies.Configuration;
+        }
+
+        public IConfiguration Configuration
+        {
+            get
+            {
+                if (_configuration != null) return _configuration;
+                _configuration = new ConfigurationManager(FileManager);
+                return _configuration;
+            }
+            set => _configuration = value;
+        }
+
         public ISecretManager SecretManager
         {
             get
             {
                 if (_secretManager != null) return _secretManager;
-                _secretManager = new SecretManager(EnvironmentManager, FileManager);
+                _secretManager = new SecretManager(EnvironmentManager, FileManager, Configuration);
                 return _secretManager;
             }
             set => _secretManager = value;
@@ -73,6 +85,12 @@ namespace Migratio.Core
                 return _fileManager;
             }
             set => _fileManager = value;
+        }
+
+        protected override void BeginProcessing()
+        {
+            Configuration.Load(ConfigFile);
+            base.BeginProcessing();
         }
     }
 }

@@ -11,6 +11,7 @@ namespace Migratio.UnitTests
         public void GetMgLatestIteration_Returns_Null_If_Migration_Table_Does_Not_Exist()
         {
             DbMock.MigrationTableExists(false);
+            ConfigManagerMock.ConfigReturns(null);
             var command = new GetMgLatestIteration(GetMockedDependencies())
             {
                 Database = "database",
@@ -29,6 +30,7 @@ namespace Migratio.UnitTests
         {
             DbMock.MigrationTableExists(true);
             DbMock.GetLatestIteration(1);
+            ConfigManagerMock.ConfigReturns(null);
             var command = new GetMgLatestIteration(GetMockedDependencies())
             {
                 Database = "database",

@@ -1,3 +1,4 @@
+using Migratio.Configuration;
 using Migratio.Contracts;
 using Migratio.Database;
 using Migratio.Secrets;
@@ -11,13 +12,25 @@ namespace Migratio
         private IEnvironmentManager _environmentManager;
         private IFileManager _fileManager;
         private ISecretManager _secretManager;
+        private IConfiguration _configuration;
 
+        public IConfiguration Configuration
+        {
+            get
+            {
+                if (_configuration != null) return _configuration;
+                _configuration = new ConfigurationManager(FileManager);
+                return _configuration;
+            }
+            set => _configuration = value;
+        }
+        
         public ISecretManager SecretManager
         {
             get
             {
                 if (_secretManager != null) return _secretManager;
-                _secretManager = new SecretManager(EnvironmentManager, FileManager);
+                _secretManager = new SecretManager(EnvironmentManager, FileManager,Configuration);
                 return _secretManager;
             }
             set => _secretManager = value;

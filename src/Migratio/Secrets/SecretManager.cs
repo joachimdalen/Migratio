@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Migratio.Configuration;
 using Migratio.Contracts;
 using Migratio.Models;
 using Migratio.Utils;
@@ -13,17 +14,21 @@ namespace Migratio.Secrets
         private const string SecretPattern = @"\${{(?<variable>[a-z_A-Z]+)}}";
         private readonly IEnvironmentManager _environmentManager;
         private readonly IFileManager _fileManager;
+        private readonly IConfiguration _configuration;
 
-        public SecretManager(IEnvironmentManager environmentManager, IFileManager fileManager)
+        public SecretManager(IEnvironmentManager environmentManager, IFileManager fileManager,
+            IConfiguration configuration)
         {
             _environmentManager = environmentManager;
             _fileManager = fileManager;
+            _configuration = configuration;
         }
 
         public SecretManager()
         {
             _environmentManager = new EnvironmentManager();
             _fileManager = new FileManager();
+            _configuration = new ConfigurationManager(_fileManager);
         }
 
         public string[] GetSecretsInContent(string content)
@@ -61,7 +66,8 @@ namespace Migratio.Secrets
 
         public string GetEnvironmentVariable(string key, string envFilePath = null)
         {
-            var envForPattern = _environmentManager.GetEnvironmentVariable(key);
+            var envKey = _configuration.GetKeyFromMapping(key);
+            var envForPattern = _environmentManager.GetEnvironmentVariable(envKey);
             if (!string.IsNullOrWhiteSpace(envForPattern)) return envForPattern;
 
             if (envFilePath == null) return string.Empty;
@@ -93,5 +99,7 @@ namespace Migratio.Secrets
 
             return parsed;
         }
+
+        public bool HasSecret(string value) => Regex.IsMatch(value, SecretPattern);
     }
 }

@@ -21,20 +21,26 @@ namespace Migratio
 
         public InvokeMgRollback(CmdletDependencies dependencies) : base(dependencies)
         {
-            _migrationHelper = new MigrationHelper(FileManager, EnvironmentManager);
+            _migrationHelper = new MigrationHelper(FileManager, EnvironmentManager, Configuration);
         }
 
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = true)]
         [ValidateNotNullOrEmpty]
-        public string MigrationRootDir { get; set; } = "migrations";
+        public string MigrationRootDir { get; set; }
 
 
         protected override void ProcessRecord()
         {
+            var baseDir =
+                Configuration.Resolve(MigrationRootDir, Configuration?.Config?.Directories?.Base, "migrations");
+            var rollbackDir = Configuration.Resolve(Configuration?.Config?.Directories?.Rollback, null,
+                FileManager.RollbackDirectory(baseDir));
+
+
             DatabaseProvider.SetConnectionInfo(GetConnectionInfo());
             if (!DatabaseProvider.MigrationTableExists()) throw new Exception("Migration table does not exist");
 
-            var scripts = FileManager.GetAllFilesInFolder(FileManager.RollbackDirectory(MigrationRootDir))
+            var scripts = FileManager.GetAllFilesInFolder(rollbackDir)
                 .OrderByDescending(f => f).ToArray();
             if (scripts.Length == 0)
             {
@@ -79,7 +85,7 @@ namespace Migratio
         private string GetMigrationQuery(string migrationScriptName, int iteration)
         {
             return Queries.DeleteMigrationQuery
-                .Replace("@tableSchema", Schema)
+                .Replace("@tableSchema", (Schema ?? Configuration?.Config?.Auth?.Postgres?.Schema) ?? "public")
                 .Replace("@migrationName", migrationScriptName)
                 .Replace("@currentIteration", iteration.ToString()) + Environment.NewLine;
         }

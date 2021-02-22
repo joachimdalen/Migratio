@@ -10,10 +10,19 @@ namespace Migratio.UnitTests
 {
     public class InvokeMgRolloutTests : BaseCmdletTest
     {
+        public InvokeMgRolloutTests()
+        {
+            ConfigManagerMock.Resolve(null, null, "migrations", "migrations");
+            ConfigManagerMock.Resolve(null, null, "migrations/rollout", "migrations/rollout");
+            ConfigManagerMock.Resolve<bool?>(null, false, false, false);
+        }
+
         [Fact(DisplayName =
             "Invoke-MgRollout throws if migration table does not exist and CreateTableIfNotExist is false")]
         public void InvokeMgRollout_Throws_If_Migration_Table_Does_Not_Exist_And_CreateTableIfNotExist_Is_False()
         {
+            FileManagerMock.RolloutDirectory("migrations");
+            ConfigManagerMock.ConfigReturns(null);
             DbMock.MigrationTableExists(false);
 
             var command = new InvokeMgRollout(GetMockedDependencies())
@@ -31,10 +40,12 @@ namespace Migratio.UnitTests
         [Fact(DisplayName = "Invoke-MgRollout creates migration table if CreateTableIfNotExist is true")]
         public void InvokeMgRollout_Creates_Migration_Table_If_CreateTableIfNotExist_Is_True()
         {
+            ConfigManagerMock.ConfigReturns(null);
+            FileManagerMock.RollbackDirectory("migrations/rollback");
             DbMock.MigrationTableExists(false);
             DbMock.CreateMigrationTable(1);
             FileManagerMock.GetAllFilesInFolder(Array.Empty<string>());
-            FileManagerMock.RolloutDirectory("mig/rol");
+            FileManagerMock.RolloutDirectory("migrations/rollout");
 
             var command = new InvokeMgRollout(GetMockedDependencies())
             {
@@ -52,9 +63,10 @@ namespace Migratio.UnitTests
         [Fact(DisplayName = "Invoke-MgRollout returns if no scripts found")]
         public void InvokeMgRollout_Returns_If_No_Scripts_Found()
         {
+            ConfigManagerMock.ConfigReturns(null);
             DbMock.MigrationTableExists(true);
             FileManagerMock.GetAllFilesInFolder(Array.Empty<string>());
-            FileManagerMock.RolloutDirectory("mig/rol");
+            FileManagerMock.RolloutDirectory("migrations/rollout");
 
             var command = new InvokeMgRollout(GetMockedDependencies())
             {
@@ -72,8 +84,9 @@ namespace Migratio.UnitTests
         [Fact(DisplayName = "Invoke-MgRollout returns if all scripts are applied")]
         public void InvokeMgRollout_Returns_If_All_Scripts_Are_Applied()
         {
+            ConfigManagerMock.ConfigReturns(null);
             DbMock.MigrationTableExists(true);
-            FileManagerMock.RolloutDirectory("mig/rol");
+            FileManagerMock.RolloutDirectory("migrations/rollout");
             FileManagerMock.GetAllFilesInFolder(new[] {"migrations/one.sql", "migrations/two.sql"});
             DbMock.GetAppliedMigrations(new Migration[]
             {
@@ -98,6 +111,7 @@ namespace Migratio.UnitTests
         [Fact(DisplayName = "Invoke-MgRollout skips migration if applied")]
         public void InvokeMgRollout_Skips_Migration_If_Applied()
         {
+            ConfigManagerMock.ConfigReturns(null);
             DbMock.MigrationTableExists(true);
             DbMock.GetLatestIteration(1);
 
@@ -130,6 +144,8 @@ namespace Migratio.UnitTests
         [Fact(DisplayName = "Invoke-MgRollout should replace variables")]
         public void InvokeMgRollout_Should_Replace_Variables()
         {
+            ConfigManagerMock.ConfigReturns(null);
+            ConfigManagerMock.GetKeyFromMapping("TEST_ITEM_VARIABLE", "TEST_ITEM_VARIABLE");
             DbMock.MigrationTableExists(true);
             DbMock.GetLatestIteration(1);
 
@@ -167,6 +183,7 @@ namespace Migratio.UnitTests
         [Fact(DisplayName = "Invoke-MgRollout runs as one transaction if false")]
         public void InvokeMgRollout_Runs_As_One_Transaction_If_False()
         {
+            ConfigManagerMock.ConfigReturns(null);
             DbMock.MigrationTableExists(true);
             DbMock.GetLatestIteration(1);
 

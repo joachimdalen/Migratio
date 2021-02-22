@@ -15,18 +15,18 @@ namespace Migratio
     {
         private readonly MigrationHelper _migrationHelper;
 
-        public InvokeMgRollout()
+        public InvokeMgRollout() : base()
         {
         }
 
         public InvokeMgRollout(CmdletDependencies dependencies) : base(dependencies)
         {
-            _migrationHelper = new MigrationHelper(FileManager, EnvironmentManager);
+            _migrationHelper = new MigrationHelper(FileManager, EnvironmentManager, Configuration);
         }
 
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = true)]
         [ValidateNotNullOrEmpty]
-        public string MigrationRootDir { get; set; } = "migrations";
+        public string MigrationRootDir { get; set; }
 
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = true)]
         public SwitchParameter ReplaceVariables { get; set; }
@@ -36,7 +36,20 @@ namespace Migratio
 
         protected override void ProcessRecord()
         {
-            DatabaseProvider.SetConnectionInfo(GetConnectionInfo());
+            var baseDir =
+                Configuration.Resolve(MigrationRootDir, Configuration?.Config?.Directories?.Base, "migrations");
+            var rolloutDir = Configuration.Resolve(Configuration?.Config?.Directories?.Rollout, null,
+                FileManager.RolloutDirectory(baseDir));
+            var replaceVariables = ReplaceVariables.IsPresent
+                ? ReplaceVariables.ToBool()
+                : Configuration.Resolve(Configuration?.Config?.ReplaceVariables, false, false);
+
+
+            var cfg = GetConnectionInfo();
+            WriteVerbose(System.Text.Json.JsonSerializer.Serialize(cfg));
+            WriteVerbose(System.Text.Json.JsonSerializer.Serialize(Configuration.Config));
+            DatabaseProvider.SetConnectionInfo(cfg);
+
             if (!DatabaseProvider.MigrationTableExists())
             {
                 if (CreateTableIfNotExist.ToBool())
@@ -50,7 +63,7 @@ namespace Migratio
                 }
             }
 
-            var scripts = FileManager.GetAllFilesInFolder(FileManager.RolloutDirectory(MigrationRootDir))
+            var scripts = FileManager.GetAllFilesInFolder(rolloutDir)
                 .OrderBy(f => f)
                 .ToArray();
 
@@ -88,7 +101,7 @@ namespace Migratio
                 }
 
                 WriteObject($"Migration {fileNameWithoutExtension} is not applied adding to transaction");
-                var scriptContent = _migrationHelper.GetScriptContent(script, ReplaceVariables.ToBool(), EnvFile);
+                var scriptContent = _migrationHelper.GetScriptContent(script, replaceVariables ?? false, EnvFile);
                 stringBuilder.Append(scriptContent);
                 stringBuilder.Append(GetMigrationQuery(fileNameWithoutExtension, currentIteration));
             }
@@ -99,7 +112,7 @@ namespace Migratio
         private string GetMigrationQuery(string migrationScriptName, int iteration)
         {
             return Queries.NewMigrationQuery
-                .Replace("@tableSchema", Schema)
+                .Replace("@tableSchema", (Schema ?? Configuration?.Config?.Auth?.Postgres?.Schema) ?? "public")
                 .Replace("@migrationName", migrationScriptName)
                 .Replace("@currentIteration", iteration.ToString()) + Environment.NewLine;
         }

@@ -7,12 +7,14 @@ namespace Migratio.Utils
     public class MigrationHelper
     {
         private readonly IFileManager _fileManager;
+        private readonly IConfiguration _configuration;
         private readonly ISecretManager _secretManager;
 
-        public MigrationHelper(IFileManager fileManager, IEnvironmentManager environmentManager)
+        public MigrationHelper(IFileManager fileManager, IEnvironmentManager environmentManager, IConfiguration configuration)
         {
             _fileManager = fileManager;
-            _secretManager = new SecretManager(environmentManager, fileManager);
+            _configuration = configuration;
+            _secretManager = new SecretManager(environmentManager, _fileManager, _configuration);
         }
 
         public string GetScriptContent(string scriptPath, bool replace, string envFilePath)

@@ -10,6 +10,7 @@
         <PackageReference Include="PowerShellStandard.Library" Version="7.0.0-preview.1">
             <PrivateAssets>All</PrivateAssets>
         </PackageReference>
+        <PackageReference Include="YamlDotNet" Version="9.1.4" />
     </ItemGroup>
 
 </Project>
