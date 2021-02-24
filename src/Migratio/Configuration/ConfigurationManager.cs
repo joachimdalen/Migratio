@@ -108,7 +108,7 @@ namespace Migratio.Configuration
         public string SeedersDirectory(string migrationBaseDir, string configPath)
         {
             var configBase = Path.GetDirectoryName(configPath);
-            var seeders = Config.Directories.Rollback;
+            var seeders = Config.Directories.Seeders;
 
             if (migrationBaseDir != null)
             {

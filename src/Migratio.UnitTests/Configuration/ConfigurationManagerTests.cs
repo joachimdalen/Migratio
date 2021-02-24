@@ -132,5 +132,59 @@ auth:
     password: '${{MG_DB_PASSWORD}}'
 replaceVariables: true
 ";
+
+        [Theory(DisplayName = "RolloutDirectory returns correct path")]
+        [InlineData("/mnt/dir1", null, "/mnt/dir1/migratio.yml", "/mnt/dir1/rollout")]
+        [InlineData(null, "/mnt/dir2/rollout", "/mnt/dir1/migratio.yml", "/mnt/dir2/rollout")]
+        [InlineData(null, "../rollout", "/mnt/dir3/migratio.yml", "/mnt/rollout")]
+        [InlineData(null, "./rollout", "/mnt/dir4/migratio.yml", "/mnt/dir4/rollout")]
+        public void RolloutDirectory_Returns_Correct_Path(string migrationBaseDir, string confPath,
+            string configFilePath, string expected)
+        {
+            var sut = new ConfigurationManager(_fileManagerMock.Object)
+            {
+                Config = new MgConfig {Directories = new MgDirs {Rollout = confPath}}
+            };
+
+            var result = sut.RolloutDirectory(migrationBaseDir, configFilePath);
+
+            Assert.Equal(expected, result);
+        }
+
+        [Theory(DisplayName = "RollbackDirectory returns correct path")]
+        [InlineData("/mnt/dir1", null, "/mnt/dir1/migratio.yml", "/mnt/dir1/rollback")]
+        [InlineData(null, "/mnt/dir2/rollback", "/mnt/dir1/migratio.yml", "/mnt/dir2/rollback")]
+        [InlineData(null, "../rollback", "/mnt/dir3/migratio.yml", "/mnt/rollback")]
+        [InlineData(null, "./rollback", "/mnt/dir4/migratio.yml", "/mnt/dir4/rollback")]
+        public void RollbackDirectory_Returns_Correct_Path(string migrationBaseDir, string confPath,
+            string configFilePath, string expected)
+        {
+            var sut = new ConfigurationManager(_fileManagerMock.Object)
+            {
+                Config = new MgConfig {Directories = new MgDirs {Rollback = confPath}}
+            };
+
+            var result = sut.RollbackDirectory(migrationBaseDir, configFilePath);
+
+            Assert.Equal(expected, result);
+        }
+
+        [Theory(DisplayName = "SeedersDirectory returns correct path")]
+        [InlineData("/mnt/dir1", null, "/mnt/dir1/migratio.yml", "/mnt/dir1/seeders")]
+        [InlineData(null, "/mnt/dir2/seeders", "/mnt/dir1/migratio.yml", "/mnt/dir2/seeders")]
+        [InlineData(null, "../seeders", "/mnt/dir3/migratio.yml", "/mnt/seeders")]
+        [InlineData(null, "./seeders", "/mnt/dir4/migratio.yml", "/mnt/dir4/seeders")]
+        public void SeedersDirectory_Returns_Correct_Path(string migrationBaseDir, string confPath,
+            string configFilePath, string expected)
+        {
+            var sut = new ConfigurationManager(_fileManagerMock.Object)
+            {
+                Config = new MgConfig {Directories = new MgDirs {Seeders = confPath}}
+            };
+
+            var result = sut.SeedersDirectory(migrationBaseDir, configFilePath);
+
+            Assert.Equal(expected, result);
+        }
     }
 }

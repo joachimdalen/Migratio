@@ -18,7 +18,7 @@ namespace Migratio
 
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = true)]
         [ValidateNotNullOrEmpty]
-        public string MigrationRootDir { get; set; } = "migrations";
+        public string MigrationRootDir { get; set; }
 
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = true)]
         [ValidateNotNullOrEmpty]
