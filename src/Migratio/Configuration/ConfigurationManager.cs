@@ -66,7 +66,7 @@ namespace Migratio.Configuration
 
             if (migrationBaseDir != null)
             {
-                return Path.Combine(migrationBaseDir, "rollout");
+                return Path.GetFullPath(Path.Combine(migrationBaseDir, "rollout"));
             }
 
             if (Path.IsPathRooted(rollout))
@@ -79,7 +79,7 @@ namespace Migratio.Configuration
                 throw new Exception("Unable to determine rollout directory");
             }
 
-            return Path.Combine(configBase, rollout);
+            return Path.GetFullPath(Path.Combine(configBase, rollout));
         }
 
         public string RollbackDirectory(string migrationBaseDir, string configPath)
@@ -89,7 +89,7 @@ namespace Migratio.Configuration
 
             if (migrationBaseDir != null)
             {
-                return Path.Combine(migrationBaseDir, "rollback");
+                return Path.GetFullPath(Path.Combine(migrationBaseDir, "rollback"));
             }
 
             if (Path.IsPathRooted(rollback))
@@ -102,7 +102,7 @@ namespace Migratio.Configuration
                 throw new Exception("Unable to determine rollback directory");
             }
 
-            return Path.Combine(configBase, rollback);
+            return Path.GetFullPath(Path.Combine(configBase, rollback));
         }
 
         public string SeedersDirectory(string migrationBaseDir, string configPath)
@@ -112,7 +112,7 @@ namespace Migratio.Configuration
 
             if (migrationBaseDir != null)
             {
-                return Path.Combine(migrationBaseDir, "seeders");
+                return Path.GetFullPath(Path.Combine(migrationBaseDir, "seeders"));
             }
 
             if (Path.IsPathRooted(seeders))
@@ -125,7 +125,7 @@ namespace Migratio.Configuration
                 throw new Exception("Unable to determine seeders directory");
             }
 
-            return Path.Combine(configBase, seeders);
+            return Path.GetFullPath(Path.Combine(configBase, seeders));
         }
     }
 }
