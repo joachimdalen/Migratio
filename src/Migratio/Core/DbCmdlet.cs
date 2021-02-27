@@ -44,7 +44,7 @@ namespace Migratio.Core
                 Host = Host ?? ResolveDynamicConfig<string, string>(dbInfo?.Host, null, "127.0.0.1"),
                 Password = ResolveDynamicConfig<string, string>(dbInfo?.Password, "MG_DB_PASSWORD", null),
                 Port = Port == 0 ? ResolveDynamicConfig<int?, int>(dbInfo?.Port, null, 5432) : Port,
-                Schema = Schema ?? ResolveDynamicConfig<string, string>(dbInfo?.Schema, null, "public"),
+                Schema = Schema ?? ResolveDynamicConfig<string, string>(dbInfo?.Schema, null, "public")
             };
         }
 
@@ -52,10 +52,7 @@ namespace Migratio.Core
         {
             var value = ResolveConfig(fromConfig?.ToString(), envKey, defaultValue?.ToString());
 
-            if (typeof(T2) == typeof(string))
-            {
-                return (T2) (object) value;
-            }
+            if (typeof(T2) == typeof(string)) return (T2) (object) value;
 
             if (typeof(T2) == typeof(bool))
             {
@@ -76,18 +73,12 @@ namespace Migratio.Core
         {
             if (fromConfig != null)
             {
-                if (SecretManager.HasSecret(fromConfig))
-                {
-                    return SecretManager.ReplaceSecretsInContent(fromConfig, Configuration?.Config?.EnvFile);
-                }
+                if (SecretManager.HasSecret(fromConfig)) return SecretManager.ReplaceSecretsInContent(fromConfig);
 
                 return fromConfig;
             }
 
-            if (!string.IsNullOrEmpty(envKey))
-            {
-                return SecretManager.GetEnvironmentVariable(envKey, Configuration?.Config?.EnvFile);
-            }
+            if (!string.IsNullOrEmpty(envKey)) return SecretManager.GetEnvironmentVariable(envKey);
 
             return defaultValue;
         }

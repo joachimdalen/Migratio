@@ -6,8 +6,8 @@ namespace Migratio.Utils
 {
     public class MigrationHelper
     {
-        private readonly IFileManager _fileManager;
         private readonly IConfiguration _configuration;
+        private readonly IFileManager _fileManager;
         private readonly ISecretManager _secretManager;
 
         public MigrationHelper(IFileManager fileManager, IEnvironmentManager environmentManager,
@@ -18,7 +18,7 @@ namespace Migratio.Utils
             _secretManager = new SecretManager(environmentManager, _fileManager, _configuration);
         }
 
-        public string GetScriptContent(string scriptPath, bool replace, string envFilePath)
+        public string GetScriptContent(string scriptPath, bool replace)
         {
             var scriptContent = _fileManager.ReadAllText(scriptPath);
             if (!scriptContent.EndsWith(";"))
@@ -26,7 +26,7 @@ namespace Migratio.Utils
 
             if (!replace) return scriptContent + Environment.NewLine;
 
-            var replacedContent = _secretManager.ReplaceSecretsInContent(scriptContent, envFilePath);
+            var replacedContent = _secretManager.ReplaceSecretsInContent(scriptContent);
             return replacedContent + Environment.NewLine;
         }
     }

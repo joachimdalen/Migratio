@@ -44,8 +44,6 @@ namespace Migratio
 
 
             var cfg = GetConnectionInfo();
-            WriteVerbose(System.Text.Json.JsonSerializer.Serialize(cfg));
-            WriteVerbose(System.Text.Json.JsonSerializer.Serialize(Configuration.Config));
             DatabaseProvider.SetConnectionInfo(cfg);
 
             if (!DatabaseProvider.MigrationTableExists())
@@ -100,8 +98,7 @@ namespace Migratio
 
                 WriteObject($"Migration {fileNameWithoutExtension} is not applied adding to transaction");
 
-                var scriptContent = _migrationHelper.GetScriptContent(script, replaceVariables ?? false,
-                    Configuration?.Config?.EnvFile);
+                var scriptContent = _migrationHelper.GetScriptContent(script, replaceVariables ?? false);
                 stringBuilder.Append(scriptContent);
                 stringBuilder.Append(GetMigrationQuery(fileNameWithoutExtension, currentIteration));
             }

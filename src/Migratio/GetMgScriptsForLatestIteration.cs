@@ -21,10 +21,7 @@ namespace Migratio
         {
             DatabaseProvider.SetConnectionInfo(GetConnectionInfo());
 
-            if (!DatabaseProvider.MigrationTableExists())
-            {
-                throw new Exception("Migration table does not exist");
-            }
+            if (!DatabaseProvider.MigrationTableExists()) throw new Exception("Migration table does not exist");
 
             var processed = DatabaseProvider.GetAppliedScriptsForLatestIteration();
 

@@ -8,11 +8,11 @@ namespace Migratio
 {
     public class CmdletDependencies
     {
+        private IConfiguration _configuration;
         private IDatabaseProvider _databaseProvider;
         private IEnvironmentManager _environmentManager;
         private IFileManager _fileManager;
         private ISecretManager _secretManager;
-        private IConfiguration _configuration;
 
         public IConfiguration Configuration
         {
@@ -24,13 +24,13 @@ namespace Migratio
             }
             set => _configuration = value;
         }
-        
+
         public ISecretManager SecretManager
         {
             get
             {
                 if (_secretManager != null) return _secretManager;
-                _secretManager = new SecretManager(EnvironmentManager, FileManager,Configuration);
+                _secretManager = new SecretManager(EnvironmentManager, FileManager, Configuration);
                 return _secretManager;
             }
             set => _secretManager = value;

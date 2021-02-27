@@ -67,7 +67,7 @@ namespace Migratio
                     continue;
                 }
 
-                var scriptContent = _migrationHelper.GetScriptContent(script, false, Configuration?.Config?.EnvFile);
+                var scriptContent = _migrationHelper.GetScriptContent(script, false);
 
                 stringBuilder.Append(scriptContent);
                 stringBuilder.Append(GetMigrationQuery(fileNameWithoutExtension, iteration));

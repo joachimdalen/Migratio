@@ -9,15 +9,11 @@ namespace Migratio.Core
 {
     public abstract class BaseCmdlet : Cmdlet
     {
+        private IConfiguration _configuration;
         private IDatabaseProvider _databaseProvider;
         private IEnvironmentManager _environmentManager;
         private IFileManager _fileManager;
         private ISecretManager _secretManager;
-        private IConfiguration _configuration;
-
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = true)]
-        [ValidateNotNullOrEmpty]
-        public string ConfigFile { get; set; }
 
         protected BaseCmdlet() : this(new CmdletDependencies())
         {
@@ -31,6 +27,10 @@ namespace Migratio.Core
             FileManager = dependencies.FileManager;
             Configuration = dependencies.Configuration;
         }
+
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = true)]
+        [ValidateNotNullOrEmpty]
+        public string ConfigFile { get; set; }
 
         public IConfiguration Configuration
         {

@@ -3,8 +3,8 @@ namespace Migratio.Contracts
     public interface ISecretManager
     {
         string[] GetSecretsInContent(string content);
-        string ReplaceSecretsInContent(string content, string envFilePath);
-        string GetEnvironmentVariable(string key, string envFilePath = null);
+        string ReplaceSecretsInContent(string content);
+        string GetEnvironmentVariable(string key);
         bool HasSecret(string value);
     }
 }

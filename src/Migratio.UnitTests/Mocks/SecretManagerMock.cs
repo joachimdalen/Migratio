@@ -11,7 +11,7 @@ namespace Migratio.UnitTests.Mocks
         public SecretManagerMock(MockBehavior behavior = MockBehavior.Strict)
         {
             MockInstance = new Mock<ISecretManager>(behavior);
-            MockInstance.Setup(x => x.GetEnvironmentVariable("MG_DB_PASSWORD", null)).Returns("password");
+            MockInstance.Setup(x => x.GetEnvironmentVariable("MG_DB_PASSWORD")).Returns("password");
         }
     }
 }

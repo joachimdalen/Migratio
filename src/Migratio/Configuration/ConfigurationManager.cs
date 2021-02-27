@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Runtime.CompilerServices;
 using Migratio.Contracts;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
@@ -9,14 +8,14 @@ namespace Migratio.Configuration
 {
     public class ConfigurationManager : IConfiguration
     {
-        public MgConfig Config { get; set; }
-
         private readonly IFileManager _fileManager;
 
         public ConfigurationManager(IFileManager fileManager)
         {
             _fileManager = fileManager;
         }
+
+        public MgConfig Config { get; set; }
 
         public string GetKeyFromMapping(string itemKey)
         {
@@ -27,10 +26,7 @@ namespace Migratio.Configuration
 
             if (res == false) return itemKey;
 
-            if (val.StartsWith("${{"))
-            {
-                throw new Exception("Variables can not be used in the value of envMappings");
-            }
+            if (val.StartsWith("${{")) throw new Exception("Variables can not be used in the value of envMappings");
 
             return val;
         }
@@ -38,10 +34,7 @@ namespace Migratio.Configuration
         public bool Load(string configFile)
         {
             Console.WriteLine("Loading... " + configFile);
-            if (string.IsNullOrEmpty(configFile))
-            {
-                return false;
-            }
+            if (string.IsNullOrEmpty(configFile)) return false;
 
             var deserializer = new DeserializerBuilder()
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
@@ -64,20 +57,11 @@ namespace Migratio.Configuration
             var configBase = Path.GetDirectoryName(configPath);
             var rollout = Config.Directories.Rollout;
 
-            if (migrationBaseDir != null)
-            {
-                return Path.GetFullPath(Path.Combine(migrationBaseDir, "rollout"));
-            }
+            if (migrationBaseDir != null) return Path.GetFullPath(Path.Combine(migrationBaseDir, "rollout"));
 
-            if (Path.IsPathRooted(rollout))
-            {
-                return rollout;
-            }
+            if (Path.IsPathRooted(rollout)) return rollout;
 
-            if (configBase == null)
-            {
-                throw new Exception("Unable to determine rollout directory");
-            }
+            if (configBase == null) throw new Exception("Unable to determine rollout directory");
 
             return Path.GetFullPath(Path.Combine(configBase, rollout));
         }
@@ -87,20 +71,11 @@ namespace Migratio.Configuration
             var configBase = Path.GetDirectoryName(configPath);
             var rollback = Config.Directories.Rollback;
 
-            if (migrationBaseDir != null)
-            {
-                return Path.GetFullPath(Path.Combine(migrationBaseDir, "rollback"));
-            }
+            if (migrationBaseDir != null) return Path.GetFullPath(Path.Combine(migrationBaseDir, "rollback"));
 
-            if (Path.IsPathRooted(rollback))
-            {
-                return rollback;
-            }
+            if (Path.IsPathRooted(rollback)) return rollback;
 
-            if (configBase == null)
-            {
-                throw new Exception("Unable to determine rollback directory");
-            }
+            if (configBase == null) throw new Exception("Unable to determine rollback directory");
 
             return Path.GetFullPath(Path.Combine(configBase, rollback));
         }
@@ -110,20 +85,11 @@ namespace Migratio.Configuration
             var configBase = Path.GetDirectoryName(configPath);
             var seeders = Config.Directories.Seeders;
 
-            if (migrationBaseDir != null)
-            {
-                return Path.GetFullPath(Path.Combine(migrationBaseDir, "seeders"));
-            }
+            if (migrationBaseDir != null) return Path.GetFullPath(Path.Combine(migrationBaseDir, "seeders"));
 
-            if (Path.IsPathRooted(seeders))
-            {
-                return seeders;
-            }
+            if (Path.IsPathRooted(seeders)) return seeders;
 
-            if (configBase == null)
-            {
-                throw new Exception("Unable to determine seeders directory");
-            }
+            if (configBase == null) throw new Exception("Unable to determine seeders directory");
 
             return Path.GetFullPath(Path.Combine(configBase, seeders));
         }
