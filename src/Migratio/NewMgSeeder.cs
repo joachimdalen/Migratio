@@ -1,6 +1,7 @@
 using System.IO;
 using System.Management.Automation;
 using Migratio.Core;
+using Migratio.Models;
 
 namespace Migratio
 {
@@ -26,7 +27,7 @@ namespace Migratio
 
         protected override void ProcessRecord()
         {
-            var seederDir = Configuration.SeedersDirectory(MigrationRootDir, ConfigFile);
+            var seederDir = Configuration.GetMigratioDir(MigrationRootDir, ConfigFile, MigratioDirectory.Seeders);
             if (!FileManager.DirectoryExists(seederDir))
             {
                 FileManager.CreateDirectory(seederDir);

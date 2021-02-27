@@ -5,6 +5,7 @@ using System.Management.Automation;
 using System.Text;
 using Migratio.Core;
 using Migratio.Database;
+using Migratio.Models;
 using Migratio.Utils;
 
 namespace Migratio
@@ -32,7 +33,7 @@ namespace Migratio
 
         protected override void ProcessRecord()
         {
-            var rollbackDir = Configuration.RollbackDirectory(MigrationRootDir, ConfigFile);
+            var rollbackDir = Configuration.GetMigratioDir(MigrationRootDir, ConfigFile, MigratioDirectory.Rollback);
 
             DatabaseProvider.SetConnectionInfo(GetConnectionInfo());
             if (!DatabaseProvider.MigrationTableExists()) throw new Exception("Migration table does not exist");

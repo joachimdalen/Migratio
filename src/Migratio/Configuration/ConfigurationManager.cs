@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using Migratio.Contracts;
+using Migratio.Models;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -52,46 +53,55 @@ namespace Migratio.Configuration
             return defaultValue;
         }
 
-        public string RolloutDirectory(string migrationBaseDir, string configPath)
+        public string GetMigratioDir(string migrationBaseDir, string configPath, MigratioDirectory directoryType)
         {
             var configBase = Path.GetDirectoryName(configPath);
-            var rollout = Config.Directories.Rollout;
+            var fromConfigFile = GetSystemDirFromConfig(directoryType);
 
-            if (migrationBaseDir != null) return Path.GetFullPath(Path.Combine(migrationBaseDir, "rollout"));
+            if (migrationBaseDir != null)
+                return Path.GetFullPath(Path.Combine(migrationBaseDir, GetDefaultSystemDir(directoryType)));
 
-            if (Path.IsPathRooted(rollout)) return rollout;
+            if (Path.IsPathRooted(fromConfigFile)) return fromConfigFile;
 
-            if (configBase == null) throw new Exception("Unable to determine rollout directory");
+            if (configBase == null) throw new Exception("Unable to determine directory");
 
-            return Path.GetFullPath(Path.Combine(configBase, rollout));
+            return Path.GetFullPath(Path.Combine(configBase, fromConfigFile));
         }
 
-        public string RollbackDirectory(string migrationBaseDir, string configPath)
+        private string GetDefaultSystemDir(MigratioDirectory directoryType)
         {
-            var configBase = Path.GetDirectoryName(configPath);
-            var rollback = Config.Directories.Rollback;
-
-            if (migrationBaseDir != null) return Path.GetFullPath(Path.Combine(migrationBaseDir, "rollback"));
-
-            if (Path.IsPathRooted(rollback)) return rollback;
-
-            if (configBase == null) throw new Exception("Unable to determine rollback directory");
-
-            return Path.GetFullPath(Path.Combine(configBase, rollback));
+            switch (directoryType)
+            {
+                case MigratioDirectory.Base:
+                    return "migrations";
+                case MigratioDirectory.Rollout:
+                    return "rollout";
+                case MigratioDirectory.Rollback:
+                    return "rollback";
+                case MigratioDirectory.Seeders:
+                    return "seeders";
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(directoryType), directoryType,
+                        "Unknown directory type");
+            }
         }
 
-        public string SeedersDirectory(string migrationBaseDir, string configPath)
+        private string GetSystemDirFromConfig(MigratioDirectory directoryType)
         {
-            var configBase = Path.GetDirectoryName(configPath);
-            var seeders = Config.Directories.Seeders;
-
-            if (migrationBaseDir != null) return Path.GetFullPath(Path.Combine(migrationBaseDir, "seeders"));
-
-            if (Path.IsPathRooted(seeders)) return seeders;
-
-            if (configBase == null) throw new Exception("Unable to determine seeders directory");
-
-            return Path.GetFullPath(Path.Combine(configBase, seeders));
+            switch (directoryType)
+            {
+                case MigratioDirectory.Base:
+                    return Config?.Directories?.Base;
+                case MigratioDirectory.Rollout:
+                    return Config?.Directories?.Rollout;
+                case MigratioDirectory.Rollback:
+                    return Config?.Directories?.Rollback;
+                case MigratioDirectory.Seeders:
+                    return Config?.Directories?.Seeders;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(directoryType), directoryType,
+                        "Unknown directory type");
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Migratio.Configuration;
+using Migratio.Models;
 using Migratio.UnitTests.Mocks;
 using Xunit;
 
@@ -146,7 +147,7 @@ replaceVariables: true
                 Config = new MgConfig {Directories = new MgDirs {Rollout = confPath}}
             };
 
-            var result = sut.RolloutDirectory(migrationBaseDir, configFilePath);
+            var result = sut.GetMigratioDir(migrationBaseDir, configFilePath, MigratioDirectory.Rollout);
 
             Assert.Equal(expected, result);
         }
@@ -164,7 +165,7 @@ replaceVariables: true
                 Config = new MgConfig {Directories = new MgDirs {Rollback = confPath}}
             };
 
-            var result = sut.RollbackDirectory(migrationBaseDir, configFilePath);
+            var result = sut.GetMigratioDir(migrationBaseDir, configFilePath, MigratioDirectory.Rollback);
 
             Assert.Equal(expected, result);
         }
@@ -182,7 +183,7 @@ replaceVariables: true
                 Config = new MgConfig {Directories = new MgDirs {Seeders = confPath}}
             };
 
-            var result = sut.SeedersDirectory(migrationBaseDir, configFilePath);
+            var result = sut.GetMigratioDir(migrationBaseDir, configFilePath, MigratioDirectory.Seeders);
 
             Assert.Equal(expected, result);
         }

@@ -1,6 +1,7 @@
 using System.IO;
 using System.Management.Automation;
 using Migratio.Core;
+using Migratio.Models;
 
 namespace Migratio
 {
@@ -26,8 +27,8 @@ namespace Migratio
 
         protected override void ProcessRecord()
         {
-            var rolloutDir = Configuration.RolloutDirectory(MigrationRootDir, ConfigFile);
-            var rollbackDir = Configuration.RollbackDirectory(MigrationRootDir, ConfigFile);
+            var rolloutDir = Configuration.GetMigratioDir(MigrationRootDir, ConfigFile, MigratioDirectory.Rollout);
+            var rollbackDir = Configuration.GetMigratioDir(MigrationRootDir, ConfigFile, MigratioDirectory.Rollback);
             var dirs = new[] {rolloutDir, rollbackDir};
 
             foreach (var dir in dirs)

@@ -1,5 +1,6 @@
 using Migratio.Configuration;
 using Migratio.Contracts;
+using Migratio.Models;
 using Moq;
 
 namespace Migratio.UnitTests.Mocks
@@ -32,12 +33,18 @@ namespace Migratio.UnitTests.Mocks
         }
 
         public void RolloutDirectory(string returns)
-            => MockInstance.Setup(x => x.RolloutDirectory(It.IsAny<string>(), It.IsAny<string>())).Returns(returns);
+            => MockInstance
+                .Setup(x => x.GetMigratioDir(It.IsAny<string>(), It.IsAny<string>(), MigratioDirectory.Rollout))
+                .Returns(returns);
 
         public void RollbackDirectory(string returns)
-            => MockInstance.Setup(x => x.RollbackDirectory(It.IsAny<string>(), It.IsAny<string>())).Returns(returns);
+            => MockInstance
+                .Setup(x => x.GetMigratioDir(It.IsAny<string>(), It.IsAny<string>(), MigratioDirectory.Rollback))
+                .Returns(returns);
 
         public void SeedersDirectory(string returns)
-            => MockInstance.Setup(x => x.SeedersDirectory(It.IsAny<string>(), It.IsAny<string>())).Returns(returns);
+            => MockInstance
+                .Setup(x => x.GetMigratioDir(It.IsAny<string>(), It.IsAny<string>(), MigratioDirectory.Seeders))
+                .Returns(returns);
     }
 }

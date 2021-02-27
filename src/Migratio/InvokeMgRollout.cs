@@ -5,6 +5,7 @@ using System.Management.Automation;
 using System.Text;
 using Migratio.Core;
 using Migratio.Database;
+using Migratio.Models;
 using Migratio.Utils;
 
 namespace Migratio
@@ -37,7 +38,7 @@ namespace Migratio
 
         protected override void ProcessRecord()
         {
-            var rolloutDir = Configuration.RolloutDirectory(MigrationRootDir, ConfigFile);
+            var rolloutDir = Configuration.GetMigratioDir(MigrationRootDir, ConfigFile, MigratioDirectory.Rollout);
             var replaceVariables = ReplaceVariables.IsPresent
                 ? ReplaceVariables.ToBool()
                 : Configuration.Resolve(Configuration?.Config?.ReplaceVariables, false, false);
