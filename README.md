@@ -85,7 +85,7 @@ auth: # DB auth options
     port: 1234
     database: 'TestDB'
     username: 'postgres'
-    password: '${{MG_DB_PASSWORD}}'
+    password: '${{MG_DB_PASSWORD}}' # Will use DB_USERNAME under lookup (ref: envMapping)
 replaceVariables: true # Replace variables in rollout scripts
 
 ```
