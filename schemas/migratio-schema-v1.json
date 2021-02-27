@@ -1,0 +1,112 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$ref": "#/definitions/Root",
+  "$id": "https://github.com/joachimdalen/Migratio/blob/master/schemas/migratio-schema-v1.json",
+  "title": "Migratio schema",
+  "description": "Schema for Migratio definition",
+  "definitions": {
+    "Root": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "directories": {
+          "$ref": "#/definitions/Directories"
+        },
+        "envMapping": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/EnvMapping"
+          }
+        },
+        "envFile": {
+          "type": "string",
+          "description": "Path to environment file. Can be absolute or relative"
+        },
+        "auth": {
+          "$ref": "#/definitions/Auth"
+        },
+        "replaceVariables": {
+          "type": "boolean",
+          "default": false,
+          "description": "If variables should replaced during rollout"
+        }
+      },
+      "required": [],
+      "title": "Root"
+    },
+    "Auth": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "postgres": {
+          "$ref": "#/definitions/ConnectionProperties"
+        }
+      },
+      "required": [],
+      "title": "Auth"
+    },
+    "ConnectionProperties": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "host": {
+          "type": "string",
+          "anyOf": [
+            { "format": "host-name" },
+            { "format": "ipv4" },
+            { "format": "ipv6" }
+          ]
+        },
+        "port": {
+          "type": "integer"
+        },
+        "database": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      },
+      "required": [],
+      "title": "Postgres"
+    },
+    "Directories": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Paths to Migratio directories",
+      "properties": {
+        "base": {
+          "type": "string",
+          "description": "Path to root directory if following internal naming conventions"
+        },
+        "rollout": {
+          "type": "string",
+          "description": "Path to directory for rollout migrations"
+        },
+        "rollback": {
+          "type": "string",
+          "description": "Path to directory for rollback migrations"
+        },
+        "seeders": {
+          "type": "string",
+          "description": "Path to directory for seeders"
+        }
+      },
+      "required": [],
+      "title": "Directories"
+    },
+    "mappingOfStringString": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "EnvMapping": {
+      "$ref": "#/definitions/mappingOfStringString",
+      "required": [],
+      "title": "EnvMapping",
+      "description": "Mapping of environment variable names"
+    }
+  }
+}
