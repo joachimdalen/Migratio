@@ -5,24 +5,17 @@ using Xunit;
 
 namespace Migratio.UnitTests
 {
-    public class NewMgMigrationTableTests
+    public class NewMgMigrationTableTests : BaseCmdletTest
     {
-        private readonly DatabaseProviderMock _dbMock;
-
-        public NewMgMigrationTableTests()
-        {
-            _dbMock = new DatabaseProviderMock();
-        }
-
         [Fact(DisplayName = "New-MgMigrationTable returns false if table exists")]
         public void NewMgMigrationTable_Returns_False_If_Table_Exists()
         {
-            _dbMock.MigrationTableExists(true);
+            ConfigManagerMock.ConfigReturns(null);
+            DbMock.MigrationTableExists(true);
 
-            var command = new NewMgMigrationTable(_dbMock.Object)
+            var command = new NewMgMigrationTable(GetMockedDependencies())
             {
                 Database = "database",
-                Password = "password",
                 Host = "host",
                 Port = 1111,
                 Schema = "public",
@@ -31,20 +24,20 @@ namespace Migratio.UnitTests
 
             var result = command.Invoke()?.OfType<bool>().First();
             Assert.False(result);
-            _dbMock.VerifyMigrationTableExists(Times.Once());
-            _dbMock.VerifyCreateMigrationTable(Times.Never());
+            DbMock.VerifyMigrationTableExists(Times.Once());
+            DbMock.VerifyCreateMigrationTable(Times.Never());
         }
 
         [Fact(DisplayName = "New-MgMigrationTable returns true if table was created")]
         public void NewMgMigrationTable_Returns_True_If_Table_Was_Created()
         {
-            _dbMock.MigrationTableExists(false);
-            _dbMock.CreateMigrationTable(1);
+            ConfigManagerMock.ConfigReturns(null);
+            DbMock.MigrationTableExists(false);
+            DbMock.CreateMigrationTable(1);
 
-            var command = new NewMgMigrationTable(_dbMock.Object)
+            var command = new NewMgMigrationTable(GetMockedDependencies())
             {
                 Database = "database",
-                Password = "password",
                 Host = "host",
                 Port = 1111,
                 Schema = "public",
@@ -53,8 +46,8 @@ namespace Migratio.UnitTests
 
             var result = command.Invoke()?.OfType<bool>().First();
             Assert.True(result);
-            _dbMock.VerifyMigrationTableExists(Times.Once());
-            _dbMock.VerifyCreateMigrationTable(Times.Once());
+            DbMock.VerifyMigrationTableExists(Times.Once());
+            DbMock.VerifyCreateMigrationTable(Times.Once());
         }
 
         [Fact(DisplayName = "New-MgMigrationTable default constructor constructs")]
@@ -63,7 +56,6 @@ namespace Migratio.UnitTests
             var result = new NewMgMigrationTable
             {
                 Database = "database",
-                Password = "password",
                 Host = "host",
                 Port = 1111,
                 Schema = "public",

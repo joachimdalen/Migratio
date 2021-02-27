@@ -1,32 +1,27 @@
 using System.Management.Automation;
-using Migratio.Contracts;
-using Migratio.Database;
+using Migratio.Core;
 using Migratio.Models;
 
 namespace Migratio
 {
     [Cmdlet(VerbsCommon.Get, "MgLatestIteration")]
     [OutputType(typeof(IterationResult))]
-    public class GetMgLatestIteration : BaseCmdlet
+    public class GetMgLatestIteration : DbCmdlet
     {
-        private readonly IDatabaseProvider _db;
-
         public GetMgLatestIteration()
         {
-            _db = new PostgreDb();
         }
 
-        public GetMgLatestIteration(IDatabaseProvider db)
+        public GetMgLatestIteration(CmdletDependencies dependencies) : base(dependencies)
         {
-            _db = db;
         }
 
         protected override void ProcessRecord()
         {
-            _db.SetConnectionInfo(GetConnectionInfo());
-            if (_db.MigrationTableExists())
+            DatabaseProvider.SetConnectionInfo(GetConnectionInfo());
+            if (DatabaseProvider.MigrationTableExists())
             {
-                var result = _db.GetLatestIteration();
+                var result = DatabaseProvider.GetLatestIteration();
                 WriteObject(new IterationResult {Iteration = result});
             }
             else

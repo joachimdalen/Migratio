@@ -3,20 +3,32 @@ using System.IO;
 using System.Linq;
 using System.Management.Automation;
 using System.Text;
-using Migratio.Contracts;
+using Migratio.Core;
 using Migratio.Database;
-using Migratio.Secrets;
+using Migratio.Models;
 using Migratio.Utils;
 
 namespace Migratio
 {
     [Cmdlet(VerbsLifecycle.Invoke, "MgRollout")]
     [OutputType(typeof(bool))]
-    public class InvokeMgRollout : BaseCmdlet
+    public class InvokeMgRollout : DbCmdlet
     {
+        private readonly MigrationHelper _migrationHelper;
+
+        public InvokeMgRollout()
+        {
+            _migrationHelper = new MigrationHelper(FileManager, EnvironmentManager, Configuration);
+        }
+
+        public InvokeMgRollout(CmdletDependencies dependencies) : base(dependencies)
+        {
+            _migrationHelper = new MigrationHelper(FileManager, EnvironmentManager, Configuration);
+        }
+
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = true)]
         [ValidateNotNullOrEmpty]
-        public string MigrationRootDir { get; set; } = "migrations";
+        public string MigrationRootDir { get; set; }
 
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = true)]
         public SwitchParameter ReplaceVariables { get; set; }
@@ -24,33 +36,22 @@ namespace Migratio
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = true)]
         public SwitchParameter CreateTableIfNotExist { get; set; }
 
-        private readonly IDatabaseProvider _db;
-        private readonly IFileManager _fileManager;
-        private readonly MigrationHelper _migrationHelper;
-
-        public InvokeMgRollout()
-        {
-            _db = new PostgreDb();
-            _fileManager = new FileManager();
-            _migrationHelper = new MigrationHelper(_fileManager, new EnvironmentManager());
-        }
-
-        public InvokeMgRollout(IDatabaseProvider db, IFileManager fileManager,
-            IEnvironmentManager environmentManager)
-        {
-            _db = db;
-            _fileManager = fileManager;
-            _migrationHelper = new MigrationHelper(_fileManager, environmentManager);
-        }
-
         protected override void ProcessRecord()
         {
-            _db.SetConnectionInfo(GetConnectionInfo());
-            if (!_db.MigrationTableExists())
+            var rolloutDir = Configuration.GetMigratioDir(MigrationRootDir, ConfigFile, MigratioDirectory.Rollout);
+            var replaceVariables = ReplaceVariables.IsPresent
+                ? ReplaceVariables.ToBool()
+                : Configuration.Resolve(Configuration?.Config?.ReplaceVariables, false, false);
+
+
+            var cfg = GetConnectionInfo();
+            DatabaseProvider.SetConnectionInfo(cfg);
+
+            if (!DatabaseProvider.MigrationTableExists())
             {
                 if (CreateTableIfNotExist.ToBool())
                 {
-                    _db.CreateMigrationTable();
+                    DatabaseProvider.CreateMigrationTable();
                     WriteVerbose("Created migration table");
                 }
                 else
@@ -59,7 +60,7 @@ namespace Migratio
                 }
             }
 
-            var scripts = _fileManager.GetAllFilesInFolder(_fileManager.RolloutDirectory(MigrationRootDir))
+            var scripts = FileManager.GetAllFilesInFolder(rolloutDir)
                 .OrderBy(f => f)
                 .ToArray();
 
@@ -72,7 +73,7 @@ namespace Migratio
 
             WriteVerbose($"Found a total of {scripts.Length} migration scripts in the rollout folder");
 
-            var applied = _db.GetAppliedMigrations();
+            var applied = DatabaseProvider.GetAppliedMigrations();
 
             WriteObject($"Found {applied.Length} applied migrations");
             WriteObject($"Found {scripts.Length} total migrations");
@@ -83,7 +84,7 @@ namespace Migratio
                 return;
             }
 
-            var iteration = _db.GetLatestIteration();
+            var iteration = DatabaseProvider.GetLatestIteration();
             var stringBuilder = new StringBuilder();
             var currentIteration = iteration + 1;
 
@@ -97,17 +98,21 @@ namespace Migratio
                 }
 
                 WriteObject($"Migration {fileNameWithoutExtension} is not applied adding to transaction");
-                var scriptContent = _migrationHelper.GetScriptContent(script, ReplaceVariables.ToBool());
+
+                var scriptContent = _migrationHelper.GetScriptContent(script, replaceVariables ?? false);
                 stringBuilder.Append(scriptContent);
                 stringBuilder.Append(GetMigrationQuery(fileNameWithoutExtension, currentIteration));
             }
 
-            _db.RunTransaction(stringBuilder.ToString());
+            DatabaseProvider.RunTransaction(stringBuilder.ToString());
         }
 
-        private string GetMigrationQuery(string migrationScriptName, int iteration) => Queries.NewMigrationQuery
-            .Replace("@tableSchema", Schema)
-            .Replace("@migrationName", migrationScriptName)
-            .Replace("@currentIteration", iteration.ToString()) + Environment.NewLine;
+        private string GetMigrationQuery(string migrationScriptName, int iteration)
+        {
+            return Queries.NewMigrationQuery
+                .Replace("@tableSchema", Schema ?? Configuration?.Config?.Auth?.Postgres?.Schema ?? "public")
+                .Replace("@migrationName", migrationScriptName)
+                .Replace("@currentIteration", iteration.ToString()) + Environment.NewLine;
+        }
     }
 }

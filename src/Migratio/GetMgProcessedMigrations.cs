@@ -1,36 +1,29 @@
 using System;
 using System.Management.Automation;
-using Migratio.Contracts;
-using Migratio.Database;
+using Migratio.Core;
 using Migratio.Models;
 
 namespace Migratio
 {
     [Cmdlet(VerbsCommon.Get, "MgProcessedMigrations")]
     [OutputType(typeof(Migration[]))]
-    public class GetMgProcessedMigrations : BaseCmdlet
+    public class GetMgProcessedMigrations : DbCmdlet
     {
-        private readonly IDatabaseProvider _db;
-
         public GetMgProcessedMigrations()
         {
-            _db = new PostgreDb();
         }
 
-        public GetMgProcessedMigrations(IDatabaseProvider db)
+        public GetMgProcessedMigrations(CmdletDependencies dependencies) : base(dependencies)
         {
-            _db = db;
         }
 
         protected override void ProcessRecord()
         {
-            _db.SetConnectionInfo(GetConnectionInfo());
-            if (!_db.MigrationTableExists())
-            {
-                throw new Exception("Migration table does not exist");
-            }
+            DatabaseProvider.SetConnectionInfo(GetConnectionInfo());
 
-            var processed = _db.GetAppliedMigrations();
+            if (!DatabaseProvider.MigrationTableExists()) throw new Exception("Migration table does not exist");
+
+            var processed = DatabaseProvider.GetAppliedMigrations();
 
             WriteObject(processed);
         }

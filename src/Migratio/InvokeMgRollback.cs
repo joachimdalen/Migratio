@@ -3,47 +3,42 @@ using System.IO;
 using System.Linq;
 using System.Management.Automation;
 using System.Text;
-using Migratio.Contracts;
+using Migratio.Core;
 using Migratio.Database;
+using Migratio.Models;
 using Migratio.Utils;
 
 namespace Migratio
 {
     [Cmdlet(VerbsLifecycle.Invoke, "MgRollback")]
     [OutputType(typeof(void))]
-    public class InvokeMgRollback : BaseCmdlet
+    public class InvokeMgRollback : DbCmdlet
     {
-        private readonly IDatabaseProvider _db;
-        private readonly IFileManager _fileManager;
         private readonly MigrationHelper _migrationHelper;
-
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = true)]
-        [ValidateNotNullOrEmpty]
-        public string MigrationRootDir { get; set; } = "migrations";
 
         public InvokeMgRollback()
         {
-            _db = new PostgreDb();
-            _fileManager = new FileManager();
-            _migrationHelper = new MigrationHelper(_fileManager, new EnvironmentManager());
+            _migrationHelper = new MigrationHelper(FileManager, EnvironmentManager, Configuration);
         }
 
-        public InvokeMgRollback(IDatabaseProvider db, IFileManager fileManager, IEnvironmentManager environmentManager)
+        public InvokeMgRollback(CmdletDependencies dependencies) : base(dependencies)
         {
-            _db = db;
-            _fileManager = fileManager;
-            _migrationHelper = new MigrationHelper(_fileManager, environmentManager);
+            _migrationHelper = new MigrationHelper(FileManager, EnvironmentManager, Configuration);
         }
+
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = true)]
+        [ValidateNotNullOrEmpty]
+        public string MigrationRootDir { get; set; }
+
 
         protected override void ProcessRecord()
         {
-            _db.SetConnectionInfo(GetConnectionInfo());
-            if (!_db.MigrationTableExists())
-            {
-                throw new Exception("Migration table does not exist");
-            }
+            var rollbackDir = Configuration.GetMigratioDir(MigrationRootDir, ConfigFile, MigratioDirectory.Rollback);
 
-            var scripts = _fileManager.GetAllFilesInFolder(_fileManager.RollbackDirectory(MigrationRootDir))
+            DatabaseProvider.SetConnectionInfo(GetConnectionInfo());
+            if (!DatabaseProvider.MigrationTableExists()) throw new Exception("Migration table does not exist");
+
+            var scripts = FileManager.GetAllFilesInFolder(rollbackDir)
                 .OrderByDescending(f => f).ToArray();
             if (scripts.Length == 0)
             {
@@ -52,8 +47,8 @@ namespace Migratio
                 return;
             }
 
-            var iteration = _db.GetLatestIteration();
-            var scriptsForLatestIteration = _db.GetAppliedScriptsForLatestIteration();
+            var iteration = DatabaseProvider.GetLatestIteration();
+            var scriptsForLatestIteration = DatabaseProvider.GetAppliedScriptsForLatestIteration();
 
             if (iteration == 0 || scriptsForLatestIteration?.Length == 0)
             {
@@ -81,13 +76,16 @@ namespace Migratio
                 WriteObject($"Adding rollback of migration: {fileNameWithoutExtension} to transaction");
             }
 
-            _db.RunTransaction(stringBuilder.ToString());
+            DatabaseProvider.RunTransaction(stringBuilder.ToString());
         }
 
 
-        private string GetMigrationQuery(string migrationScriptName, int iteration) => Queries.DeleteMigrationQuery
-            .Replace("@tableSchema", Schema)
-            .Replace("@migrationName", migrationScriptName)
-            .Replace("@currentIteration", iteration.ToString()) + Environment.NewLine;
+        private string GetMigrationQuery(string migrationScriptName, int iteration)
+        {
+            return Queries.DeleteMigrationQuery
+                .Replace("@tableSchema", Schema ?? Configuration?.Config?.Auth?.Postgres?.Schema ?? "public")
+                .Replace("@migrationName", migrationScriptName)
+                .Replace("@currentIteration", iteration.ToString()) + Environment.NewLine;
+        }
     }
 }

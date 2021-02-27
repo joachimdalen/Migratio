@@ -9,29 +9,22 @@ using Xunit;
 
 namespace Migratio.UnitTests
 {
-    public class GetMgProcessedMigrationsTests
+    public class GetMgProcessedMigrationsTests : BaseCmdletTest
     {
-        private readonly DatabaseProviderMock _dbMock;
-
-        public GetMgProcessedMigrationsTests()
-        {
-            _dbMock = new DatabaseProviderMock();
-        }
-
         [Fact(DisplayName = "Get-MgProcessedMigrations returns records")]
         public void GetMgProcessedMigrations_Returns_Records()
         {
-            _dbMock.MigrationTableExists(true);
-            _dbMock.GetAppliedMigrations(
+            ConfigManagerMock.ConfigReturns(null);
+            DbMock.MigrationTableExists(true);
+            DbMock.GetAppliedMigrations(
                 new List<Migration>
                 {
                     new() {Iteration = 1, MigrationId = "0001_migration_1"},
                     new() {Iteration = 1, MigrationId = "0002_migration_2"},
                 }.ToArray());
-            var command = new GetMgProcessedMigrations(_dbMock.Object)
+            var command = new GetMgProcessedMigrations(GetMockedDependencies())
             {
                 Database = "database",
-                Password = "password",
                 Host = "host",
                 Port = 1111,
                 Schema = "public",
@@ -47,13 +40,12 @@ namespace Migratio.UnitTests
         [Fact(DisplayName = "Get-MgProcessedMigrations throws if migration table does not exist")]
         public void GetMgProcessedMigrations_Throws_If_Migration_Table_Does_Not_Exist()
         {
+            DbMock.MigrationTableExists(false);
+            ConfigManagerMock.ConfigReturns(null);
             
-            _dbMock.MigrationTableExists(false);
-
-            var command = new GetMgProcessedMigrations(_dbMock.Object)
+            var command = new GetMgProcessedMigrations(GetMockedDependencies())
             {
                 Database = "database",
-                Password = "password",
                 Host = "host",
                 Port = 1111,
                 Schema = "public",
@@ -69,7 +61,6 @@ namespace Migratio.UnitTests
             var result = new GetMgProcessedMigrations
             {
                 Database = "database",
-                Password = "password",
                 Host = "host",
                 Port = 1111,
                 Schema = "public",

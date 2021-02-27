@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 
 namespace Migratio.Contracts
@@ -5,9 +6,6 @@ namespace Migratio.Contracts
     public interface IFileManager
     {
         string[] GetAllFilesInFolder(string baseDir);
-        string RolloutDirectory(string baseDir);
-        string RollbackDirectory(string baseDir);
-        string SeedersDirectory(string baseDir);
         string GetFilePrefix();
         string GetFormattedName(string baseName);
         bool DirectoryExists(string path);
@@ -15,5 +13,6 @@ namespace Migratio.Contracts
         bool FileExists(string path);
         FileStream CreateFile(string path);
         string ReadAllText(string path);
+        IEnumerable<string> ReadLines(string path);
     }
 }

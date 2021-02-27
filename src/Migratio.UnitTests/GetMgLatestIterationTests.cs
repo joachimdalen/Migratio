@@ -5,23 +5,16 @@ using Xunit;
 
 namespace Migratio.UnitTests
 {
-    public class GetMgLatestIterationTests
+    public class GetMgLatestIterationTests : BaseCmdletTest
     {
-        private readonly DatabaseProviderMock _dbMock;
-
-        public GetMgLatestIterationTests()
-        {
-            _dbMock = new DatabaseProviderMock();
-        }
-
         [Fact(DisplayName = "Get-MgLatestIteration returns null if migration table does not exist")]
         public void GetMgLatestIteration_Returns_Null_If_Migration_Table_Does_Not_Exist()
         {
-            _dbMock.MigrationTableExists(false);
-            var command = new GetMgLatestIteration(_dbMock.Object)
+            DbMock.MigrationTableExists(false);
+            ConfigManagerMock.ConfigReturns(null);
+            var command = new GetMgLatestIteration(GetMockedDependencies())
             {
                 Database = "database",
-                Password = "password",
                 Host = "host",
                 Port = 1111,
                 Schema = "public",
@@ -35,12 +28,12 @@ namespace Migratio.UnitTests
         [Fact(DisplayName = "Get-MgLatestIteration returns records")]
         public void GetMgLatestIteration_Returns_Records()
         {
-            _dbMock.MigrationTableExists(true);
-            _dbMock.GetLatestIteration(1);
-            var command = new GetMgLatestIteration(_dbMock.Object)
+            DbMock.MigrationTableExists(true);
+            DbMock.GetLatestIteration(1);
+            ConfigManagerMock.ConfigReturns(null);
+            var command = new GetMgLatestIteration(GetMockedDependencies())
             {
                 Database = "database",
-                Password = "password",
                 Host = "host",
                 Port = 1111,
                 Schema = "public",
@@ -58,7 +51,6 @@ namespace Migratio.UnitTests
             var result = new GetMgLatestIteration
             {
                 Database = "database",
-                Password = "password",
                 Host = "host",
                 Port = 1111,
                 Schema = "public",

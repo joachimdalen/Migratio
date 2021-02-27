@@ -1,39 +1,32 @@
-using System;
 using System.Management.Automation;
-using Migratio.Contracts;
-using Migratio.Database;
+using Migratio.Core;
 
 namespace Migratio
 {
     [Cmdlet(VerbsCommon.New, "MgMigrationTable")]
     [OutputType(typeof(bool))]
-    public class NewMgMigrationTable : BaseCmdlet
+    public class NewMgMigrationTable : DbCmdlet
     {
-        private readonly IDatabaseProvider _db;
-
         public NewMgMigrationTable()
         {
-            _db = new PostgreDb();
         }
 
-        public NewMgMigrationTable(IDatabaseProvider databaseProvider)
+        public NewMgMigrationTable(CmdletDependencies dependencies) : base(dependencies)
         {
-            Console.WriteLine("2");
-            _db = databaseProvider;
         }
 
         protected override void ProcessRecord()
         {
-            _db.SetConnectionInfo(GetConnectionInfo());
+            DatabaseProvider.SetConnectionInfo(GetConnectionInfo());
 
-            if (_db.MigrationTableExists())
+            if (DatabaseProvider.MigrationTableExists())
             {
                 WriteWarning("Migration table already exists");
                 WriteObject(false);
                 return;
             }
 
-            var result = _db.CreateMigrationTable();
+            var result = DatabaseProvider.CreateMigrationTable();
             WriteObject(result == 1);
         }
     }

@@ -5,6 +5,9 @@ namespace Migratio.Utils
 {
     public class EnvironmentManager : IEnvironmentManager
     {
-        public string GetEnvironmentVariable(string key) => Environment.GetEnvironmentVariable(key);
+        public string GetEnvironmentVariable(string key)
+        {
+            return Environment.GetEnvironmentVariable(key);
+        }
     }
 }

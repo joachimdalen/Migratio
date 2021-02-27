@@ -6,29 +6,22 @@ using Xunit;
 
 namespace Migratio.UnitTests
 {
-    public class NewMgSeederTests
+    public class NewMgSeederTests : BaseCmdletTest
     {
-        private readonly FileManagerMock _fileManagerMock;
-
-        public NewMgSeederTests()
-        {
-            _fileManagerMock = new FileManagerMock();
-        }
-
         [Fact(DisplayName = "New-MgSeeder creates seeds directory if not exists")]
         public void NewMgSeeder_Creates_Seeds_Directory_If_Not_Exists()
         {
             var seedPath = Path.Join("migrations", "seeders");
 
-            _fileManagerMock.SeedersDirectory(seedPath);
-            _fileManagerMock.DirectoryExists(seedPath, false);
-            _fileManagerMock.CreateDirectory(seedPath);
-            _fileManagerMock.GetFilePrefix("test_prefix");
-            _fileManagerMock.GetFormattedName("file_name");
-            _fileManagerMock.FileExists("migrations/seeders/test_prefix_file_name.sql", false);
-            _fileManagerMock.CreateFile("migrations/seeders/test_prefix_file_name.sql");
+            ConfigManagerMock.SeedersDirectory(seedPath);
+            FileManagerMock.DirectoryExists(seedPath, false);
+            FileManagerMock.CreateDirectory(seedPath);
+            FileManagerMock.GetFilePrefix("test_prefix");
+            FileManagerMock.GetFormattedName("file_name");
+            FileManagerMock.FileExists("migrations/seeders/test_prefix_file_name.sql", false);
+            FileManagerMock.CreateFile("migrations/seeders/test_prefix_file_name.sql");
 
-            var command = new NewMgSeeder(_fileManagerMock.Object)
+            var command = new NewMgSeeder(GetMockedDependencies())
             {
                 Name = "This is my migration"
             };
@@ -36,8 +29,8 @@ namespace Migratio.UnitTests
             var result = command.Invoke()?.OfType<string>().First();
             Assert.NotNull(result);
             Assert.Contains(seedPath, result);
-            _fileManagerMock.VerifyCreateDirectory(seedPath, Times.Once());
-            _fileManagerMock.VerifyCreateFile("migrations/seeders/test_prefix_file_name.sql", Times.Once());
+            FileManagerMock.VerifyCreateDirectory(seedPath, Times.Once());
+            FileManagerMock.VerifyCreateFile("migrations/seeders/test_prefix_file_name.sql", Times.Once());
         }
 
         [Fact(DisplayName = "New-MgSeeder default constructor constructs")]
