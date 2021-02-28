@@ -13,9 +13,9 @@ So far Migratio only supports PostgreSQL, but MSSQL is alo planned. Submit a fea
 
 ---
 
-- [Cmdlets](#desktop_computer-cmdlets)
-- [Variables](#heavy_dollar_sign-variables)
-- [Configuration File](#gear-configuration-file)
+- [:desktop_computer: Cmdlets](#desktop_computer-cmdlets)
+- [:heavy_dollar_sign: Variables](#heavy_dollar_sign-variables)
+- [:gear: Configuration File](#gear-configuration-file)
 
 ---
 

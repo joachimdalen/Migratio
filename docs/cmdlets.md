@@ -1,18 +1,18 @@
 # :desktop_computer: Cmdlets
 
-| Name                                                                | Description                                                                                    |
-| ------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| [New-MgMigration](#New-MgMigration)                                 | Create a new rollout and rollback migration                                                    |
-| [New-MgMigrationTable](#New-MgMigrationTable)                       | Create a new migration table in the database                                                   |
-| [New-MgSeeder](#New-MgSeeder)                                       | Create a new seeder migration                                                                  |
-|                                                                     |                                                                                                |
-| [Get-MgUsedVariables](#Get-MgUsedVariables)                         | Get a list over used variables for a migration file. See [Variables](#Variables) for more info |
-| [Get-MgLatestIteration](#Get-MgLatestIteration)                     | Get the latest iteration of migrations applied                                                 |
-| [Get-MgProcessedMigrations](#Get-MgProcessedMigrations)             | Get all the applied migrations                                                                 |
-| [Get-MgScriptsForLatestIteration](#Get-MgScriptsForLatestIteration) | Get all the applied migrations for the latest iteration                                        |
-|                                                                     |                                                                                                |
-| [Invoke-MgRollout](#Invoke-MgRollout)                               | Run a rollout of migrations that is not applied yet                                            |
-| [Invoke-MgRollback](#Invoke-MgRollback)                             | Run a rollback of the latest iteration of migrations                                           |
+| Name                                                                | Description                                                                                                                  |
+| ------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| [New-MgMigration](#New-MgMigration)                                 | Create a new rollout and rollback migration                                                                                  |
+| [New-MgMigrationTable](#New-MgMigrationTable)                       | Create a new migration table in the database                                                                                 |
+| [New-MgSeeder](#New-MgSeeder)                                       | Create a new seeder migration                                                                                                |
+|                                                                     |                                                                                                                              |
+| [Get-MgUsedVariables](#Get-MgUsedVariables)                         | Get a list over used variables for a migration file. See [Variables](../README.md#heavy_dollar_sign-variables) for more info |
+| [Get-MgLatestIteration](#Get-MgLatestIteration)                     | Get the latest iteration of migrations applied                                                                               |
+| [Get-MgProcessedMigrations](#Get-MgProcessedMigrations)             | Get all the applied migrations                                                                                               |
+| [Get-MgScriptsForLatestIteration](#Get-MgScriptsForLatestIteration) | Get all the applied migrations for the latest iteration                                                                      |
+|                                                                     |                                                                                                                              |
+| [Invoke-MgRollout](#Invoke-MgRollout)                               | Run a rollout of migrations that is not applied yet                                                                          |
+| [Invoke-MgRollback](#Invoke-MgRollback)                             | Run a rollback of the latest iteration of migrations                                                                         |
 
 > In the documentation, optional parameters is wrapped in `[]`
 
@@ -42,7 +42,7 @@ base/
 
 | Option           | Type   | From config | Mandatory | Default | Comment                                                                                                                                 |
 | ---------------- | ------ | ----------- | --------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| ConfigFile       | string | No          | No        | None    | Path to Migratio configuration file. See [Configuration File](#configuration-file)                                                      |
+| ConfigFile       | string | No          | No        | None    | Path to Migratio configuration file. See [Configuration File](../README.md#gear-configuration-file)                                     |
 | Name             | string | No          | Yes       | None    | Name of the migration. Example above will become `add_users_table`                                                                      |
 | MigrationRootDir | string | Yes         | No        | None    | Specifies the root directory of migrations if using default directory naming. Equivalent to setting the base option in Migratio config. |
 
@@ -67,7 +67,7 @@ Creates a new migration table in the database. This table is responsible for kee
 
 | Option     | Type   | From config | Mandatory | Default     | Comment                                                                                                |
 | ---------- | ------ | ----------- | --------- | ----------- | ------------------------------------------------------------------------------------------------------ |
-| ConfigFile | string | No          | No        | None        | Path to Migratio configuration file. See [Configuration File](#configuration-file)                     |
+| ConfigFile | string | No          | No        | None        | Path to Migratio configuration file. See [Configuration File](../README.md#gear-configuration-file)    |
 | Username   | string | Yes         | Yes\*     | None        | Username of database user                                                                              |
 | Database   | string | Yes         | Yes\*     | None        | Specifies the name of the database to connect to                                                       |
 | Port       | int    | Yes         | Yes\*     | `5432`      | Specifies the port on the database server to connect to                                                |
@@ -102,7 +102,7 @@ base/
 
 | Option           | Type   | From config | Mandatory | Default | Comment                                                                                                                                 |
 | ---------------- | ------ | ----------- | --------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| ConfigFile       | string | No          | No        | None    | Path to Migratio configuration file. See [Configuration File](#configuration-file)                                                      |
+| ConfigFile       | string | No          | No        | None    | Path to Migratio configuration file. See [Configuration File](../README.md#gear-configuration-file)                                     |
 | Name             | string | No          | Yes       | None    | Name of the seeder. Example above will become `add_default_config_values`                                                               |
 | MigrationRootDir | string | Yes         | No        | None    | Specifies the root directory of migrations if using default directory naming. Equivalent to setting the base option in Migratio config. |
 
@@ -118,10 +118,10 @@ Returns all [variable](#variables) keys that exists in a script.
 
 ### Input
 
-| Option        | Type   | From config | Mandatory | Default | Comment                                                                            |
-| ------------- | ------ | ----------- | --------- | ------- | ---------------------------------------------------------------------------------- |
-| ConfigFile    | string | No          | No        | None    | Path to Migratio configuration file. See [Configuration File](#configuration-file) |
-| MigrationFile | string | No          | Yes       | None    | File path to the SQL migration to get used variables for                           |
+| Option        | Type   | From config | Mandatory | Default | Comment                                                                                             |
+| ------------- | ------ | ----------- | --------- | ------- | --------------------------------------------------------------------------------------------------- |
+| ConfigFile    | string | No          | No        | None    | Path to Migratio configuration file. See [Configuration File](../README.md#gear-configuration-file) |
+| MigrationFile | string | No          | Yes       | None    | File path to the SQL migration to get used variables for                                            |
 
 ## Get-MgLatestIteration
 
@@ -141,7 +141,7 @@ Get the latest applied iteration. Starts at 1 and increments with 1 for each rol
 
 | Option     | Type   | From config | Mandatory | Default     | Comment                                                                                                |
 | ---------- | ------ | ----------- | --------- | ----------- | ------------------------------------------------------------------------------------------------------ |
-| ConfigFile | string | No          | No        | None        | Path to Migratio configuration file. See [Configuration File](#configuration-file)                     |
+| ConfigFile | string | No          | No        | None        | Path to Migratio configuration file. See [Configuration File](../README.md#gear-configuration-file)    |
 | Username   | string | Yes         | Yes\*     | None        | Username of database user                                                                              |
 | Database   | string | Yes         | Yes\*     | None        | Specifies the name of the database to connect to                                                       |
 | Port       | int    | Yes         | Yes\*     | `5432`      | Specifies the port on the database server to connect to                                                |
@@ -170,7 +170,7 @@ Get a list of all applied migrations and the iteration they were applied in.
 
 | Option     | Type   | From config | Mandatory | Default     | Comment                                                                                                |
 | ---------- | ------ | ----------- | --------- | ----------- | ------------------------------------------------------------------------------------------------------ |
-| ConfigFile | string | No          | No        | None        | Path to Migratio configuration file. See [Configuration File](#configuration-file)                     |
+| ConfigFile | string | No          | No        | None        | Path to Migratio configuration file. See [Configuration File](../README.md#gear-configuration-file)    |
 | Username   | string | Yes         | Yes\*     | None        | Username of database user                                                                              |
 | Database   | string | Yes         | Yes\*     | None        | Specifies the name of the database to connect to                                                       |
 | Port       | int    | Yes         | Yes\*     | `5432`      | Specifies the port on the database server to connect to                                                |
@@ -199,7 +199,7 @@ Get a list of all applied migrations for the latest iteration.
 
 | Option     | Type   | From config | Mandatory | Default     | Comment                                                                                                |
 | ---------- | ------ | ----------- | --------- | ----------- | ------------------------------------------------------------------------------------------------------ |
-| ConfigFile | string | No          | No        | None        | Path to Migratio configuration file. See [Configuration File](#configuration-file)                     |
+| ConfigFile | string | No          | No        | None        | Path to Migratio configuration file. See [Configuration File](../README.md#gear-configuration-file)    |
 | Username   | string | Yes         | Yes\*     | None        | Username of database user                                                                              |
 | Database   | string | Yes         | Yes\*     | None        | Specifies the name of the database to connect to                                                       |
 | Port       | int    | Yes         | Yes\*     | `5432`      | Specifies the port on the database server to connect to                                                |
@@ -231,7 +231,7 @@ Run a rollout of scripts that has not been applied.
 
 | Option                | Type   | From config | Mandatory | Default     | Comment                                                                                                                                 |
 | --------------------- | ------ | ----------- | --------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| ConfigFile            | string | No          | No        | None        | Path to Migratio configuration file. See [Configuration File](#configuration-file)                                                      |
+| ConfigFile            | string | No          | No        | None        | Path to Migratio configuration file. See [Configuration File](../README.md#gear-configuration-file)                                     |
 | MigrationRootDir      | string | Yes         | No        | None        | Specifies the root directory of migrations if using default directory naming. Equivalent to setting the base option in Migratio config. |
 | ReplaceVariables      | bool   | Yes         | No        | False       | Replace variables in migrations during rollout                                                                                          |
 | CreateTableIfNotExist | bool   | No          | No        | False       | Create the migration table if it does not exist in the database.                                                                        |
@@ -264,7 +264,7 @@ Run rollback scripts for the latest iteration
 
 | Option           | Type   | From config | Mandatory | Default     | Comment                                                                                                                                 |
 | ---------------- | ------ | ----------- | --------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| ConfigFile       | string | No          | No        | None        | Path to Migratio configuration file. See [Configuration File](#configuration-file)                                                      |
+| ConfigFile       | string | No          | No        | None        | Path to Migratio configuration file. See [Configuration File](../README.md#gear-configuration-file)                                     |
 | MigrationRootDir | string | Yes         | No        | None        | Specifies the root directory of migrations if using default directory naming. Equivalent to setting the base option in Migratio config. |
 | Username         | string | Yes         | Yes\*     | None        | Username of database user                                                                                                               |
 | Database         | string | Yes         | Yes\*     | None        | Specifies the name of the database to connect to                                                                                        |
