@@ -28,7 +28,11 @@ namespace Migratio.Core
             Configuration = dependencies.Configuration;
         }
 
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = true)]
+        [Parameter(
+            Mandatory = false,
+            ValueFromPipelineByPropertyName = true,
+            HelpMessage = "Path to Migratio configuration file")
+        ]
         [ValidateNotNullOrEmpty]
         public string ConfigFile { get; set; }
 

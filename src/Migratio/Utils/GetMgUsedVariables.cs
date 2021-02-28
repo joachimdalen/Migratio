@@ -16,7 +16,11 @@ namespace Migratio.Utils
         {
         }
 
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = true)]
+        [Parameter(
+            Mandatory = true,
+            ValueFromPipelineByPropertyName = true,
+            HelpMessage = "File path to the SQL migration to get used variables for")
+        ]
         [ValidateNotNullOrEmpty]
         public string MigrationFile { get; set; }
 

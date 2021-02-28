@@ -17,11 +17,21 @@ namespace Migratio
         {
         }
 
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = true)]
+        [Parameter(
+            Mandatory = false,
+            ValueFromPipelineByPropertyName = true,
+            HelpMessage =
+                "Specifies the root directory of migrations if using default directory naming." +
+                "Equivalent to setting the base option in Migratio config")
+        ]
         [ValidateNotNullOrEmpty]
         public string MigrationRootDir { get; set; }
 
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = true)]
+        [Parameter(
+            Mandatory = true,
+            ValueFromPipelineByPropertyName = true,
+            HelpMessage = "Name of migration")
+        ]
         [ValidateNotNullOrEmpty]
         public string Name { get; set; }
 
