@@ -16,8 +16,12 @@ namespace Migratio.Configuration
             _fileManager = fileManager;
         }
 
+        /// <inheritdoc />
         public MgConfig Config { get; set; }
 
+
+        /// <inheritdoc />
+        /// <exception cref="Exception">if mapping contains variable expression in the pattern of ${{?}}</exception>
         public string GetKeyFromMapping(string itemKey)
         {
             if (Config?.EnvMapping == null) return itemKey;
@@ -32,9 +36,9 @@ namespace Migratio.Configuration
             return val;
         }
 
+        /// <inheritdoc />
         public bool Load(string configFile)
         {
-            Console.WriteLine("Loading... " + configFile);
             if (string.IsNullOrEmpty(configFile)) return false;
 
             var deserializer = new DeserializerBuilder()
@@ -53,6 +57,8 @@ namespace Migratio.Configuration
             return defaultValue;
         }
 
+        /// <inheritdoc />
+        /// <exception cref="Exception">Unable to determine directory for the given directoryType</exception>
         public string GetMigratioDir(string migrationBaseDir, string configPath, MigratioDirectory directoryType)
         {
             var configBase = Path.GetDirectoryName(configPath);
@@ -68,6 +74,12 @@ namespace Migratio.Configuration
             return Path.GetFullPath(Path.Combine(configBase, fromConfigFile));
         }
 
+        /// <summary>
+        /// Get default Migratio directory name
+        /// </summary>
+        /// <param name="directoryType">The type of directory to get</param>
+        /// <returns>Default folder name</returns>
+        /// <exception cref="ArgumentOutOfRangeException">Invalid directory type given</exception>
         private string GetDefaultSystemDir(MigratioDirectory directoryType)
         {
             switch (directoryType)
@@ -86,6 +98,12 @@ namespace Migratio.Configuration
             }
         }
 
+        /// <summary>
+        /// Get directory value from configuration file
+        /// </summary>
+        /// <param name="directoryType">The type of directory to get</param>
+        /// <returns>Value from Migratio configuration file</returns>
+        /// <exception cref="ArgumentOutOfRangeException">Invalid directory type given</exception>
         private string GetSystemDirFromConfig(MigratioDirectory directoryType)
         {
             switch (directoryType)

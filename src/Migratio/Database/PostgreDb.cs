@@ -14,10 +14,7 @@ namespace Migratio.Database
             ConnectionInfo = info;
         }
 
-        /// <summary>
-        ///     Check if migration table exists for given database and schema
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc />
         public bool MigrationTableExists()
         {
             var result = false;
@@ -38,10 +35,7 @@ namespace Migratio.Database
             return result;
         }
 
-        /// <summary>
-        ///     Get latest migration iteration
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc />
         public int GetLatestIteration()
         {
             var result = 0;
@@ -60,10 +54,7 @@ namespace Migratio.Database
             return result;
         }
 
-        /// <summary>
-        ///     Get latest migration iteration
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc />
         public Migration[] GetAppliedMigrations()
         {
             var list = new List<Migration>();
@@ -88,10 +79,7 @@ namespace Migratio.Database
             return list.ToArray();
         }
 
-        /// <summary>
-        ///     Get latest migration iteration
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc />
         public Migration[] GetAppliedScriptsForLatestIteration()
         {
             var latestIteration = GetLatestIteration();
@@ -118,6 +106,7 @@ namespace Migratio.Database
             return list.ToArray();
         }
 
+        /// <inheritdoc />
         public int CreateMigrationTable()
         {
             int result;
@@ -134,6 +123,7 @@ namespace Migratio.Database
             return result;
         }
 
+        /// <inheritdoc />
         public int RunTransaction(string query)
         {
             int result;
