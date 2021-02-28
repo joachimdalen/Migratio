@@ -11,13 +11,13 @@
 
 So far Migratio only supports PostgreSQL, but MSSQL is alo planned. Submit a feature request in the issues if you wish support for a different database.
 
-<!-- ---
+---
 
-- [Cmdlets](#cmdlets)
-- [Variables](#variables)
-- [Configuration File](#-configuration-file)
+- [Cmdlets](#desktop_computer-cmdlets)
+- [Variables](#heavy_dollar_sign-variables)
+- [Configuration File](#gear-configuration-file)
 
---- -->
+---
 
 # :desktop_computer: Cmdlets
 
