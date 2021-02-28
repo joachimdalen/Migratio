@@ -29,7 +29,7 @@ namespace Migratio.Utils
             if (!FileManager.FileExists(MigrationFile)) throw new Exception($"No such file at: {MigrationFile}");
 
             var content = FileManager.ReadAllText(MigrationFile);
-            var usedKeys = SecretManager.GetSecretsInContent(content);
+            var usedKeys = SecretManager.GetVariablesInContent(content);
 
             WriteObject(usedKeys);
         }

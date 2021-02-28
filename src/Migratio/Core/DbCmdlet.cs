@@ -93,7 +93,7 @@ namespace Migratio.Core
         {
             if (fromConfig != null)
             {
-                if (SecretManager.HasSecret(fromConfig)) return SecretManager.ReplaceSecretsInContent(fromConfig);
+                if (SecretManager.HasVariable(fromConfig)) return SecretManager.ReplaceVariablesInContent(fromConfig);
 
                 return fromConfig;
             }

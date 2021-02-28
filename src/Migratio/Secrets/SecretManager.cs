@@ -31,7 +31,7 @@ namespace Migratio.Secrets
             _configuration = new ConfigurationManager(_fileManager);
         }
 
-        public string[] GetSecretsInContent(string content)
+        public string[] GetVariablesInContent(string content)
         {
             var usedVariables = new List<string>();
 
@@ -47,9 +47,9 @@ namespace Migratio.Secrets
             return usedVariables.ToArray();
         }
 
-        public string ReplaceSecretsInContent(string content)
+        public string ReplaceVariablesInContent(string content)
         {
-            var usedVariables = GetSecretsInContent(content);
+            var usedVariables = GetVariablesInContent(content);
             var replacedContent = content;
             foreach (var usedVariable in usedVariables)
             {
@@ -81,9 +81,9 @@ namespace Migratio.Secrets
             return envVar?.Value;
         }
 
-        public bool HasSecret(string value)
+        public bool HasVariable(string content)
         {
-            return Regex.IsMatch(value, SecretPattern);
+            return Regex.IsMatch(content, SecretPattern);
         }
 
         private IList<EnvEntry> GetFromFile(string path)

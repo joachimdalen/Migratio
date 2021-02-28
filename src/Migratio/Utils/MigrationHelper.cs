@@ -26,7 +26,7 @@ namespace Migratio.Utils
 
             if (!replace) return scriptContent + Environment.NewLine;
 
-            var replacedContent = _secretManager.ReplaceSecretsInContent(scriptContent);
+            var replacedContent = _secretManager.ReplaceVariablesInContent(scriptContent);
             return replacedContent + Environment.NewLine;
         }
     }

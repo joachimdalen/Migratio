@@ -114,7 +114,7 @@ namespace Migratio.UnitTests.Secrets
 
             var sut = new SecretManager(_envMock.Object, _fileManagerMock.Object, _configManagerMock.Object);
 
-            Assert.Throws<Exception>(() => sut.ReplaceSecretsInContent(content));
+            Assert.Throws<Exception>(() => sut.ReplaceVariablesInContent(content));
         }
 
         [Fact(DisplayName = "ReplaceSecretsInContent replaces correctly")]
@@ -127,7 +127,7 @@ namespace Migratio.UnitTests.Secrets
 
             var sut = new SecretManager(_envMock.Object, _fileManagerMock.Object, _configManagerMock.Object);
 
-            var result = sut.ReplaceSecretsInContent(content);
+            var result = sut.ReplaceVariablesInContent(content);
 
             Assert.Equal("CREATE THIS HERE OR THERE", result);
         }
