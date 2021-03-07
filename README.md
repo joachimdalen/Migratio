@@ -7,61 +7,37 @@
 | ⚠️ Migratio is far from complete and tested, so some things might not work as expected. Please take care if you decide to use this before a release. |
 | :--------------------------------------------------------------------------------------------------------------------------------------------------: |
 
-## Supported databases
+## :file_cabinet: Supported databases
 
 So far Migratio only supports PostgreSQL, but MSSQL is alo planned. Submit a feature request in the issues if you wish support for a different database.
 
-## Cmdlets
+---
 
-| Name                            | Description                                                                                    |
-| ------------------------------- | ---------------------------------------------------------------------------------------------- |
-| New-MgMigration                 | Create a new rollout and rollback migration                                                    |
-| New-MgMigrationTable            | Create a new migration table in the database                                                   |
-| New-MgSeeder                    | Create a new seeder migration                                                                  |
-|                                 |                                                                                                |
-| Get-MgUsedVariables             | Get a list over used variables for a migration file. See [Variables](#Variables) for more info |
-| Get-MgLatestIteration           | Get the latest iteration of migrations applied                                                 |
-| Get-MgProcessedMigrations       | Get all the applied migrations                                                                 |
-| Get-MgScriptsForLatestIteration | Get all the applied migrations for the latest iteration                                        |
-|                                 |                                                                                                |
-| Invoke-MgRollout                | Run a rollout of migrations that is not applied yet                                            |
-| Invoke-MgRollback               | Run a rollback of the latest iteration of migrations                                           |
-
-## Options
-
-### Common options
-
-The following options are shared between the following cmdlets
-
-- `New-MgMigrationTable`
-- `Invoke-MgRollout`
-- `Invoke-MgRollback`
-- `Get-MgLatestIteration`
-- `Get-MgProcessedMigrations`
-- `Get-MgScriptsForLatestIteration`
-
-| Option   | Type   | Mandatory | Default     |
-| -------- | ------ | --------- | ----------- |
-| Username | string | Yes       | None        |
-| Database | string | Yes       | None        |
-| Port     | int    | No        | `5432`      |
-| Host     | string | No        | `127.0.0.1` |
-| Schema   | string | No        | `public`    |
+- [:desktop_computer: Cmdlets](#desktop_computer-cmdlets)
+- [:heavy_dollar_sign: Variables](#heavy_dollar_sign-variables)
+- [:gear: Configuration File](#gear-configuration-file)
 
 ---
 
-The following options are shared between the following cmdlets
+# :desktop_computer: Cmdlets
 
-- `Invoke-MgRollout`
-- `Invoke-MgRollback`
-- `New-MgMigration`
-- `New-MgSeeder`
+See detailed documentation [here](./docs/cmdlets.md)
 
-| Option           | Type   | Mandatory | Default      |
-| ---------------- | ------ | --------- | ------------ |
-| MigrationRootDir | string | No        | `migrations` |
+| Name                                                                                 | Description                                                                                    |
+| ------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------- |
+| [New-MgMigration](./docs/cmdlets.md#New-MgMigration)                                 | Create a new rollout and rollback migration                                                    |
+| [New-MgMigrationTable](./docs/cmdlets.md#New-MgMigrationTable)                       | Create a new migration table in the database                                                   |
+| [New-MgSeeder](./docs/cmdlets.md#New-MgSeeder)                                       | Create a new seeder migration                                                                  |
+|                                                                                      |                                                                                                |
+| [Get-MgUsedVariables](./docs/cmdlets.md#Get-MgUsedVariables)                         | Get a list over used variables for a migration file. See [Variables](#Variables) for more info |
+| [Get-MgLatestIteration](./docs/cmdlets.md#Get-MgLatestIteration)                     | Get the latest iteration of migrations applied                                                 |
+| [Get-MgProcessedMigrations](./docs/cmdlets.md#Get-MgProcessedMigrations)             | Get all the applied migrations                                                                 |
+| [Get-MgScriptsForLatestIteration](./docs/cmdlets.md#Get-MgScriptsForLatestIteration) | Get all the applied migrations for the latest iteration                                        |
+|                                                                                      |                                                                                                |
+| [Invoke-MgRollout](./docs/cmdlets.md#Invoke-MgRollout)                               | Run a rollout of migrations that is not applied yet                                            |
+| [Invoke-MgRollback](./docs/cmdlets.md#Invoke-MgRollback)                             | Run a rollback of the latest iteration of migrations                                           |
 
-## Variables
+## :heavy_dollar_sign: Variables
 
 Want to use environment variables in your migration scripts? Well, Migratio supports that. Simply insert `${{YOUR_VARIABLE}}` and Migratio will replace the value during migration, seeding or rollback when the `ReplaceVariables` option is set.
 
@@ -69,7 +45,8 @@ Want to use environment variables in your migration scripts? Well, Migratio supp
 CREATE USER applicationUser WITH ENCRYPTED PASSWORD '${{APP_USER_PASSWORD}}';
 ```
 
-## Configuration File
+## :gear: Configuration File
+
 ```yaml
 directories:
   base: /dev/migrations # Path to base directory containing subfolders
@@ -78,14 +55,13 @@ directories:
   seeders: /dev/migrations/seeders # Path to seeder scripts
 envMapping: # Mapping/Translation of variables and env variables
   MG_DB_PASSWORD: DB_USERNAME
-envFile: './backend.env' # Path to env file
+envFile: "./backend.env" # Path to env file
 auth: # DB auth options
   postgres:
-    host: 'localhost'
+    host: "localhost"
     port: 1234
-    database: 'TestDB'
-    username: 'postgres'
-    password: '${{MG_DB_PASSWORD}}' # Will use DB_USERNAME under lookup (ref: envMapping)
+    database: "TestDB"
+    username: "postgres"
+    password: "${{MG_DB_PASSWORD}}" # Will use DB_USERNAME under lookup (ref: envMapping)
 replaceVariables: true # Replace variables in rollout scripts
-
 ```

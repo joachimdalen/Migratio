@@ -31,7 +31,8 @@ namespace Migratio.Secrets
             _configuration = new ConfigurationManager(_fileManager);
         }
 
-        public string[] GetSecretsInContent(string content)
+        /// <inheritdoc />
+        public string[] GetVariablesInContent(string content)
         {
             var usedVariables = new List<string>();
 
@@ -47,9 +48,13 @@ namespace Migratio.Secrets
             return usedVariables.ToArray();
         }
 
-        public string ReplaceSecretsInContent(string content)
+        /// <inheritdoc />
+        /// <exception cref="Exception">
+        /// Failed to get environment variable for one or more variable
+        /// </exception>
+        public string ReplaceVariablesInContent(string content)
         {
-            var usedVariables = GetSecretsInContent(content);
+            var usedVariables = GetVariablesInContent(content);
             var replacedContent = content;
             foreach (var usedVariable in usedVariables)
             {
@@ -64,6 +69,7 @@ namespace Migratio.Secrets
             return replacedContent;
         }
 
+        /// <inheritdoc />
         public string GetEnvironmentVariable(string key)
         {
             var envKey = _configuration.GetKeyFromMapping(key);
@@ -81,12 +87,18 @@ namespace Migratio.Secrets
             return envVar?.Value;
         }
 
-        public bool HasSecret(string value)
+        /// <inheritdoc />
+        public bool HasVariable(string content)
         {
-            return Regex.IsMatch(value, SecretPattern);
+            return Regex.IsMatch(content, SecretPattern);
         }
 
-        private IList<EnvEntry> GetFromFile(string path)
+        /// <summary>
+        /// Load environment file
+        /// </summary>
+        /// <param name="path">Path to environment file</param>
+        /// <returns>Mapped variables</returns>
+        private IEnumerable<EnvEntry> GetFromFile(string path)
         {
             const string pattern = @"^\s*(?<key>[\w.-]+)\s*=\s*(?<value>.*)?\s*$";
             var parsed = new List<EnvEntry>();

@@ -14,26 +14,50 @@ namespace Migratio.Core
         {
         }
 
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = true)]
+        [Parameter(
+            Mandatory = false,
+            ValueFromPipelineByPropertyName = true,
+            HelpMessage = "Username of database user")
+        ]
         [ValidateNotNullOrEmpty]
         public string Username { get; set; }
 
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = true)]
+        [Parameter(
+            Mandatory = false,
+            ValueFromPipelineByPropertyName = true,
+            HelpMessage = "Specifies the name of the database to connect to")
+        ]
         [ValidateNotNullOrEmpty]
         public string Database { get; set; }
 
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = true)]
+        [Parameter(
+            Mandatory = false,
+            ValueFromPipelineByPropertyName = true,
+            HelpMessage = "Specifies the port on the database server to connect to")
+        ]
         [ValidateNotNullOrEmpty]
         public int Port { get; set; }
 
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = true)]
+        [Parameter(
+            Mandatory = false,
+            ValueFromPipelineByPropertyName = true,
+            HelpMessage = "Specifies the hostname or ip address of the machine to connect to")
+        ]
         [ValidateNotNullOrEmpty]
         public string Host { get; set; }
 
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = true)]
+        [Parameter(
+            Mandatory = false,
+            ValueFromPipelineByPropertyName = true,
+            HelpMessage = "Specifies the default database schema. Only valid for Postgres")
+        ]
         [ValidateNotNullOrEmpty]
         public string Schema { get; set; }
 
+        /// <summary>
+        /// Get database connection info.
+        /// </summary>
+        /// <returns></returns>
         protected DbConnectionInfo GetConnectionInfo()
         {
             var dbInfo = Configuration?.Config?.Auth?.Postgres;
@@ -73,7 +97,7 @@ namespace Migratio.Core
         {
             if (fromConfig != null)
             {
-                if (SecretManager.HasSecret(fromConfig)) return SecretManager.ReplaceSecretsInContent(fromConfig);
+                if (SecretManager.HasVariable(fromConfig)) return SecretManager.ReplaceVariablesInContent(fromConfig);
 
                 return fromConfig;
             }

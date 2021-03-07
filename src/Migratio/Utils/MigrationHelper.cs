@@ -18,6 +18,12 @@ namespace Migratio.Utils
             _secretManager = new SecretManager(environmentManager, _fileManager, _configuration);
         }
 
+        /// <summary>
+        /// Get file content with or without replaced variables
+        /// </summary>
+        /// <param name="scriptPath">Path to script to load</param>
+        /// <param name="replace">Whether variables should be replaced</param>
+        /// <returns>File content</returns>
         public string GetScriptContent(string scriptPath, bool replace)
         {
             var scriptContent = _fileManager.ReadAllText(scriptPath);
@@ -26,7 +32,7 @@ namespace Migratio.Utils
 
             if (!replace) return scriptContent + Environment.NewLine;
 
-            var replacedContent = _secretManager.ReplaceSecretsInContent(scriptContent);
+            var replacedContent = _secretManager.ReplaceVariablesInContent(scriptContent);
             return replacedContent + Environment.NewLine;
         }
     }

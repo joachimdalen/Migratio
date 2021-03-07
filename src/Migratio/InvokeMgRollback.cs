@@ -26,7 +26,13 @@ namespace Migratio
             _migrationHelper = new MigrationHelper(FileManager, EnvironmentManager, Configuration);
         }
 
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = true)]
+        [Parameter(
+            Mandatory = false,
+            ValueFromPipelineByPropertyName = true,
+            HelpMessage =
+                "Specifies the root directory of migrations if using default directory naming." +
+                "Equivalent to setting the base option in Migratio config")
+        ]
         [ValidateNotNullOrEmpty]
         public string MigrationRootDir { get; set; }
 
