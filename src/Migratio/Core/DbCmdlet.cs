@@ -54,6 +54,10 @@ namespace Migratio.Core
         [ValidateNotNullOrEmpty]
         public string Schema { get; set; }
 
+        /// <summary>
+        /// Get database connection info.
+        /// </summary>
+        /// <returns></returns>
         protected DbConnectionInfo GetConnectionInfo()
         {
             var dbInfo = Configuration?.Config?.Auth?.Postgres;

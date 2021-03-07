@@ -9,6 +9,7 @@ namespace Migratio.Database
     {
         private DbConnectionInfo ConnectionInfo { get; set; }
 
+        /// <inheritdoc />
         public void SetConnectionInfo(DbConnectionInfo info)
         {
             ConnectionInfo = info;
