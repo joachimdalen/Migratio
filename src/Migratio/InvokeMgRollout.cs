@@ -6,6 +6,7 @@ using System.Text;
 using Migratio.Core;
 using Migratio.Database;
 using Migratio.Models;
+using Migratio.Results;
 using Migratio.Utils;
 
 namespace Migratio
@@ -81,7 +82,7 @@ namespace Migratio
             if (scripts.Length == 0)
             {
                 WriteWarning("No scripts found");
-                WriteObject(false);
+                WriteObject(new MgResult {Successful = false, Details = "No scripts found"});
                 return;
             }
 
@@ -119,6 +120,7 @@ namespace Migratio
             }
 
             DatabaseProvider.RunTransaction(stringBuilder.ToString());
+            WriteObject(new MgResult {Successful = true});
         }
 
         private string GetMigrationQuery(string migrationScriptName, int iteration)

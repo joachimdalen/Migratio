@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Migratio.Results;
 using Migratio.UnitTests.Mocks;
 using Moq;
 using Xunit;
@@ -22,8 +23,8 @@ namespace Migratio.UnitTests
                 Username = "username"
             };
 
-            var result = command.Invoke()?.OfType<bool>().First();
-            Assert.False(result);
+            var result = command.Invoke()?.OfType<MgResult>().First();
+            Assert.False(result.Successful);
             DbMock.VerifyMigrationTableExists(Times.Once());
             DbMock.VerifyCreateMigrationTable(Times.Never());
         }
@@ -44,8 +45,8 @@ namespace Migratio.UnitTests
                 Username = "username"
             };
 
-            var result = command.Invoke()?.OfType<bool>().First();
-            Assert.True(result);
+            var result = command.Invoke()?.OfType<MgResult>().First();
+            Assert.True(result.Successful);
             DbMock.VerifyMigrationTableExists(Times.Once());
             DbMock.VerifyCreateMigrationTable(Times.Once());
         }

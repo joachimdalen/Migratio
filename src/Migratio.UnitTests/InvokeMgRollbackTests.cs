@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Migratio.Models;
+using Migratio.Results;
 using Moq;
 using Xunit;
 
@@ -51,8 +52,8 @@ namespace Migratio.UnitTests
                 Username = "username"
             };
 
-            var result = command.Invoke()?.OfType<bool>()?.First();
-            Assert.False(result);
+            var result = command.Invoke()?.OfType<MgResult>()?.First();
+            Assert.False(result.Successful);
         }
 
         [Fact(DisplayName = "Invoke-MgRollback returns if latest iteration is zero")]
@@ -75,8 +76,8 @@ namespace Migratio.UnitTests
                 Username = "username"
             };
 
-            var result = command.Invoke()?.OfType<bool>()?.First();
-            Assert.False(result);
+            var result = command.Invoke()?.OfType<MgResult>()?.First();
+            Assert.False(result.Successful);
         }
 
         [Fact(DisplayName = "Invoke-MgRollback returns if applied migrations is zero")]
@@ -99,8 +100,8 @@ namespace Migratio.UnitTests
                 Username = "username"
             };
 
-            var result = command.Invoke()?.OfType<bool>()?.First();
-            Assert.False(result);
+            var result = command.Invoke()?.OfType<MgResult>()?.First();
+            Assert.False(result.Successful);
         }
 
         [Fact(DisplayName = "Invoke-MgRollback rollbacks correct migrations")]

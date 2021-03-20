@@ -2,6 +2,7 @@ using System.IO;
 using System.Management.Automation;
 using Migratio.Core;
 using Migratio.Models;
+using Migratio.Results;
 
 namespace Migratio
 {
@@ -55,11 +56,12 @@ namespace Migratio
                 if (FileManager.FileExists(fileName))
                 {
                     WriteWarning($"File {fileName} already exists");
+                    WriteObject(new MgResult {Successful = true, Details = $"File {fileName} already exists"});
                 }
                 else
                 {
                     FileManager.CreateFile(fileName);
-                    WriteObject($"Created file {fileName}");
+                    WriteObject(new MgResult {Successful = true, Details = $"Created file {fileName}"});
                 }
             }
         }

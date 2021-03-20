@@ -6,6 +6,7 @@ using System.Text;
 using Migratio.Core;
 using Migratio.Database;
 using Migratio.Models;
+using Migratio.Results;
 using Migratio.Utils;
 
 namespace Migratio
@@ -49,7 +50,7 @@ namespace Migratio
             if (scripts.Length == 0)
             {
                 WriteWarning("No rollback scripts found");
-                WriteObject(false);
+                WriteObject(new MgResult {Successful = false});
                 return;
             }
 
@@ -59,7 +60,7 @@ namespace Migratio
             if (iteration == 0 || scriptsForLatestIteration?.Length == 0)
             {
                 WriteWarning("No applied migrations found");
-                WriteObject(false);
+                WriteObject(new MgResult {Successful = false, Details = "No applied migrations found"});
                 return;
             }
 
@@ -83,6 +84,7 @@ namespace Migratio
             }
 
             DatabaseProvider.RunTransaction(stringBuilder.ToString());
+            WriteObject(new MgResult {Successful = true});
         }
 
 

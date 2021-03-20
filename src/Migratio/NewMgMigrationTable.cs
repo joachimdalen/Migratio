@@ -1,5 +1,6 @@
 using System.Management.Automation;
 using Migratio.Core;
+using Migratio.Results;
 
 namespace Migratio
 {
@@ -22,12 +23,12 @@ namespace Migratio
             if (DatabaseProvider.MigrationTableExists())
             {
                 WriteWarning("Migration table already exists");
-                WriteObject(false);
+                WriteObject(new MgResult {Successful = false, Details = "Migration table already exists"});
                 return;
             }
 
             var result = DatabaseProvider.CreateMigrationTable();
-            WriteObject(result == 1);
+            WriteObject(new MgResult {Successful = result == 1});
         }
     }
 }
