@@ -1,4 +1,4 @@
-namespace Migratio.Models
+namespace Migratio.Results
 {
     public class IterationResult
     {

@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Migratio.Contracts;
 using Migratio.Models;
+using Migratio.Results;
 using Migratio.UnitTests.Mocks;
 using Moq;
 using Xunit;
@@ -77,8 +78,8 @@ namespace Migratio.UnitTests
                 Username = "username"
             };
 
-            var result = command.Invoke()?.OfType<bool>()?.First();
-            Assert.False(result);
+            var result = command.Invoke()?.OfType<MgResult>()?.First();
+            Assert.False(result.Successful);
         }
 
         [Fact(DisplayName = "Invoke-MgRollout returns if all scripts are applied")]
