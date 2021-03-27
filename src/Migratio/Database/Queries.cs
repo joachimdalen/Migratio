@@ -2,7 +2,7 @@ namespace Migratio.Database
 {
     public static class Queries
     {
-        public const string CheckIfMigrationTableExistsQuery =
+        public const string CheckIfTableExistsQuery =
             "SELECT EXISTS (SELECT FROM information_schema.tables WHERE  table_schema = @tableSchema AND table_name = @tableName);";
 
         public const string GetLatestIterationQuery =
@@ -22,5 +22,14 @@ namespace Migratio.Database
 
         public static readonly string CreateMigrationsTableQuery =
             "CREATE TABLE \"@tableSchema\".\"MIGRATIONS\" (\"MIGRATION_ID\" TEXT NOT NULL, \"ITERATION\" INTEGER NOT NULL, CONSTRAINT \"PK_MIGRATIONS\" PRIMARY KEY (\"MIGRATION_ID\"));";
+
+        public const string GetAppliedSeedersQuery =
+            "SELECT \"SEED_ID\" FROM \"@tableSchema\".\"SEEDERS\";";
+
+        public const string NewSeedersQuery =
+            "INSERT INTO \"@tableSchema\".\"SEEDERS\" (\"SEED_ID\") VALUES ('@seederName');";
+
+        public static readonly string CreateSeedersTableQuery =
+            "CREATE TABLE \"@tableSchema\".\"SEEDERS\" (\"SEED_ID\" TEXT NOT NULL, CONSTRAINT \"PK_SEEDERS\" PRIMARY KEY (\"SEED_ID\"));";
     }
 }

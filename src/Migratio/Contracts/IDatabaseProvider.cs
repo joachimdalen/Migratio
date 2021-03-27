@@ -21,6 +21,12 @@ namespace Migratio.Contracts
         bool MigrationTableExists();
 
         /// <summary>
+        /// Check if seeders table exists in the database
+        /// </summary>
+        /// <returns>true if exists, false else</returns>
+        bool SeedingTableExists();
+
+        /// <summary>
         /// Get the latest applied migration
         /// </summary>
         /// <returns>Latest applied migration</returns>
@@ -33,6 +39,12 @@ namespace Migratio.Contracts
         Migration[] GetAppliedMigrations();
 
         /// <summary>
+        /// Get all applied seeders
+        /// </summary>
+        /// <returns>applied seeds</returns>
+        Seed[] GetAppliedSeeders();
+
+        /// <summary>
         /// Get all applied migrations for the latest iteration
         /// </summary>
         /// <returns>applied migrations for the latest iteration</returns>
@@ -43,6 +55,12 @@ namespace Migratio.Contracts
         /// </summary>
         /// <returns></returns>
         int CreateMigrationTable();
+
+        /// <summary>
+        /// Create a new seeders table in the database
+        /// </summary>
+        /// <returns></returns>
+        int CreateSeedersTable();
 
         /// <summary>
         /// Run a database transaction

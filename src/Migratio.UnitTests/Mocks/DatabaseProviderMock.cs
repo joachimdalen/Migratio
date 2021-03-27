@@ -22,8 +22,14 @@ namespace Migratio.UnitTests.Mocks
         public void MigrationTableExists(bool returns)
             => MockInstance.Setup(x => x.MigrationTableExists()).Returns(returns);
 
+        public void SeedingTableExists(bool returns)
+            => MockInstance.Setup(x => x.SeedingTableExists()).Returns(returns);
+
         public void CreateMigrationTable(int returns)
             => MockInstance.Setup(x => x.CreateMigrationTable()).Returns(returns);
+
+        public void CreateSeedersTable(int returns)
+            => MockInstance.Setup(x => x.CreateSeedersTable()).Returns(returns);
 
         public void GetLatestIteration(int returns)
             => MockInstance.Setup(x => x.GetLatestIteration()).Returns(returns);
@@ -37,6 +43,9 @@ namespace Migratio.UnitTests.Mocks
         public void GetAppliedMigrations(Migration[] returns)
             => MockInstance.Setup(x => x.GetAppliedMigrations()).Returns(returns);
 
+        public void GetAppliedSeeders(Seed[] returns)
+            => MockInstance.Setup(x => x.GetAppliedSeeders()).Returns(returns);
+
         public void GetAppliedScriptsForLatestIteration(Migration[] returns)
             => MockInstance.Setup(x => x.GetAppliedScriptsForLatestIteration()).Returns(returns);
 
@@ -49,9 +58,15 @@ namespace Migratio.UnitTests.Mocks
 
         public void VerifyMigrationTableExists(Times times)
             => MockInstance.Verify(x => x.MigrationTableExists(), times);
+        
+        public void VerifySeedingTableExists(Times times)
+            => MockInstance.Verify(x => x.SeedingTableExists(), times);
 
         public void VerifyCreateMigrationTable(Times times)
             => MockInstance.Verify(x => x.CreateMigrationTable(), times);
+        
+        public void VerifyCreateSeedersTable(Times times)
+            => MockInstance.Verify(x => x.CreateSeedersTable(), times);
 
         #endregion
     }
