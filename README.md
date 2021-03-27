@@ -33,9 +33,11 @@ See detailed documentation [here](./docs/cmdlets.md)
 | [Get-MgLatestIteration](./docs/cmdlets.md#Get-MgLatestIteration)                     | Get the latest iteration of migrations applied                                                 |
 | [Get-MgProcessedMigrations](./docs/cmdlets.md#Get-MgProcessedMigrations)             | Get all the applied migrations                                                                 |
 | [Get-MgScriptsForLatestIteration](./docs/cmdlets.md#Get-MgScriptsForLatestIteration) | Get all the applied migrations for the latest iteration                                        |
+| [Get-MgProcessedSeeders](./docs/cmdlets.md#Get-MgProcessedSeeders)                   | Get all the applied seeders                                                                    |
 |                                                                                      |                                                                                                |
 | [Invoke-MgRollout](./docs/cmdlets.md#Invoke-MgRollout)                               | Run a rollout of migrations that is not applied yet                                            |
 | [Invoke-MgRollback](./docs/cmdlets.md#Invoke-MgRollback)                             | Run a rollback of the latest iteration of migrations                                           |
+| [Invoke-MgSeeding](./docs/cmdlets.md#Invoke-MgSeeding)                               | Run all unapplied seeders                                                                      |
 
 ## :heavy_dollar_sign: Variables
 

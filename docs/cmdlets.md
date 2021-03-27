@@ -10,9 +10,11 @@
 | [Get-MgLatestIteration](#Get-MgLatestIteration)                     | Get the latest iteration of migrations applied                                                                               |
 | [Get-MgProcessedMigrations](#Get-MgProcessedMigrations)             | Get all the applied migrations                                                                                               |
 | [Get-MgScriptsForLatestIteration](#Get-MgScriptsForLatestIteration) | Get all the applied migrations for the latest iteration                                                                      |
+| [Get-MgProcessedSeeders](#Get-MgProcessedSeeders)                   | Get all the applied seeders                                                                                                  |
 |                                                                     |                                                                                                                              |
 | [Invoke-MgRollout](#Invoke-MgRollout)                               | Run a rollout of migrations that is not applied yet                                                                          |
 | [Invoke-MgRollback](#Invoke-MgRollback)                             | Run a rollback of the latest iteration of migrations                                                                         |
+| [Invoke-MgSeeding](#Invoke-MgSeeding)                               | Run all unapplied seeders                                                                                                    |
 
 > In the documentation, optional parameters is wrapped in `[]`
 
@@ -209,6 +211,35 @@ Get a list of all applied migrations for the latest iteration.
 
 `*Mandatory if no configuration file path is given. If both is given, CLI values will override configuration file`
 
+## Get-MgProcessedSeeders
+
+Get a list of all applied seeders.
+
+```powershell
+> Get-MgProcessedSeeders [
+    -ConfigFile "/dev/project/migratio.yml"
+    -Username "dbuser"
+    -Database "MyDb"
+    -Port 1234
+    -Host "localhost"
+    -Schema "db"
+  ]
+```
+
+### Input
+
+| Option     | Type   | From config | Mandatory | Default     | Comment                                                                                                |
+| ---------- | ------ | ----------- | --------- | ----------- | ------------------------------------------------------------------------------------------------------ |
+| ConfigFile | string | No          | No        | None        | Path to Migratio configuration file. See [Configuration File](../README.md#gear-configuration-file)    |
+| Username   | string | Yes         | Yes\*     | None        | Username of database user                                                                              |
+| Database   | string | Yes         | Yes\*     | None        | Specifies the name of the database to connect to                                                       |
+| Port       | int    | Yes         | Yes\*     | `5432`      | Specifies the port on the database server to connect to                                                |
+| Host       | string | Yes         | Yes\*     | `127.0.0.1` | Specifies the hostname or ip address of the machine to connect to                                      |
+| Schema     | string | Yes         | Yes\*     | `public`    | Specifies the default database schema. Only valid for Postgres                                         |
+| Password   | string | Yes         | Yes       | None        | Password for the database user. Only settable from configuration file or env variable `MG_DB_PASSWORD` |
+
+`*Mandatory if no configuration file path is given. If both is given, CLI values will override configuration file`
+
 ## Invoke-MgRollout
 
 Run a rollout of scripts that has not been applied.
@@ -276,3 +307,38 @@ Run rollback scripts for the latest iteration
 `*Mandatory if no configuration file path is given. If both is given, CLI values will override configuration file`
 
 ---
+
+## Invoke-MgSeeding
+
+Run all unapplied seeders.
+
+```powershell
+> Invoke-MgSeeding [
+    -ConfigFile "/dev/project/migratio.yml"
+    -MigrationRootDir "/path/to/dir"
+    -ReplaceVariables
+    -CreateTableIfNotExist
+    -Username "dbuser"
+    -Database "MyDb"
+    -Port 1234
+    -Host "localhost"
+    -Schema "db"
+  ]
+```
+
+### Input
+
+| Option                | Type   | From config | Mandatory | Default     | Comment                                                                                                                              |
+| --------------------- | ------ | ----------- | --------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| ConfigFile            | string | No          | No        | None        | Path to Migratio configuration file. See [Configuration File](../README.md#gear-configuration-file)                                  |
+| MigrationRootDir      | string | Yes         | No        | None        | Specifies the root directory of seeders if using default directory naming. Equivalent to setting the base option in Migratio config. |
+| ReplaceVariables      | bool   | Yes         | No        | False       | Replace variables in seeders during rollout                                                                                          |
+| CreateTableIfNotExist | bool   | No          | No        | False       | Create the seeders table if it does not exist in the database.                                                                       |
+| Username              | string | Yes         | Yes\*     | None        | Username of database user                                                                                                            |
+| Database              | string | Yes         | Yes\*     | None        | Specifies the name of the database to connect to                                                                                     |
+| Port                  | int    | Yes         | Yes\*     | `5432`      | Specifies the port on the database server to connect to                                                                              |
+| Host                  | string | Yes         | Yes\*     | `127.0.0.1` | Specifies the hostname or ip address of the machine to connect to                                                                    |
+| Schema                | string | Yes         | Yes\*     | `public`    | Specifies the default database schema. Only valid for Postgres                                                                       |
+| Password              | string | Yes         | Yes       | None        | Password for the database user. Only settable from configuration file or env variable `MG_DB_PASSWORD`                               |
+
+`*Mandatory if no configuration file path is given. If both is given, CLI values will override configuration file`
