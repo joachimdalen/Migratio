@@ -15,17 +15,16 @@ namespace Migratio.Database
             ConnectionInfo = info;
         }
 
-        /// <inheritdoc />
-        public bool MigrationTableExists()
+        private bool TableExists(string table)
         {
             var result = false;
             using (var conn = GetConnection())
             {
                 conn.Open();
-                using (var cmd = new NpgsqlCommand(Queries.CheckIfMigrationTableExistsQuery, conn))
+                using (var cmd = new NpgsqlCommand(Queries.CheckIfTableExistsQuery, conn))
                 {
                     cmd.Parameters.AddWithValue("tableSchema", ConnectionInfo.Schema);
-                    cmd.Parameters.AddWithValue("tableName", "MIGRATIONS");
+                    cmd.Parameters.AddWithValue("tableName", table);
                     using (var reader = cmd.ExecuteReader())
                     {
                         while (reader.Read()) result = reader.GetBoolean(0);
@@ -34,6 +33,18 @@ namespace Migratio.Database
             }
 
             return result;
+        }
+
+        /// <inheritdoc />
+        public bool MigrationTableExists()
+        {
+            return TableExists("MIGRATIONS");
+        }
+
+        /// <inheritdoc />
+        public bool SeedingTableExists()
+        {
+            return TableExists("SEEDERS");
         }
 
         /// <inheritdoc />
@@ -81,6 +92,30 @@ namespace Migratio.Database
         }
 
         /// <inheritdoc />
+        public Seed[] GetAppliedSeeders()
+        {
+            var list = new List<Seed>();
+            using (var conn = GetConnection())
+            {
+                conn.Open();
+                var query = Queries.GetAppliedSeedersQuery.Replace("@tableSchema", ConnectionInfo.Schema);
+                using (var cmd = new NpgsqlCommand(query, conn))
+                {
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                            list.Add(new Seed
+                            {
+                                SeedId = reader.GetString(0)
+                            });
+                    }
+                }
+            }
+
+            return list.ToArray();
+        }
+
+        /// <inheritdoc />
         public Migration[] GetAppliedScriptsForLatestIteration()
         {
             var latestIteration = GetLatestIteration();
@@ -115,6 +150,23 @@ namespace Migratio.Database
             {
                 conn.Open();
                 var query = Queries.CreateMigrationsTableQuery.Replace("@tableSchema", ConnectionInfo.Schema);
+                using (var cmd = new NpgsqlCommand(query, conn))
+                {
+                    result = cmd.ExecuteNonQuery();
+                }
+            }
+
+            return result;
+        }
+        
+        /// <inheritdoc />
+        public int CreateSeedersTable()
+        {
+            int result;
+            using (var conn = GetConnection())
+            {
+                conn.Open();
+                var query = Queries.CreateSeedersTableQuery.Replace("@tableSchema", ConnectionInfo.Schema);
                 using (var cmd = new NpgsqlCommand(query, conn))
                 {
                     result = cmd.ExecuteNonQuery();
