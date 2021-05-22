@@ -3,7 +3,7 @@ using Migratio.Core.Models;
 
 namespace Migratio.Core.Contracts
 {
-    public interface IConfiguration
+    public interface IMigratioConfiguration
     {
         /// <summary>
         /// Configuration loaded from the Migratio configuration file

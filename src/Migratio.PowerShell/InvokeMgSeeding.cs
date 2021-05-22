@@ -19,12 +19,12 @@ namespace Migratio.PowerShell
 
         public InvokeMgSeeding()
         {
-            _migrationHelper = new MigrationHelper(FileManager, EnvironmentManager, Configuration);
+            _migrationHelper = new MigrationHelper(FileManager, EnvironmentManager, MigratioConfiguration);
         }
 
         public InvokeMgSeeding(CmdletDependencies dependencies) : base(dependencies)
         {
-            _migrationHelper = new MigrationHelper(FileManager, EnvironmentManager, Configuration);
+            _migrationHelper = new MigrationHelper(FileManager, EnvironmentManager, MigratioConfiguration);
         }
 
         [Parameter(
@@ -53,10 +53,10 @@ namespace Migratio.PowerShell
 
         protected override void ProcessRecord()
         {
-            var seedersDir = Configuration.GetMigratioDir(MigrationRootDir, ConfigFile, MigratioDirectory.Seeders);
+            var seedersDir = MigratioConfiguration.GetMigratioDir(MigrationRootDir, ConfigFile, MigratioDirectory.Seeders);
             var replaceVariables = ReplaceVariables.IsPresent
                 ? ReplaceVariables.ToBool()
-                : Configuration.Resolve(Configuration?.Config?.ReplaceVariables, false, false);
+                : MigratioConfiguration.Resolve(MigratioConfiguration?.Config?.ReplaceVariables, false, false);
 
 
             var cfg = GetConnectionInfo();
@@ -124,7 +124,7 @@ namespace Migratio.PowerShell
         private string GetSeederQuery(string seederScriptName)
         {
             return Queries.NewSeedersQuery
-                .Replace("@tableSchema", Schema ?? Configuration?.Config?.Auth?.Postgres?.Schema ?? "public")
+                .Replace("@tableSchema", Schema ?? MigratioConfiguration?.Config?.Auth?.Postgres?.Schema ?? "public")
                 .Replace("@seederName", seederScriptName) + Environment.NewLine;
         }
     }

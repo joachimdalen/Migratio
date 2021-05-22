@@ -2,11 +2,16 @@
 
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
+        <PackageId>Migratio.Core</PackageId>
+        <Version>0.0.1</Version>
+        <Authors>joachimdalen</Authors>
+        <Description>Migratio is a PowerShell module to handle database migrations and seeding. It supports rollout, rollback and seeding data.</Description>
+        <RepositoryUrl>https://github.com/joachimdalen/Migratio</RepositoryUrl>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Npgsql" Version="5.0.5" />
-      <PackageReference Include="YamlDotNet" Version="11.1.1" />
+        <PackageReference Include="Npgsql" Version="5.0.5"/>
+        <PackageReference Include="YamlDotNet" Version="11.1.1"/>
     </ItemGroup>
 
 </Project>

@@ -9,21 +9,21 @@ namespace Migratio.PowerShell
 {
     public class CmdletDependencies
     {
-        private IConfiguration _configuration;
+        private IMigratioConfiguration _migratioConfiguration;
         private IDatabaseProvider _databaseProvider;
         private IEnvironmentManager _environmentManager;
         private IFileManager _fileManager;
         private ISecretManager _secretManager;
 
-        public IConfiguration Configuration
+        public IMigratioConfiguration MigratioConfiguration
         {
             get
             {
-                if (_configuration != null) return _configuration;
-                _configuration = new ConfigurationManager(FileManager);
-                return _configuration;
+                if (_migratioConfiguration != null) return _migratioConfiguration;
+                _migratioConfiguration = new MigratioConfigurationManager(FileManager);
+                return _migratioConfiguration;
             }
-            set => _configuration = value;
+            set => _migratioConfiguration = value;
         }
 
         public ISecretManager SecretManager
@@ -31,7 +31,7 @@ namespace Migratio.PowerShell
             get
             {
                 if (_secretManager != null) return _secretManager;
-                _secretManager = new SecretManager(EnvironmentManager, FileManager, Configuration);
+                _secretManager = new SecretManager(EnvironmentManager, FileManager, MigratioConfiguration);
                 return _secretManager;
             }
             set => _secretManager = value;

@@ -7,11 +7,11 @@ using YamlDotNet.Serialization.NamingConventions;
 
 namespace Migratio.Core.Configuration
 {
-    public class ConfigurationManager : IConfiguration
+    public class MigratioConfigurationManager : IMigratioConfiguration
     {
         private readonly IFileManager _fileManager;
 
-        public ConfigurationManager(IFileManager fileManager)
+        public MigratioConfigurationManager(IFileManager fileManager)
         {
             _fileManager = fileManager;
         }

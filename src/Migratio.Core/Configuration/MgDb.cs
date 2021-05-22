@@ -1,8 +1,9 @@
-using Migratio.Core.Configuration;
+using Migratio.Core.Database;
+using YamlDotNet.Serialization;
 
-namespace Migratio.Core.Database
+namespace Migratio.Core.Configuration
 {
-    public class DbConnectionInfo
+    public class MgDb
     {
         /// <summary>
         /// Specifies the hostname or ip address of the machine to connect to
@@ -33,5 +34,19 @@ namespace Migratio.Core.Database
         /// Specifies the default database schema. Only valid for Postgres
         /// </summary>
         public string Schema { get; set; }
+
+
+        public DbConnectionInfo GetConnectionInfo()
+        {
+            return new DbConnectionInfo
+            {
+                Database = Database,
+                Host = Host,
+                Password = Password,
+                Port = Port,
+                Schema = Schema,
+                Username = Username
+            };
+        }
     }
 }

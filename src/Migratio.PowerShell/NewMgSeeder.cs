@@ -38,7 +38,7 @@ namespace Migratio.PowerShell
 
         protected override void ProcessRecord()
         {
-            var seederDir = Configuration.GetMigratioDir(MigrationRootDir, ConfigFile, MigratioDirectory.Seeders);
+            var seederDir = MigratioConfiguration.GetMigratioDir(MigrationRootDir, ConfigFile, MigratioDirectory.Seeders);
             if (!FileManager.DirectoryExists(seederDir))
             {
                 FileManager.CreateDirectory(seederDir);

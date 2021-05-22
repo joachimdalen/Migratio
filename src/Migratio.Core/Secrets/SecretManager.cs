@@ -12,23 +12,23 @@ namespace Migratio.Core.Secrets
     public class SecretManager : ISecretManager
     {
         private const string SecretPattern = @"\${{(?<variable>[a-z_A-Z]+)}}";
-        private readonly IConfiguration _configuration;
+        private readonly IMigratioConfiguration _migratioConfiguration;
         private readonly IEnvironmentManager _environmentManager;
         private readonly IFileManager _fileManager;
 
         public SecretManager(IEnvironmentManager environmentManager, IFileManager fileManager,
-            IConfiguration configuration)
+            IMigratioConfiguration migratioConfiguration)
         {
             _environmentManager = environmentManager;
             _fileManager = fileManager;
-            _configuration = configuration;
+            _migratioConfiguration = migratioConfiguration;
         }
 
         public SecretManager()
         {
             _environmentManager = new EnvironmentManager();
             _fileManager = new FileManager();
-            _configuration = new ConfigurationManager(_fileManager);
+            _migratioConfiguration = new MigratioConfigurationManager(_fileManager);
         }
 
         /// <inheritdoc />
@@ -72,13 +72,13 @@ namespace Migratio.Core.Secrets
         /// <inheritdoc />
         public string GetEnvironmentVariable(string key)
         {
-            var envKey = _configuration.GetKeyFromMapping(key);
+            var envKey = _migratioConfiguration.GetKeyFromMapping(key);
             var envForPattern = _environmentManager.GetEnvironmentVariable(envKey);
             if (!string.IsNullOrWhiteSpace(envForPattern)) return envForPattern;
 
-            if (_configuration?.Config?.EnvFile == null) return string.Empty;
+            if (_migratioConfiguration?.Config?.EnvFile == null) return string.Empty;
 
-            var items = GetFromFile(_configuration?.Config?.EnvFile);
+            var items = GetFromFile(_migratioConfiguration?.Config?.EnvFile);
 
             var envVar = items.FirstOrDefault(x => x.Key.Equals(key));
 

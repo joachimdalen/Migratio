@@ -20,12 +20,12 @@ namespace Migratio.PowerShell
 
         public InvokeMgRollback()
         {
-            _migrationHelper = new MigrationHelper(FileManager, EnvironmentManager, Configuration);
+            _migrationHelper = new MigrationHelper(FileManager, EnvironmentManager, MigratioConfiguration);
         }
 
         public InvokeMgRollback(CmdletDependencies dependencies) : base(dependencies)
         {
-            _migrationHelper = new MigrationHelper(FileManager, EnvironmentManager, Configuration);
+            _migrationHelper = new MigrationHelper(FileManager, EnvironmentManager, MigratioConfiguration);
         }
 
         [Parameter(
@@ -41,7 +41,7 @@ namespace Migratio.PowerShell
 
         protected override void ProcessRecord()
         {
-            var rollbackDir = Configuration.GetMigratioDir(MigrationRootDir, ConfigFile, MigratioDirectory.Rollback);
+            var rollbackDir = MigratioConfiguration.GetMigratioDir(MigrationRootDir, ConfigFile, MigratioDirectory.Rollback);
 
             DatabaseProvider.SetConnectionInfo(GetConnectionInfo());
             if (!DatabaseProvider.MigrationTableExists()) throw new Exception("Migration table does not exist");
@@ -92,7 +92,7 @@ namespace Migratio.PowerShell
         private string GetMigrationQuery(string migrationScriptName, int iteration)
         {
             return Queries.DeleteMigrationQuery
-                .Replace("@tableSchema", Schema ?? Configuration?.Config?.Auth?.Postgres?.Schema ?? "public")
+                .Replace("@tableSchema", Schema ?? MigratioConfiguration?.Config?.Auth?.Postgres?.Schema ?? "public")
                 .Replace("@migrationName", migrationScriptName)
                 .Replace("@currentIteration", iteration.ToString()) + Environment.NewLine;
         }

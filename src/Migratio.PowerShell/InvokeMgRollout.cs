@@ -19,12 +19,12 @@ namespace Migratio.PowerShell
 
         public InvokeMgRollout()
         {
-            _migrationHelper = new MigrationHelper(FileManager, EnvironmentManager, Configuration);
+            _migrationHelper = new MigrationHelper(FileManager, EnvironmentManager, MigratioConfiguration);
         }
 
         public InvokeMgRollout(CmdletDependencies dependencies) : base(dependencies)
         {
-            _migrationHelper = new MigrationHelper(FileManager, EnvironmentManager, Configuration);
+            _migrationHelper = new MigrationHelper(FileManager, EnvironmentManager, MigratioConfiguration);
         }
 
         [Parameter(
@@ -53,10 +53,10 @@ namespace Migratio.PowerShell
 
         protected override void ProcessRecord()
         {
-            var rolloutDir = Configuration.GetMigratioDir(MigrationRootDir, ConfigFile, MigratioDirectory.Rollout);
+            var rolloutDir = MigratioConfiguration.GetMigratioDir(MigrationRootDir, ConfigFile, MigratioDirectory.Rollout);
             var replaceVariables = ReplaceVariables.IsPresent
                 ? ReplaceVariables.ToBool()
-                : Configuration.Resolve(Configuration?.Config?.ReplaceVariables, false, false);
+                : MigratioConfiguration.Resolve(MigratioConfiguration?.Config?.ReplaceVariables, false, false);
 
 
             var cfg = GetConnectionInfo();
@@ -126,7 +126,7 @@ namespace Migratio.PowerShell
         private string GetMigrationQuery(string migrationScriptName, int iteration)
         {
             return Queries.NewMigrationQuery
-                .Replace("@tableSchema", Schema ?? Configuration?.Config?.Auth?.Postgres?.Schema ?? "public")
+                .Replace("@tableSchema", Schema ?? MigratioConfiguration?.Config?.Auth?.Postgres?.Schema ?? "public")
                 .Replace("@migrationName", migrationScriptName)
                 .Replace("@currentIteration", iteration.ToString()) + Environment.NewLine;
         }

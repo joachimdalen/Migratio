@@ -10,7 +10,7 @@ namespace Migratio.PowerShell.Core
 {
     public abstract class BaseCmdlet : Cmdlet
     {
-        private IConfiguration _configuration;
+        private IMigratioConfiguration _migratioConfiguration;
         private IDatabaseProvider _databaseProvider;
         private IEnvironmentManager _environmentManager;
         private IFileManager _fileManager;
@@ -26,7 +26,7 @@ namespace Migratio.PowerShell.Core
             DatabaseProvider = dependencies.DatabaseProvider;
             EnvironmentManager = dependencies.EnvironmentManager;
             FileManager = dependencies.FileManager;
-            Configuration = dependencies.Configuration;
+            MigratioConfiguration = dependencies.MigratioConfiguration;
         }
 
         [Parameter(
@@ -37,15 +37,15 @@ namespace Migratio.PowerShell.Core
         [ValidateNotNullOrEmpty]
         public string ConfigFile { get; set; }
 
-        public IConfiguration Configuration
+        public IMigratioConfiguration MigratioConfiguration
         {
             get
             {
-                if (_configuration != null) return _configuration;
-                _configuration = new ConfigurationManager(FileManager);
-                return _configuration;
+                if (_migratioConfiguration != null) return _migratioConfiguration;
+                _migratioConfiguration = new MigratioConfigurationManager(FileManager);
+                return _migratioConfiguration;
             }
-            set => _configuration = value;
+            set => _migratioConfiguration = value;
         }
 
         public ISecretManager SecretManager
@@ -53,7 +53,7 @@ namespace Migratio.PowerShell.Core
             get
             {
                 if (_secretManager != null) return _secretManager;
-                _secretManager = new SecretManager(EnvironmentManager, FileManager, Configuration);
+                _secretManager = new SecretManager(EnvironmentManager, FileManager, MigratioConfiguration);
                 return _secretManager;
             }
             set => _secretManager = value;
@@ -94,7 +94,7 @@ namespace Migratio.PowerShell.Core
 
         protected override void BeginProcessing()
         {
-            Configuration.Load(ConfigFile);
+            MigratioConfiguration.Load(ConfigFile);
             base.BeginProcessing();
         }
     }

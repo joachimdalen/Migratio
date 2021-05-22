@@ -7,12 +7,12 @@ namespace Migratio.TestCore.Mocks
 {
     public class ConfigManagerMock
     {
-        public Mock<IConfiguration> MockInstance { get; set; }
-        public IConfiguration Object => MockInstance.Object;
+        public Mock<IMigratioConfiguration> MockInstance { get; set; }
+        public IMigratioConfiguration Object => MockInstance.Object;
 
         public ConfigManagerMock(MockBehavior behavior = MockBehavior.Strict)
         {
-            MockInstance = new Mock<IConfiguration>(behavior);
+            MockInstance = new Mock<IMigratioConfiguration>(behavior);
             MockInstance.Setup(x => x.GetKeyFromMapping("MG_DB_PASSWORD")).Returns("MG_DB_PASSWORD");
             MockInstance.Setup(x => x.Load(It.IsAny<string>())).Returns(true);
         }

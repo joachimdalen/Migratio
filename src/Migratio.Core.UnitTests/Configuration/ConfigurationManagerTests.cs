@@ -19,7 +19,7 @@ namespace Migratio.PowerShell.UnitTests.Configuration
         [Fact(DisplayName = "Load returns false if no file")]
         public void Load_Returns_False_If_No_File()
         {
-            var sut = new ConfigurationManager(_fileManagerMock.Object);
+            var sut = new MigratioConfigurationManager(_fileManagerMock.Object);
 
             var result = sut.Load(null);
 
@@ -30,7 +30,7 @@ namespace Migratio.PowerShell.UnitTests.Configuration
         public void Load_Fills_Object_Correctly()
         {
             _fileManagerMock.ReadAllText("migratio.yml", configContent);
-            var sut = new ConfigurationManager(_fileManagerMock.Object);
+            var sut = new MigratioConfigurationManager(_fileManagerMock.Object);
 
             var result = sut.Load("migratio.yml");
 
@@ -56,7 +56,7 @@ namespace Migratio.PowerShell.UnitTests.Configuration
         public void GetKeyFromMapping_Returns_ItemKey_When_No_Mapping()
         {
             _fileManagerMock.ReadAllText("migratio.yml", configContent);
-            var sut = new ConfigurationManager(_fileManagerMock.Object);
+            var sut = new MigratioConfigurationManager(_fileManagerMock.Object);
             sut.Load("migratio.yml");
             sut.Config.EnvMapping = null;
 
@@ -69,7 +69,7 @@ namespace Migratio.PowerShell.UnitTests.Configuration
         public void GetKeyFromMapping_Returns_ItemKey_When_No_Matches_Are_Found()
         {
             _fileManagerMock.ReadAllText("migratio.yml", configContent);
-            var sut = new ConfigurationManager(_fileManagerMock.Object);
+            var sut = new MigratioConfigurationManager(_fileManagerMock.Object);
             sut.Load("migratio.yml");
 
             var result = sut.GetKeyFromMapping("MG_DB_USERNAME");
@@ -81,7 +81,7 @@ namespace Migratio.PowerShell.UnitTests.Configuration
         public void GetKeyFromMapping_Returns_Mapped_Key()
         {
             _fileManagerMock.ReadAllText("migratio.yml", configContent);
-            var sut = new ConfigurationManager(_fileManagerMock.Object);
+            var sut = new MigratioConfigurationManager(_fileManagerMock.Object);
             sut.Load("migratio.yml");
 
             var result = sut.GetKeyFromMapping("MG_DB_PASSWORD");
@@ -110,7 +110,7 @@ auth:
 replaceVariables: true
 ";
             _fileManagerMock.ReadAllText("migratio.yml", wrongContent);
-            var sut = new ConfigurationManager(_fileManagerMock.Object);
+            var sut = new MigratioConfigurationManager(_fileManagerMock.Object);
             sut.Load("migratio.yml");
 
             Assert.Throws<Exception>(() => sut.GetKeyFromMapping("MG_DB_PASSWORD"));
@@ -142,7 +142,7 @@ replaceVariables: true
         public void RolloutDirectory_Returns_Correct_Path(string migrationBaseDir, string confPath,
             string configFilePath, string expected)
         {
-            var sut = new ConfigurationManager(_fileManagerMock.Object)
+            var sut = new MigratioConfigurationManager(_fileManagerMock.Object)
             {
                 Config = new MgConfig {Directories = new MgDirs {Rollout = confPath}}
             };
@@ -160,7 +160,7 @@ replaceVariables: true
         public void RollbackDirectory_Returns_Correct_Path(string migrationBaseDir, string confPath,
             string configFilePath, string expected)
         {
-            var sut = new ConfigurationManager(_fileManagerMock.Object)
+            var sut = new MigratioConfigurationManager(_fileManagerMock.Object)
             {
                 Config = new MgConfig {Directories = new MgDirs {Rollback = confPath}}
             };
@@ -178,7 +178,7 @@ replaceVariables: true
         public void SeedersDirectory_Returns_Correct_Path(string migrationBaseDir, string confPath,
             string configFilePath, string expected)
         {
-            var sut = new ConfigurationManager(_fileManagerMock.Object)
+            var sut = new MigratioConfigurationManager(_fileManagerMock.Object)
             {
                 Config = new MgConfig {Directories = new MgDirs {Seeders = confPath}}
             };

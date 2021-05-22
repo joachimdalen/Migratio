@@ -3,7 +3,11 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
         <PackageId>Migratio.PowerShell</PackageId>
+        <Version>0.0.1</Version>
+        <Authors>joachimdalen</Authors>
+        <Description>Migratio is a PowerShell module to handle database migrations and seeding. It supports rollout, rollback and seeding data.</Description>
         <LangVersion>9</LangVersion>
+        <RepositoryUrl>https://github.com/joachimdalen/Migratio</RepositoryUrl>
     </PropertyGroup>
 
     <ItemGroup>
@@ -13,7 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Migratio.Core\Migratio.Core.csproj" />
+        <ProjectReference Include="..\Migratio.Core\Migratio.Core.csproj"/>
     </ItemGroup>
 
 </Project>

@@ -4,18 +4,16 @@ using Migratio.Core.Secrets;
 
 namespace Migratio.Core.Utils
 {
-    public class MigrationHelper
+    public class MigrationHelper : IMigrationHelper
     {
-        private readonly IConfiguration _configuration;
         private readonly IFileManager _fileManager;
         private readonly ISecretManager _secretManager;
 
         public MigrationHelper(IFileManager fileManager, IEnvironmentManager environmentManager,
-            IConfiguration configuration)
+            IMigratioConfiguration migratioConfiguration)
         {
             _fileManager = fileManager;
-            _configuration = configuration;
-            _secretManager = new SecretManager(environmentManager, _fileManager, _configuration);
+            _secretManager = new SecretManager(environmentManager, _fileManager, migratioConfiguration);
         }
 
         /// <summary>

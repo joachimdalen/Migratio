@@ -60,7 +60,7 @@ namespace Migratio.PowerShell.Core
         /// <returns></returns>
         protected DbConnectionInfo GetConnectionInfo()
         {
-            var dbInfo = Configuration?.Config?.Auth?.Postgres;
+            var dbInfo = MigratioConfiguration?.Config?.Auth?.Postgres;
             return new DbConnectionInfo
             {
                 Database = Database ?? ResolveDynamicConfig<string, string>(dbInfo?.Database, null, null),

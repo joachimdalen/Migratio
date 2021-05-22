@@ -32,7 +32,7 @@ namespace Migratio.PowerShell.UnitTests
                 DatabaseProvider = DbMock.Object,
                 EnvironmentManager = EnvironmentManagerMock.Object,
                 SecretManager = SecretManagerMock,
-                Configuration = ConfigManagerMock.Object
+                MigratioConfiguration = ConfigManagerMock.Object
             };
         }
     }

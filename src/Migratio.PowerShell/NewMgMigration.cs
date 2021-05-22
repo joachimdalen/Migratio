@@ -38,8 +38,8 @@ namespace Migratio.PowerShell
 
         protected override void ProcessRecord()
         {
-            var rolloutDir = Configuration.GetMigratioDir(MigrationRootDir, ConfigFile, MigratioDirectory.Rollout);
-            var rollbackDir = Configuration.GetMigratioDir(MigrationRootDir, ConfigFile, MigratioDirectory.Rollback);
+            var rolloutDir = MigratioConfiguration.GetMigratioDir(MigrationRootDir, ConfigFile, MigratioDirectory.Rollout);
+            var rollbackDir = MigratioConfiguration.GetMigratioDir(MigrationRootDir, ConfigFile, MigratioDirectory.Rollback);
             var dirs = new[] {rolloutDir, rollbackDir};
 
             foreach (var dir in dirs)
