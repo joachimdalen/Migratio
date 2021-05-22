@@ -1,10 +1,16 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migratio", "Migratio\Migratio.csproj", "{7A232062-3B44-4B72-8E08-C926B81F1C8A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migratio.PowerShell", "Migratio.PowerShell\Migratio.PowerShell.csproj", "{7A232062-3B44-4B72-8E08-C926B81F1C8A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migratio.UnitTests", "Migratio.UnitTests\Migratio.UnitTests.csproj", "{7847F8F5-1E80-4B24-AEA1-B926FB7C669B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migratio.PowerShell.UnitTests", "Migratio.PowerShell.UnitTests\Migratio.PowerShell.UnitTests.csproj", "{7847F8F5-1E80-4B24-AEA1-B926FB7C669B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{2504517D-D9C2-47AA-A559-CD220893317E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migratio.Core", "Migratio.Core\Migratio.Core.csproj", "{5B10E47C-26CF-4076-9212-DD9665E25A6E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migratio.Core.UnitTests", "Migratio.Core.UnitTests\Migratio.Core.UnitTests.csproj", "{AB829F13-6EFA-4CC7-8C16-ECF470329468}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migratio.TestCore", "Migratio.TestCore\Migratio.TestCore.csproj", "{5B107A0B-5631-4C43-848C-E23E64763F4B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,8 +26,22 @@ Global
 		{7847F8F5-1E80-4B24-AEA1-B926FB7C669B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7847F8F5-1E80-4B24-AEA1-B926FB7C669B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7847F8F5-1E80-4B24-AEA1-B926FB7C669B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B10E47C-26CF-4076-9212-DD9665E25A6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B10E47C-26CF-4076-9212-DD9665E25A6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B10E47C-26CF-4076-9212-DD9665E25A6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B10E47C-26CF-4076-9212-DD9665E25A6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB829F13-6EFA-4CC7-8C16-ECF470329468}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB829F13-6EFA-4CC7-8C16-ECF470329468}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB829F13-6EFA-4CC7-8C16-ECF470329468}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB829F13-6EFA-4CC7-8C16-ECF470329468}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B107A0B-5631-4C43-848C-E23E64763F4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B107A0B-5631-4C43-848C-E23E64763F4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B107A0B-5631-4C43-848C-E23E64763F4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B107A0B-5631-4C43-848C-E23E64763F4B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{7847F8F5-1E80-4B24-AEA1-B926FB7C669B} = {2504517D-D9C2-47AA-A559-CD220893317E}
+		{AB829F13-6EFA-4CC7-8C16-ECF470329468} = {2504517D-D9C2-47AA-A559-CD220893317E}
+		{5B107A0B-5631-4C43-848C-E23E64763F4B} = {2504517D-D9C2-47AA-A559-CD220893317E}
 	EndGlobalSection
 EndGlobal

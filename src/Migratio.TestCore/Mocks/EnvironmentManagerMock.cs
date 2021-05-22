@@ -1,0 +1,28 @@
+using Migratio.Core.Contracts;
+using Moq;
+
+namespace Migratio.TestCore.Mocks
+{
+    public class EnvironmentManagerMock
+    {
+        public Mock<IEnvironmentManager> MockInstance { get; set; }
+        public IEnvironmentManager Object => MockInstance.Object;
+
+        public EnvironmentManagerMock(MockBehavior behavior = MockBehavior.Strict)
+        {
+            MockInstance = new Mock<IEnvironmentManager>(behavior);
+            MockInstance.Setup(x => x.GetEnvironmentVariable("MG_DB_PASSWORD")).Returns("password");
+        }
+
+        #region Setups
+
+        public void GetEnvironmentVariable(string key, string returns)
+            => MockInstance.Setup(x => x.GetEnvironmentVariable(key)).Returns(returns);
+
+        #endregion
+
+        #region Verification
+
+        #endregion
+    }
+}
