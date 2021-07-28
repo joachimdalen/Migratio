@@ -3,6 +3,15 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
         <AssemblyName>Migratio</AssemblyName>
+        <PackageVersion>1.0.0-alpha1</PackageVersion>
+        <Title>Migratio</Title>
+        <PackageProjectUrl>https://github.com/joachimdalen/Migratio</PackageProjectUrl>
+        <PackageLicenseUrl>https://github.com/joachimdalen/Migratio/blob/master/LICENSE.md</PackageLicenseUrl>
+        <PackageIconUrl>https://raw.githubusercontent.com/joachimdalen/Migratio/master/images/header.png</PackageIconUrl>
+        <RepositoryUrl>https://github.com/joachimdalen/Migratio</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <AssemblyVersion>1.0.0-alpha1</AssemblyVersion>
+        <FileVersion>1.0.0-alpha1</FileVersion>
     </PropertyGroup>
 
     <ItemGroup>
