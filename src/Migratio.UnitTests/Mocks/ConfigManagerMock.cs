@@ -14,7 +14,7 @@ namespace Migratio.UnitTests.Mocks
         {
             MockInstance = new Mock<IConfiguration>(behavior);
             MockInstance.Setup(x => x.GetKeyFromMapping("MG_DB_PASSWORD")).Returns("MG_DB_PASSWORD");
-            MockInstance.Setup(x => x.Load(It.IsAny<string>())).Returns(true);
+            MockInstance.Setup(x => x.Load(It.IsAny<string>(), It.IsAny<string>())).Returns(true);
         }
 
         public void GetKeyFromMapping(string key, string returns)

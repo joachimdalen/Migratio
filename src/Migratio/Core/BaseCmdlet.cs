@@ -36,6 +36,14 @@ namespace Migratio.Core
         [ValidateNotNullOrEmpty]
         public string ConfigFile { get; set; }
 
+        [Parameter(
+            Mandatory = false,
+            ValueFromPipelineByPropertyName = true,
+            HelpMessage = "Environment to load configuration from")
+        ]
+        [ValidateNotNullOrEmpty]
+        public string Env { get; set; } = "default";
+
         public IConfiguration Configuration
         {
             get
@@ -93,7 +101,7 @@ namespace Migratio.Core
 
         protected override void BeginProcessing()
         {
-            Configuration.Load(ConfigFile);
+            Configuration.Load(ConfigFile, Env);
             base.BeginProcessing();
         }
     }
