@@ -133,6 +133,16 @@ replaceVariables: true
             Assert.True(config.ReplaceVariables);
         }
 
+        [Fact(DisplayName = "Throws when environment is not found")]
+        public void Load_Throws_When_Environment_Not_Found()
+        {
+            _fileManagerMock.ReadAllText("migratio.yml", configMultiEnvContent);
+            var sut = new ConfigurationManager(_fileManagerMock.Object);
+
+
+            Assert.Throws<Exception>(() => sut.Load("migratio.yml", "staging"));
+        }
+
         [Fact(DisplayName = "GetKeyFromMapping returns itemKey when no mapping is set")]
         public void GetKeyFromMapping_Returns_ItemKey_When_No_Mapping()
         {
