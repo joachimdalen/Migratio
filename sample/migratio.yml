@@ -27,7 +27,7 @@ environments:
       postgres:
         host: 'localhost'
         port: 5434
-        database: 'EnvOneTwo'
+        database: 'EnvTwoDb'
         username: 'pguserenv2'
         password: '${{MG_DB_PASSWORD}}'
     replaceVariables: true
