@@ -102,6 +102,7 @@ namespace Migratio.Core
         protected override void BeginProcessing()
         {
             Configuration.Load(ConfigFile, Env);
+            WriteObject($"Loaded configuration for env: {Env}");
             base.BeginProcessing();
         }
     }
