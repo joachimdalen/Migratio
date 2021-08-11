@@ -106,7 +106,7 @@ namespace Migratio.UnitTests
             };
 
             var result = command.Invoke()?.OfType<string>()?.ToArray();
-            Assert.Equal("Number of applied seeders are the same as the total, skipping", result[2]);
+            Assert.Equal("Number of applied seeders are the same as the total, skipping", result[3]);
         }
 
         [Fact(DisplayName = "Invoke-MgSeeding skips seeders if applied")]
@@ -136,7 +136,7 @@ namespace Migratio.UnitTests
             };
 
             var result = command.Invoke()?.OfType<string>()?.ToArray();
-            Assert.Equal("Seeder one is applied, skipping", result[2]);
+            Assert.Equal("Seeder one is applied, skipping", result[3]);
 
             FileManagerMock.VerifyReadAllText("migrations/seeders/one.sql", Times.Never());
         }
