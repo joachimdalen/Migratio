@@ -7,7 +7,7 @@ variables:
   BUILD_CONFIGURATION: 'Release'
   PROJECT_OUT_PATH: '$(Build.ArtifactStagingDirectory)'
   SAMPLES_DIR: $(Build.SourcesDirectory)/samples
-  MIGRATIO_DIRECTORY: $(Pipeline.Workspace)/Migratio/Migratio
+  MIGRATIO_DIRECTORY: $(Pipeline.Workspace)/Migratio
 
 resources:
   containers:
