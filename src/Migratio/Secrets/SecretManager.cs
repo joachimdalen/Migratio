@@ -60,6 +60,7 @@ namespace Migratio.Secrets
             {
                 var envForPattern = GetEnvironmentVariable(usedVariable);
                 if (string.IsNullOrWhiteSpace(envForPattern))
+                    // TODO: This message is not fully correct 'usedVariable' is not the env to look up it is the key  
                     throw new Exception($"Failed to get environment variable for {usedVariable}");
 
                 var givenPattern = "${{" + usedVariable + "}}";
