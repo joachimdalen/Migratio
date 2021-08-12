@@ -67,3 +67,49 @@ auth: # DB auth options
     password: "${{MG_DB_PASSWORD}}" # Will use DB_USERNAME under lookup (ref: envMapping)
 replaceVariables: true # Replace variables in rollout scripts
 ```
+
+Multiple environments are also supported
+
+```yaml
+environments:
+  [envName]: 
+    ...config
+```
+
+```yaml
+environments:
+  development:
+    directories:
+      base: /dev/migrations
+      rollout: /dev/migrations/rollout
+      rollback: /dev/migrations/rollback
+      seeders: /dev/migrations/seeders
+    envMapping:
+      MG_DB_PASSWORD: DB_USERNAME
+    envFile: "./backend.env"
+    auth:
+      postgres:
+        host: "localhost"
+        port: 1234
+        database: "TestDB"
+        username: "postgres"
+        password: "${{MG_DB_PASSWORD}}"
+    replaceVariables: true
+  production:
+    directories:
+      base: /prod/migrations
+      rollout: /prod/migrations/rollout
+      rollback: /prod/migrations/rollback
+      seeders: /prod/migrations/seeders
+    envMapping:
+      MG_DB_PASSWORD: DB_PROD_USERNAME
+    envFile: "./backend.prod.env"
+    auth:
+      postgres:
+        host: "localhost"
+        port: 1234
+        database: "ProdDB"
+        username: "produser"
+        password: "${{MG_DB_PASSWORD}}"
+    replaceVariables: true
+```

@@ -26,7 +26,7 @@ namespace Migratio.UnitTests
                 Name = "This is my migration"
             };
 
-            var result = command.Invoke()?.OfType<string>().First();
+            var result = command.Invoke()?.OfType<string>().ToArray()[1];
             Assert.NotNull(result);
             Assert.Contains(seedPath, result);
             FileManagerMock.VerifyCreateDirectory(seedPath, Times.Once());

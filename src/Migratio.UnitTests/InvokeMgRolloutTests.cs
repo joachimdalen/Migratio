@@ -106,7 +106,7 @@ namespace Migratio.UnitTests
             };
 
             var result = command.Invoke()?.OfType<string>()?.ToArray();
-            Assert.Equal("Number of applied migrations are the same as the total, skipping", result[2]);
+            Assert.Equal("Number of applied migrations are the same as the total, skipping", result[3]);
         }
 
         [Fact(DisplayName = "Invoke-MgRollout skips migration if applied")]
@@ -137,7 +137,7 @@ namespace Migratio.UnitTests
             };
 
             var result = command.Invoke()?.OfType<string>()?.ToArray();
-            Assert.Equal("Migration one is applied, skipping", result[2]);
+            Assert.Equal("Migration one is applied, skipping", result[3]);
 
             FileManagerMock.VerifyReadAllText("migrations/rollout/one.sql", Times.Never());
         }

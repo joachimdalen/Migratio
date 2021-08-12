@@ -6,11 +6,32 @@ pool:
 variables:
   BUILD_CONFIGURATION: 'Release'
   PROJECT_OUT_PATH: '$(Build.ArtifactStagingDirectory)'
+  SAMPLES_DIR: $(Build.SourcesDirectory)/samples
+  MIGRATIO_DIRECTORY: $(Pipeline.Workspace)/Migratio
+
+resources:
+  containers:
+    - container: postgresDbEnv1
+      image: 'postgres'
+      ports:
+        - 127.0.0.1:5433:5432
+      env:
+        POSTGRES_USER: pguserenv1
+        POSTGRES_PASSWORD: pgpassenv1
+        POSTGRES_DB: EnvOneDb
+    - container: postgresDbEnv2
+      image: 'postgres'
+      ports:
+        - 127.0.0.1:5434:5432
+      env:
+        POSTGRES_USER: pguserenv2
+        POSTGRES_PASSWORD: pgpassenv2
+        POSTGRES_DB: EnvTwoDb
 
 stages:
   - stage: buildAndUnitTest
     displayName: 'Build & Test'
-    jobs: 
+    jobs:
       - job: 'Build'
         displayName: 'Build job'
         pool:
@@ -37,7 +58,7 @@ stages:
     displayName: 'Publish Artifact'
     dependsOn: buildAndUnitTest
     jobs:
-      - job: 
+      - job:
         steps:
           - task: DotNetCoreCLI@2
             displayName: 'Publish Code - $(BUILD_CONFIGURATION)'
@@ -53,3 +74,44 @@ stages:
             inputs:
               artifact: 'Migratio'
               targetPath: $(PROJECT_OUT_PATH)
+  - stage: runSamples
+    displayName: 'Run samples'
+    dependsOn: publishArtifact
+    jobs:
+      - job:
+        services:
+          postgresDbEnv1: postgresDbEnv1
+          postgresDbEnv2: postgresDbEnv2
+        steps:
+          - task: DownloadPipelineArtifact@2
+            displayName: 'Download Migratio'
+            inputs:
+              buildType: 'current'
+              artifactName: 'Migratio'
+              targetPath: '$(MIGRATIO_DIRECTORY)'
+          - task: PowerShell@2
+            displayName: 'Env1 - Verify'
+            inputs:
+              targetType: 'inline'
+              script: |
+                Import-Module ./Migratio.dll
+                Invoke-MgRollout -CreateTableIfNotExist -ConfigFile $(SAMPLES_DIR)/migratio.yml -Env env1
+                Invoke-MgSeeding -CreateTableIfNotExist -ConfigFile $(SAMPLES_DIR)/migratio.yml -Env env1
+                Invoke-MgRollback -ConfigFile $(SAMPLES_DIR)/migratio.yml -Env env1
+              failOnStderr: true
+              workingDirectory: '$(MIGRATIO_DIRECTORY)'
+            env:
+              MG_DB_PASSWORD: pgpassenv1
+          - task: PowerShell@2
+            displayName: 'Env2 - Verify'
+            inputs:
+              targetType: 'inline'
+              script: |
+                Import-Module ./Migratio.dll
+                Invoke-MgRollout -CreateTableIfNotExist -ConfigFile $(SAMPLES_DIR)/migratio.yml -Env env2
+                Invoke-MgSeeding -CreateTableIfNotExist -ConfigFile $(SAMPLES_DIR)/migratio.yml -Env env2
+                Invoke-MgRollback -ConfigFile $(SAMPLES_DIR)/migratio.yml -Env env2
+              failOnStderr: true
+              workingDirectory: '$(MIGRATIO_DIRECTORY)'
+            env:
+              MG_DB_PASSWORD: pgpassenv2

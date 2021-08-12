@@ -1,0 +1,27 @@
+environments:
+  env1:
+    directories:
+      base: ./migrations
+      rollout: ./migrations/rollout
+      rollback: ./migrations/rollback
+      seeders: ./migrations/seeders
+    auth:
+      postgres:
+        host: 'localhost'
+        port: 5433
+        database: 'EnvOneDb'
+        username: 'pguserenv1'
+    replaceVariables: true
+  env2:
+    directories:
+      base: ./migrations
+      rollout: ./migrations/rollout
+      rollback: ./migrations/rollback
+      seeders: ./migrations/seeders
+    auth:
+      postgres:
+        host: 'localhost'
+        port: 5434
+        database: 'EnvTwoDb'
+        username: 'pguserenv2'
+    replaceVariables: true

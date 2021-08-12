@@ -14,8 +14,9 @@ namespace Migratio.Contracts
         /// Load configuration from given file path
         /// </summary>
         /// <param name="configFile">Filesystem path to configuration file</param>
+        /// <param name="environment"></param>
         /// <returns></returns>
-        bool Load(string configFile);
+        bool Load(string configFile, string environment);
 
         /// <summary>
         /// Get environment variable key from configuration defined mapping.

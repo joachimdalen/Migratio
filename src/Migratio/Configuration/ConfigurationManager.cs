@@ -1,7 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Runtime.Serialization;
 using Migratio.Contracts;
 using Migratio.Models;
+using YamlDotNet.Core;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -37,16 +41,44 @@ namespace Migratio.Configuration
         }
 
         /// <inheritdoc />
-        public bool Load(string configFile)
+        public bool Load(string configFile, string environment)
         {
             if (string.IsNullOrEmpty(configFile)) return false;
 
+            MgEnvironmentBase baseConfig = null;
             var deserializer = new DeserializerBuilder()
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
                 .Build();
-            var config =
-                deserializer.Deserialize<MgConfig>(_fileManager.ReadAllText(configFile));
-            Config = config;
+            try
+            {
+                var config = deserializer.Deserialize<MgConfig>(_fileManager.ReadAllText(configFile));
+                baseConfig = new MgEnvironmentBase
+                {
+                    Environments = new Dictionary<string, MgConfig>
+                    {
+                        {"default", config}
+                    }
+                };
+            }
+            catch (YamlException exception) when (exception.InnerException is SerializationException)
+            {
+                if (exception.InnerException.Message.Contains("Property 'environments' not found on type"))
+                {
+                    baseConfig = deserializer.Deserialize<MgEnvironmentBase>(_fileManager.ReadAllText(configFile));
+                }
+            }
+
+            if (baseConfig == null)
+            {
+                throw new Exception("Failed to load configuration");
+            }
+
+            var selectedEnvironment =
+                baseConfig.Environments?.FirstOrDefault(x => x.Key.ToLower() == environment.ToLower()).Value;
+
+            Config = selectedEnvironment ??
+                     throw new Exception($"Failed to find environment {environment} in configuration");
+
             return true;
         }
 
