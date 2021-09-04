@@ -54,9 +54,42 @@ stages:
               command: 'test'
               projects: '**/*Tests/*UnitTests.csproj'
               arguments: '--configuration $(BUILD_CONFIGURATION)  --collect "Code coverage"'
+  - stage: codeAnalysis
+    dependsOn: buildAndUnitTest
+    displayName: 'Code Analysis'
+    jobs:
+      - job: analyse
+        displayName: 'Analyse'
+        steps:
+          - task: UseDotNet@2
+            displayName: "Use .NET Core sdk"
+            inputs:
+              packageType: "sdk"
+              version: "3.1.x"
+          - task: DotNetCoreCLI@2
+            displayName: 'Restore project dependencies'
+            inputs:
+              command: 'restore'
+              projects: '**/*.csproj'
+          - task: DotNetCoreCLI@2
+            displayName: 'Build the project - $(BUILD_CONFIGURATION)'
+            inputs:
+              command: 'build'
+              arguments: '--no-restore --configuration $(BUILD_CONFIGURATION)'
+              projects: '**/*.csproj'
+          - task: ReSharperToolInstaller@0
+            displayName: 'Install ReSharper CLI'
+            inputs:
+              toolVersion: '2021.1.5'
+          - task: ReSharperInspectCode@0
+            displayName: 'Run Code Inspection'
+            inputs:
+              solutionPath: $(Build.SourcesDirectory)/NextWeekend/NextWeekend.sln
+          - task: ReSharperPublishReport@0
+            displayName: 'Publish ReSharper Report'
   - stage: publishArtifact
     displayName: 'Publish Artifact'
-    dependsOn: buildAndUnitTest
+    dependsOn: codeAnalysis
     jobs:
       - job:
         steps:
