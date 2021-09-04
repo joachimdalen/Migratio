@@ -84,7 +84,7 @@ stages:
           - task: ReSharperInspectCode@0
             displayName: 'Run Code Inspection'
             inputs:
-              solutionPath: $(Build.SourcesDirectory)/NextWeekend/NextWeekend.sln
+              solutionPath: $(Build.SourcesDirectory)/src/Migratio.sln
           - task: ReSharperPublishReport@0
             displayName: 'Publish ReSharper Report'
   - stage: publishArtifact
