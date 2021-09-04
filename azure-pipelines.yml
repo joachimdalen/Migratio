@@ -80,7 +80,7 @@ stages:
           - task: ReSharperToolInstaller@0
             displayName: 'Install ReSharper CLI'
             inputs:
-              toolVersion: '2021.1.5'
+              toolVersion: 'latest'
           - task: ReSharperInspectCode@0
             displayName: 'Run Code Inspection'
             inputs:
