@@ -3,11 +3,31 @@ trigger: none
 pool:
   vmImage: 'ubuntu-latest'
 
+parameters:
+  - name: SELECTED_PACKAGE_VERSION
+    type: string
+    displayName: 'Package Version'
+    default: 'not-set'
+  - name: "INCREASE_MAJOR"
+    type: boolean
+    default: false
+    displayName: "Increase Major Version"
+  - name: "INCREASE_MINOR"
+    type: boolean
+    default: false
+    displayName: "Increase Minor Version"
+  - name: "INCREASE_PATCH"
+    type: boolean
+    default: false
+    displayName: "Increase Patch Version"
+
 variables:
   BUILD_CONFIGURATION: 'Release'
   PROJECT_OUT_PATH: '$(Build.ArtifactStagingDirectory)'
   SAMPLES_DIR: $(Build.SourcesDirectory)/samples
   MIGRATIO_DIRECTORY: $(Pipeline.Workspace)/Migratio
+  PACKAGE_NAME: 'Migratio'
+  isMaster: $[eq(variables['Build.SourceBranch'], 'refs/heads/master')]
 
 resources:
   containers:
@@ -66,14 +86,38 @@ stages:
               command: 'publish'
               publishWebProjects: false
               projects: '$(Build.SourcesDirectory)/src/Migratio/Migratio.csproj'
-              arguments: '--configuration $(BUILD_CONFIGURATION) --output $(PROJECT_OUT_PATH)'
+              arguments: '--configuration $(BUILD_CONFIGURATION) --output $(PROJECT_OUT_PATH)/source'
               zipAfterPublish: false
               modifyOutputPath: false
-          - task: PublishPipelineArtifact@1
-            displayName: 'Publish artifact'
+          - task: PowerShell@2
+            displayName: 'Set package version'
+            name: SetVersion
             inputs:
-              artifact: 'Migratio'
-              targetPath: $(PROJECT_OUT_PATH)
+              filePath: '$(Build.SourcesDirectory)/ci/get-updated-package-version.ps1'
+              arguments: '-IncreaseMajor $${{ parameters.INCREASE_MAJOR }} -IncreaseMinor $${{ parameters.INCREASE_MINOR }} -IncreasePatch $${{ parameters.INCREASE_PATCH }} -SelectedVersion ${{ parameters.SELECTED_PACKAGE_VERSION }} -PackageName $(PACKAGE_NAME)'
+              failOnStderr: true
+              showWarnings: true
+              pwsh: true
+          - task: DotNetCoreCLI@2
+            displayName: 'Pack Nuget - $(BUILD_CONFIGURATION)'
+            inputs:
+              command: 'pack'
+              packagesToPack: '$(Build.SourcesDirectory)/src/Migratio/Migratio.csproj'
+              configuration: '$(BUILD_CONFIGURATION)'
+              packDirectory: '$(Build.ArtifactStagingDirectory)/nuget'
+              nobuild: true
+              versioningScheme: 'byEnvVar'
+              versionEnvVar: 'SETVERSION_UPDATED_PACKAGE_VERSION'
+          - task: PublishPipelineArtifact@1
+            displayName: 'Publish Binaries Artifact'
+            inputs:
+              artifact: 'migratio-binaries'
+              targetPath: $(PROJECT_OUT_PATH)/source
+          - task: PublishPipelineArtifact@1
+            displayName: 'Publish NuGet Artifact'
+            inputs:
+              artifact: 'migratio-nuget'
+              targetPath: $(PROJECT_OUT_PATH)/nuget
   - stage: runSamples
     displayName: 'Run samples'
     dependsOn: publishArtifact
@@ -87,7 +131,7 @@ stages:
             displayName: 'Download Migratio'
             inputs:
               buildType: 'current'
-              artifactName: 'Migratio'
+              artifactName: 'migratio-binaries'
               targetPath: '$(MIGRATIO_DIRECTORY)'
           - task: PowerShell@2
             displayName: 'Env1 - Verify'
@@ -115,3 +159,25 @@ stages:
               workingDirectory: '$(MIGRATIO_DIRECTORY)'
             env:
               MG_DB_PASSWORD: pgpassenv2
+  - stage: publish_nuget
+    displayName: 'Publish package'
+    condition: eq(variables.isMaster, true)
+    dependsOn: 'runSamples'
+    jobs:
+      - deployment:
+        displayName: 'Publish package'
+        environment: 'nuget-migratio-prod'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: none
+                - download: current
+                  artifact: 'migratio-nuget'
+                - task: DotNetCoreCLI@2
+                  displayName: 'Push nuget package'
+                  inputs:
+                    command: 'push'
+                    packagesToPush: '$(Pipeline.Workspace)/migratio-nuget/*.nupkg'
+                    nuGetFeedType: 'external'
+                    publishFeedCredentials: 'nuget-migratio'

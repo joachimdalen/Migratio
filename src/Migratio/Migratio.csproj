@@ -3,6 +3,15 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
         <AssemblyName>Migratio</AssemblyName>
+        <PackageVersion>1.0.0-preview1</PackageVersion>
+        <Title>Migratio</Title>
+        <Description>Migratio is a PowerShell module to handle database migrations and seeding. It supports rollout, rollback and seeding data.</Description>
+        <Copyright>Joachim Dalen</Copyright>
+        <PackageProjectUrl>https://github.com/joachimdalen/Migratio</PackageProjectUrl>
+        <PackageLicenseUrl>https://github.com/joachimdalen/Migratio/blob/master/LICENSE.md</PackageLicenseUrl>
+        <RepositoryUrl>https://github.com/joachimdalen/Migratio</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageTags>postgres database-migration migration-tool</PackageTags>
     </PropertyGroup>
 
     <ItemGroup>
